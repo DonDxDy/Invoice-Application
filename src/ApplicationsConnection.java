@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.siebel.data.SiebelDataBean;
@@ -51,7 +49,7 @@ public class ApplicationsConnection {
     }
     
     
-    private void initializePropertyValues(){        
+    private static void initializePropertyValues(){        
         LOG.log(Level.INFO,"Initializing connection properties .... ");
         if (OS.contains("nix") || OS.contains("nux")) {
                 prop_file_path = "/usr/app/siebel/intg/intg.properties";
@@ -77,9 +75,9 @@ public class ApplicationsConnection {
         ebs_dbuser = prop.getProperty("ebs_dbuser");
         ebs_dbpassword = prop.getProperty("ebs_dbpassword");
         entrpr_name = prop.getProperty("entrpr_name");
-        this.gateway_server = prop.getProperty("gateway_server");
-        this.username = prop.getProperty("username");
-        this.password = prop.getProperty("password");
+        gateway_server = prop.getProperty("gateway_server");
+        username = prop.getProperty("username");
+        password = prop.getProperty("password");
         sieb_database = prop.getProperty("sieb_database");
         sieb_username = prop.getProperty("sieb_dbuser");
         sieb_password = prop.getProperty("sieb_dbpassword");
@@ -89,7 +87,8 @@ public class ApplicationsConnection {
         LOG.log(Level.INFO, "EBS database:{0},username:{1},password{2}"+ebs_database+""+ ebs_dbuser+""+ebs_dbpassword);
     }
     
-    public static Connection connectToEBSDatabase(){        
+    public static Connection connectToEBSDatabase(){
+        initializePropertyValues();
         Connection connection = null;             
         try {                
             MyLogging.log(Level.INFO,"Connection to EBS begin ....");
@@ -113,6 +112,7 @@ public class ApplicationsConnection {
     }
     
     public static Connection connectToSiebelDatabase(){
+        initializePropertyValues();
         Connection connection = null;             
         try {                
             MyLogging.log(Level.SEVERE,"Connection to Siebel begin ....");
@@ -136,6 +136,7 @@ public class ApplicationsConnection {
     }
     
     public static SiebelDataBean connectSiebelServer() throws FileNotFoundException, IOException{
+        initializePropertyValues();
         MyLogging.log(Level.INFO,"Connecting to Siebel .... ");
         SiebelDataBean dataBean = null;
         String connectString = String.format("Siebel://"+gateway_server+":"+gateway_port+"/"+entrpr_name+"/eautoObjMgr_enu");
@@ -152,10 +153,10 @@ public class ApplicationsConnection {
         return dataBean;
     }
     
-    public static void main(String[] args) throws SQLException, IOException{
-        Logger LOG = Logger.getLogger(ApplicationsConnection.class.getName());
+    public static void main(String[] args) throws SQLException, IOException{        
         //ApplicationsConnection adc = new ApplicationsConnection();  
-        SiebelDataBean ds = ApplicationsConnection.connectSiebelServer();
+        //SiebelDataBean ds = ApplicationsConnection.connectSiebelServer();
         //Connection conn = ApplicationsConnection.connectToEBSDatabase();
+        Connection conn = ApplicationsConnection.connectToSiebelDatabase();
     }
 }

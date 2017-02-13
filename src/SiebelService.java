@@ -251,12 +251,15 @@ public class SiebelService {
             accountBusComp.setSearchSpec("Id", AccountId);
             accountBusComp.executeQuery2(true,true);
             if (accountBusComp.firstRecord()) {
-                String temp_addr ;
-                temp_addr = quoteBusComp.getFieldValue("Street Address")+","+quoteBusComp.getFieldValue("City")+""+quoteBusComp.getFieldValue("State")+","+quoteBusComp.getFieldValue("Country");
+                String temp_addr,temp_addr2 ;
+                temp_addr = accountBusComp.getFieldValue("Street Address");
+                temp_addr2 = accountBusComp.getFieldValue("City")+" "+accountBusComp.getFieldValue("State")+","+accountBusComp.getFieldValue("Country");
                 customer.put("Address",temp_addr);
-                customer.put("Main Phone Number", quoteBusComp.getFieldValue("Main Phone Number"));                          
-                MyLogging.log(Level.INFO,"Address: {0}"+temp_addr);                     
-                MyLogging.log(Level.INFO,"Main Phone Number: {0}"+quoteBusComp.getFieldValue("Main Phone Number"));                
+                customer.put("Address2",temp_addr2);
+                customer.put("Main Phone Number", accountBusComp.getFieldValue("Main Phone Number"));                          
+                MyLogging.log(Level.INFO,"Address: {0}"+temp_addr);
+                MyLogging.log(Level.INFO,"Address2: {0}"+temp_addr2); 
+                MyLogging.log(Level.INFO,"Main Phone Number: {0}"+accountBusComp.getFieldValue("Main Phone Number"));                
             }
             
             customerDetailList.add(customer);
