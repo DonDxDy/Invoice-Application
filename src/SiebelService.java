@@ -274,6 +274,75 @@ public class SiebelService {
         return customerDetailList;
     }
     
+    public List<Customer> getTheCustomerDetails(String quote_id) throws SiebelException{
+        try {
+            sdb = ApplicationsConnection.connectSiebelServer();
+        } catch (IOException ex) {
+            ex.printStackTrace(new PrintWriter(errors));
+            MyLogging.log(Level.SEVERE, "In getCustomerDetails method. Error in connecting to Siebel",errors.toString());
+        }
+        String AccountId;
+        Map customer = new HashMap();
+        List<Customer> customerDetailList = new ArrayList<Customer>();
+        Customer theCustomer = new Customer();
+        SiebelBusObject accountBusObject = sdb.getBusObject("Account");
+        SiebelBusComp accountBusComp = accountBusObject.getBusComp("Account");
+        SiebelBusObject quoteBusObject = sdb.getBusObject("Quote");
+        SiebelBusComp quoteBusComp = quoteBusObject.getBusComp("Quote");
+        quoteBusComp.setViewMode(3);
+        quoteBusComp.clearToQuery();
+        quoteBusComp.activateField("Name");
+        quoteBusComp.activateField("Account");
+        quoteBusComp.activateField("Account Id");
+        quoteBusComp.setSearchSpec("Id", quote_id);
+        quoteBusComp.executeQuery2(true,true);
+        if (quoteBusComp.firstRecord()) {
+            //customer.put("Name", quoteBusComp.getFieldValue("Name"));
+            theCustomer.setName(quoteBusComp.getFieldValue("Name"));
+            //customer.put("Account", quoteBusComp.getFieldValue("Account"));
+            theCustomer.setAccount(quoteBusComp.getFieldValue("Account"));
+            //customer.put("AccountId", quoteBusComp.getFieldValue("Account Id"));
+            theCustomer.setAccountId(quoteBusComp.getFieldValue("Account Id"));
+            AccountId = quoteBusComp.getFieldValue("Account Id");            
+            MyLogging.log(Level.INFO,"Name: {0}"+quoteBusComp.getFieldValue("Name"));                     
+            MyLogging.log(Level.INFO,"Account: {0}"+quoteBusComp.getFieldValue("Account"));
+            MyLogging.log(Level.INFO,"AccountId: {0}"+quoteBusComp.getFieldValue("Account Id"));
+            accountBusComp.setViewMode(3);
+            accountBusComp.clearToQuery();
+            accountBusComp.activateField("Street Address");
+            accountBusComp.activateField("City");
+            accountBusComp.activateField("State");
+            accountBusComp.activateField("Country");
+            accountBusComp.activateField("Main Phone Number");
+            accountBusComp.setSearchSpec("Id", AccountId);
+            accountBusComp.executeQuery2(true,true);
+            if (accountBusComp.firstRecord()) {
+                String temp_addr,temp_addr2 ;
+                temp_addr = accountBusComp.getFieldValue("Street Address");
+                temp_addr2 = accountBusComp.getFieldValue("City")+" "+accountBusComp.getFieldValue("State")+","+accountBusComp.getFieldValue("Country");
+                //customer.put("Address",temp_addr);
+                theCustomer.setAddress(temp_addr);
+                //customer.put("Address2",temp_addr2);
+                theCustomer.setAddress2(temp_addr2);
+                //customer.put("Main Phone Number", accountBusComp.getFieldValue("Main Phone Number"));
+                theCustomer.setMainPhoneNumber(accountBusComp.getFieldValue("Main Phone Number"));
+                MyLogging.log(Level.INFO,"Address: {0}"+temp_addr);
+                MyLogging.log(Level.INFO,"Address2: {0}"+temp_addr2); 
+                MyLogging.log(Level.INFO,"Main Phone Number: {0}"+accountBusComp.getFieldValue("Main Phone Number"));                
+            }
+            
+            customerDetailList.add(theCustomer);
+        }
+        accountBusComp.release();
+        accountBusObject.release();
+        quoteBusComp.release();        
+        quoteBusObject.release();
+        
+        sdb.logoff();
+        
+        return customerDetailList;
+    }
+    
     public static void main(String[] args){
         SiebelService ss = new SiebelService();
         try {

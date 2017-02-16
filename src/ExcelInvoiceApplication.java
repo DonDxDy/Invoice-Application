@@ -7,9 +7,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -36,14 +35,19 @@ public class ExcelInvoiceApplication extends SiebelBusinessService {
             MyLogging.log(Level.INFO, "Excel Template is "+excelTemplate);
             try {
                 MyLogging.log(Level.INFO, "Quote Id is "+inputs.getProperty("QuoteId"));
-                List<Map> customerDetails = ss.getCustomerDetails(inputs.getProperty("QuoteId"));
-                eg.writeCustomerDetailsInInvoice(excelTemplate, customerDetails);
+               // List<Map> customerDetails = ss.getCustomerDetails(inputs.getProperty("QuoteId"));
+                List<Customer> thecustomerDetails = ss.getTheCustomerDetails(inputs.getProperty("QuoteId"));
+               // eg.writeCustomerDetailsInInvoice(excelTemplate, customerDetails);
+                eg.writeTheCustomerDetailsInInvoice(excelTemplate, thecustomerDetails);
             } catch (SiebelException ex) {
                 ex.printStackTrace(new PrintWriter(errors));
-                MyLogging.log(Level.SEVERE, "Error in GenerateInvoice: "+errors.toString());
+                MyLogging.log(Level.SEVERE, "Error:GenerateInvoice: "+errors.toString());
             } catch (IOException ex) {
                 ex.printStackTrace(new PrintWriter(errors));
-                MyLogging.log(Level.SEVERE, "Error:Template File Not Found: "+errors.toString());
+                MyLogging.log(Level.SEVERE, "Error:GenerateInvoice||Template File Not Found: "+errors.toString());
+            }catch (InvalidFormatException ex) {
+                ex.printStackTrace(new PrintWriter(errors));
+                MyLogging.log(Level.SEVERE, "Error:GenerateInvoice: "+errors.toString());
             }
             
         }                                        
