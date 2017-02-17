@@ -29,7 +29,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
  */
 public class ExcelGenerator {
     
-    public void writeTheCustomerDetailsInInvoice(String templateFile,List<Customer> customerDetails) throws FileNotFoundException, IOException, InvalidFormatException{                        
+    public String writeTheCustomerDetailsInInvoice(String templateFile,List<Customer> customerDetails) throws FileNotFoundException, IOException, InvalidFormatException{                        
         Map beans = new HashMap();
         Customer cs = customerDetails.get(0);
         String destinationFile = templateFile+cs.getAccountId()+".xlsx";
@@ -37,9 +37,18 @@ public class ExcelGenerator {
         beans.put("Customer", customerDetails);
         XLSTransformer transformer = new XLSTransformer();        
         transformer.transformXLS(templateFile+".xlsx", beans, destinationFile);
-        
+        return destinationFile;
     }
     
+    public void writeLabourDetailsInInvoice(String templateFile,List<Labour> LabourDetails) throws FileNotFoundException, IOException, InvalidFormatException{                        
+        Map beans = new HashMap();        
+        String destinationFile = templateFile+"upd.xlsx";
+        MyLogging.log(Level.INFO, "templateFile:"+templateFile);
+        beans.put("Labour", LabourDetails);
+        XLSTransformer transformer = new XLSTransformer();        
+        transformer.transformXLS(templateFile+".xlsx", beans, destinationFile);
+        
+    }
     
     
     

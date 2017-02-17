@@ -180,6 +180,261 @@ public class SiebelService {
         return quoteItemsList;
     }
     
+    public List<Labour> getQuoteLabourItems(String quote_id)throws SiebelException{
+        try {
+            sdb = ApplicationsConnection.connectSiebelServer();
+        } catch (IOException ex) {
+            ex.printStackTrace(new PrintWriter(errors));
+            MyLogging.log(Level.SEVERE, "In getQuoteLabourItems method. Error in connecting to Siebel", errors.toString());
+        }
+        MyLogging.log(Level.INFO,"Creating siebel objects");
+        
+        List<Map> quoteItemsList = new ArrayList<Map>();
+        List<Labour> quoteLabourList = new ArrayList<Labour>();        
+        SiebelBusObject quoteBusObject = sdb.getBusObject("Quote");
+        SiebelBusComp quoteBusComp = quoteBusObject.getBusComp("Quote");
+        SiebelBusComp lineItemsBusComp = quoteBusObject.getBusComp("Quote Item"); 
+        boolean isRecord;
+        int cnt = 0;
+        quoteBusComp.setViewMode(3);
+        quoteBusComp.clearToQuery();
+        quoteBusComp.activateField("Id");
+        quoteBusComp.activateField("Order Number");
+        quoteBusComp.setSearchSpec("Id", quote_id);
+        quoteBusComp.executeQuery2(true,true);
+        if (quoteBusComp.firstRecord()) {
+            String searchst = "[Quote Id] = '" + quote_id + "' AND [Product Type] = 'Service'";
+            lineItemsBusComp.setViewMode(3);
+            lineItemsBusComp.clearToQuery();
+            lineItemsBusComp.activateField("Product");
+            lineItemsBusComp.activateField("Quantity Requested");
+            lineItemsBusComp.activateField("Item Price - Display");
+            lineItemsBusComp.activateField("Net Price");
+            lineItemsBusComp.activateField("Extended Line Total - Display");
+            lineItemsBusComp.activateField("Base Price - Display");
+            lineItemsBusComp.activateField("Quote Id");
+            lineItemsBusComp.setSearchSpec("Quote Id", quote_id);
+            lineItemsBusComp.setSearchSpec("Product Type Code", "Service");            
+            //lineItemsBusComp.setSearchExpr(searchst);
+            lineItemsBusComp.executeQuery2(true,true);
+            isRecord = lineItemsBusComp.firstRecord();
+            while(isRecord){
+                cnt++;
+                Map quoteItems = new HashMap();
+                Labour labourItems = new Labour();
+                MyLogging.log(Level.INFO,"Record:{0}",cnt);
+                labourItems.setSn(String.valueOf(cnt));
+                //quoteItems.put("Product", lineItemsBusComp.getFieldValue("Product"));
+                labourItems.setDescription(lineItemsBusComp.getFieldValue("Product"));
+                MyLogging.log(Level.INFO,"Product:{0}"+lineItemsBusComp.getFieldValue("Product")); 
+                //quoteItems.put("Quantity",lineItemsBusComp.getFieldValue("Quantity Requested"));
+                labourItems.setLabourHour(lineItemsBusComp.getFieldValue("Quantity Requested"));
+                MyLogging.log(Level.INFO,"Quantity:{0}"+lineItemsBusComp.getFieldValue("Quantity Requested"));                                 
+                //quoteItems.put("Item Price",lineItemsBusComp.getFieldValue("Item Price"));
+                labourItems.setHourlyRate(lineItemsBusComp.getFieldValue("Item Price"));
+                MyLogging.log(Level.INFO,"Item Price:{0}"+lineItemsBusComp.getFieldValue("Item Price")); 
+                //quoteItems.put("Inventory Id",lineItemsBusComp.getFieldValue("Product Inventory Item Id"));
+                //MyLogging.log(Level.INFO,"Inventory Id:{0}",lineItemsBusComp.getFieldValue("Product Inventory Item Id")); 
+                MyLogging.log(Level.INFO,"Amount:{0}"+lineItemsBusComp.getFieldValue("Extended Line Total - Display"));
+                labourItems.setAmount(lineItemsBusComp.getFieldValue("Extended Line Total - Display"));
+                MyLogging.log(Level.INFO,"Base Price:{0}"+lineItemsBusComp.getFieldValue("Base Price - Display"));
+                labourItems.setBasePrice(lineItemsBusComp.getFieldValue("Base Price - Display"));
+                quoteLabourList.add(labourItems);
+                isRecord = lineItemsBusComp.nextRecord();
+            }
+            
+        }
+        lineItemsBusComp.release();
+        quoteBusComp.release();
+        quoteBusObject.release();
+        sdb.logoff();
+        
+        return quoteLabourList;
+    }
+    
+    public List<Map> getQuotePartsItems(String quote_id)throws SiebelException{
+        try {
+            sdb = ApplicationsConnection.connectSiebelServer();
+        } catch (IOException ex) {
+            ex.printStackTrace(new PrintWriter(errors));
+            MyLogging.log(Level.SEVERE, "In getQuoteItems method. Error in connecting to Siebel", errors.toString());
+        }
+        MyLogging.log(Level.INFO,"Creating siebel objects");
+        
+        List<Map> quoteItemsList = new ArrayList<Map>();
+        List<Parts> quotePartsList = new ArrayList<Parts>();
+        Parts partsItems = new Parts();
+        SiebelBusObject quoteBusObject = sdb.getBusObject("Quote");
+        SiebelBusComp quoteBusComp = quoteBusObject.getBusComp("Quote");
+        SiebelBusComp lineItemsBusComp = quoteBusObject.getBusComp("Quote Item"); 
+        boolean isRecord;
+        int cnt = 0;
+        quoteBusComp.setViewMode(3);
+        quoteBusComp.clearToQuery();
+        quoteBusComp.activateField("Id");
+        quoteBusComp.activateField("Order Number");
+        quoteBusComp.setSearchSpec("Id", quote_id);
+        quoteBusComp.executeQuery2(true,true);
+        if (quoteBusComp.firstRecord()) {            
+            lineItemsBusComp.setViewMode(3);
+            lineItemsBusComp.clearToQuery();
+            lineItemsBusComp.activateField("Product");
+            lineItemsBusComp.activateField("Quantity Requested");
+            lineItemsBusComp.activateField("Item Price - Display");
+            lineItemsBusComp.activateField("Net Price");            
+            lineItemsBusComp.activateField("Product Inventory Item Id");
+            lineItemsBusComp.activateField("Quote Id");
+            lineItemsBusComp.setSearchSpec("Quote Id", quote_id);
+            lineItemsBusComp.executeQuery2(true,true);
+            isRecord = lineItemsBusComp.firstRecord();
+            while(isRecord){
+                cnt++;
+                Map quoteItems = new HashMap();
+                MyLogging.log(Level.INFO,"Record:{0}",cnt);                
+                quoteItems.put("Product", lineItemsBusComp.getFieldValue("Product"));
+                MyLogging.log(Level.INFO,"Product:{0}",lineItemsBusComp.getFieldValue("Product")); 
+                quoteItems.put("Quantity",lineItemsBusComp.getFieldValue("Quantity Requested"));
+                MyLogging.log(Level.INFO,"Quantity:{0}",lineItemsBusComp.getFieldValue("Quantity Requested")); 
+                //orderItems.put("Item Price",lineItemsBusComp.getFieldValue("Item Price - Display"));
+                //LOG.log(Level.INFO,"Item Price:{0}",lineItemsBusComp.getFieldValue("Item Price")); 
+                quoteItems.put("Item Price",lineItemsBusComp.getFieldValue("Item Price"));
+                MyLogging.log(Level.INFO,"Item Price:{0}",lineItemsBusComp.getFieldValue("Item Price")); 
+                quoteItems.put("Inventory Id",lineItemsBusComp.getFieldValue("Product Inventory Item Id"));
+                MyLogging.log(Level.INFO,"Inventory Id:{0}",lineItemsBusComp.getFieldValue("Product Inventory Item Id")); 
+                quoteItemsList.add(quoteItems);
+                isRecord = lineItemsBusComp.nextRecord();
+            }
+            
+        }
+        lineItemsBusComp.release();
+        quoteBusComp.release();
+        quoteBusObject.release();
+        sdb.logoff();
+        
+        return quoteItemsList;
+    }
+    
+    
+    public List<Map> getQuoteLubricantsItems(String quote_id)throws SiebelException{
+        try {
+            sdb = ApplicationsConnection.connectSiebelServer();
+        } catch (IOException ex) {
+            ex.printStackTrace(new PrintWriter(errors));
+            MyLogging.log(Level.SEVERE, "In getQuoteItems method. Error in connecting to Siebel", errors.toString());
+        }
+        MyLogging.log(Level.INFO,"Creating siebel objects");
+        
+        List<Map> quoteItemsList = new ArrayList<Map>();
+        SiebelBusObject quoteBusObject = sdb.getBusObject("Quote");
+        SiebelBusComp quoteBusComp = quoteBusObject.getBusComp("Quote");
+        SiebelBusComp lineItemsBusComp = quoteBusObject.getBusComp("Quote Item"); 
+        boolean isRecord;
+        int cnt = 0;
+        quoteBusComp.setViewMode(3);
+        quoteBusComp.clearToQuery();
+        quoteBusComp.activateField("Id");
+        quoteBusComp.activateField("Order Number");
+        quoteBusComp.setSearchSpec("Id", quote_id);
+        quoteBusComp.executeQuery2(true,true);
+        if (quoteBusComp.firstRecord()) {            
+            lineItemsBusComp.setViewMode(3);
+            lineItemsBusComp.clearToQuery();
+            lineItemsBusComp.activateField("Product");
+            lineItemsBusComp.activateField("Quantity Requested");
+            lineItemsBusComp.activateField("Item Price - Display");
+            lineItemsBusComp.activateField("Net Price");            
+            lineItemsBusComp.activateField("Product Inventory Item Id");
+            lineItemsBusComp.activateField("Quote Id");
+            lineItemsBusComp.setSearchSpec("Quote Id", quote_id);
+            lineItemsBusComp.executeQuery2(true,true);
+            isRecord = lineItemsBusComp.firstRecord();
+            while(isRecord){
+                cnt++;
+                Map quoteItems = new HashMap();
+                MyLogging.log(Level.INFO,"Record:{0}",cnt);                
+                quoteItems.put("Product", lineItemsBusComp.getFieldValue("Product"));
+                MyLogging.log(Level.INFO,"Product:{0}",lineItemsBusComp.getFieldValue("Product")); 
+                quoteItems.put("Quantity",lineItemsBusComp.getFieldValue("Quantity Requested"));
+                MyLogging.log(Level.INFO,"Quantity:{0}",lineItemsBusComp.getFieldValue("Quantity Requested")); 
+                //orderItems.put("Item Price",lineItemsBusComp.getFieldValue("Item Price - Display"));
+                //LOG.log(Level.INFO,"Item Price:{0}",lineItemsBusComp.getFieldValue("Item Price")); 
+                quoteItems.put("Item Price",lineItemsBusComp.getFieldValue("Item Price"));
+                MyLogging.log(Level.INFO,"Item Price:{0}",lineItemsBusComp.getFieldValue("Item Price")); 
+                quoteItems.put("Inventory Id",lineItemsBusComp.getFieldValue("Product Inventory Item Id"));
+                MyLogging.log(Level.INFO,"Inventory Id:{0}",lineItemsBusComp.getFieldValue("Product Inventory Item Id")); 
+                quoteItemsList.add(quoteItems);
+                isRecord = lineItemsBusComp.nextRecord();
+            }
+            
+        }
+        lineItemsBusComp.release();
+        quoteBusComp.release();
+        quoteBusObject.release();
+        sdb.logoff();
+        
+        return quoteItemsList;
+    }
+    
+    public List<Map> getQuoteExpenseItems(String quote_id)throws SiebelException{
+        try {
+            sdb = ApplicationsConnection.connectSiebelServer();
+        } catch (IOException ex) {
+            ex.printStackTrace(new PrintWriter(errors));
+            MyLogging.log(Level.SEVERE, "In getQuoteItems method. Error in connecting to Siebel", errors.toString());
+        }
+        MyLogging.log(Level.INFO,"Creating siebel objects");
+        
+        List<Map> quoteItemsList = new ArrayList<Map>();
+        SiebelBusObject quoteBusObject = sdb.getBusObject("Quote");
+        SiebelBusComp quoteBusComp = quoteBusObject.getBusComp("Quote");
+        SiebelBusComp lineItemsBusComp = quoteBusObject.getBusComp("Quote Item"); 
+        boolean isRecord;
+        int cnt = 0;
+        quoteBusComp.setViewMode(3);
+        quoteBusComp.clearToQuery();
+        quoteBusComp.activateField("Id");
+        quoteBusComp.activateField("Order Number");
+        quoteBusComp.setSearchSpec("Id", quote_id);
+        quoteBusComp.executeQuery2(true,true);
+        if (quoteBusComp.firstRecord()) {            
+            lineItemsBusComp.setViewMode(3);
+            lineItemsBusComp.clearToQuery();
+            lineItemsBusComp.activateField("Product");
+            lineItemsBusComp.activateField("Quantity Requested");
+            lineItemsBusComp.activateField("Item Price - Display");
+            lineItemsBusComp.activateField("Net Price");            
+            lineItemsBusComp.activateField("Product Inventory Item Id");
+            lineItemsBusComp.activateField("Quote Id");
+            lineItemsBusComp.setSearchSpec("Quote Id", quote_id);
+            lineItemsBusComp.executeQuery2(true,true);
+            isRecord = lineItemsBusComp.firstRecord();
+            while(isRecord){
+                cnt++;
+                Map quoteItems = new HashMap();
+                MyLogging.log(Level.INFO,"Record:{0}",cnt);                
+                quoteItems.put("Product", lineItemsBusComp.getFieldValue("Product"));
+                MyLogging.log(Level.INFO,"Product:{0}",lineItemsBusComp.getFieldValue("Product")); 
+                quoteItems.put("Quantity",lineItemsBusComp.getFieldValue("Quantity Requested"));
+                MyLogging.log(Level.INFO,"Quantity:{0}",lineItemsBusComp.getFieldValue("Quantity Requested")); 
+                //orderItems.put("Item Price",lineItemsBusComp.getFieldValue("Item Price - Display"));
+                //LOG.log(Level.INFO,"Item Price:{0}",lineItemsBusComp.getFieldValue("Item Price")); 
+                quoteItems.put("Item Price",lineItemsBusComp.getFieldValue("Item Price"));
+                MyLogging.log(Level.INFO,"Item Price:{0}",lineItemsBusComp.getFieldValue("Item Price")); 
+                quoteItems.put("Inventory Id",lineItemsBusComp.getFieldValue("Product Inventory Item Id"));
+                MyLogging.log(Level.INFO,"Inventory Id:{0}",lineItemsBusComp.getFieldValue("Product Inventory Item Id")); 
+                quoteItemsList.add(quoteItems);
+                isRecord = lineItemsBusComp.nextRecord();
+            }
+            
+        }
+        lineItemsBusComp.release();
+        quoteBusComp.release();
+        quoteBusObject.release();
+        sdb.logoff();
+        
+        return quoteItemsList;
+    }
+    
     public List<Map> getQuoteItems(String quote_id,String item_type) throws SiebelException{
         try {
             sdb = ApplicationsConnection.connectSiebelServer();

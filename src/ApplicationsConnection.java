@@ -143,6 +143,7 @@ public class ApplicationsConnection {
         MyLogging.log(Level.INFO,"Connection string is connectString:{0} ",connectString);
         try {
             dataBean = new SiebelDataBean();
+            MyLogging.log(Level.INFO,"Username is:"+username+" Password is:"+password);
             dataBean.login(connectString, username, password, "enu");
             MyLogging.log(Level.INFO,"Connection SUCCESSFUL");
         }
@@ -155,8 +156,8 @@ public class ApplicationsConnection {
     
     public static void main(String[] args) throws SQLException, IOException{        
         //ApplicationsConnection adc = new ApplicationsConnection();  
-        //SiebelDataBean ds = ApplicationsConnection.connectSiebelServer();
+        SiebelDataBean ds = ApplicationsConnection.connectSiebelServer();
         //Connection conn = ApplicationsConnection.connectToEBSDatabase();
-        Connection conn = ApplicationsConnection.connectToSiebelDatabase();
+        //Connection conn = ApplicationsConnection.connectToSiebelDatabase();
     }
 }

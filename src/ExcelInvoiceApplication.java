@@ -34,11 +34,14 @@ public class ExcelInvoiceApplication extends SiebelBusinessService {
             String excelTemplate = ApplicationProperties.getInvoiceTempate();
             MyLogging.log(Level.INFO, "Excel Template is "+excelTemplate);
             try {
+                String quote_id = inputs.getProperty("QuoteId");
                 MyLogging.log(Level.INFO, "Quote Id is "+inputs.getProperty("QuoteId"));
                // List<Map> customerDetails = ss.getCustomerDetails(inputs.getProperty("QuoteId"));
-                List<Customer> thecustomerDetails = ss.getTheCustomerDetails(inputs.getProperty("QuoteId"));
+                //List<Customer> thecustomerDetails = ss.getTheCustomerDetails(quote_id);
+                List<Labour> labourDetails = ss.getQuoteLabourItems(quote_id);
                // eg.writeCustomerDetailsInInvoice(excelTemplate, customerDetails);
-                eg.writeTheCustomerDetailsInInvoice(excelTemplate, thecustomerDetails);
+                //String currTemplate = eg.writeTheCustomerDetailsInInvoice(excelTemplate, thecustomerDetails);
+                eg.writeLabourDetailsInInvoice(excelTemplate, labourDetails);
             } catch (SiebelException ex) {
                 ex.printStackTrace(new PrintWriter(errors));
                 MyLogging.log(Level.SEVERE, "Error:GenerateInvoice: "+errors.toString());
@@ -58,7 +61,7 @@ public class ExcelInvoiceApplication extends SiebelBusinessService {
         ExcelInvoiceApplication eia = new ExcelInvoiceApplication();
         SiebelPropertySet inputs = new SiebelPropertySet();
         SiebelPropertySet outputs = new SiebelPropertySet();
-        inputs.setProperty("QuoteId", "1-1KMI6");
+        inputs.setProperty("QuoteId", "1-1025Q");
         eia.doInvokeMethod("GenerateInvoice", inputs, outputs);
     }
     
