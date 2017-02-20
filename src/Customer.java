@@ -15,7 +15,60 @@ public class Customer {
     public String mainphonenumber;
     public String Account;
     public String AccountId;
+    public String ContactId;
+    public String contactFullName;
+    
+    
+    
+    public Customer() {
+    }
 
+    public Customer(String name, String address, String address2, String mainphonenumber, String Account, String AccountId, String ContactId, String contactFullName) {
+        this.name = name;
+        this.address = address;
+        this.address2 = address2;
+        this.mainphonenumber = mainphonenumber;
+        this.Account = Account;
+        this.AccountId = AccountId;
+        this.ContactId = ContactId;
+        this.contactFullName = contactFullName;
+    }
+    
+    
+    
+    public Customer(String name, String address, String address2, String mainphonenumber) {
+        this.name = name;
+        this.address = address;
+        this.address2 = address2;
+        this.mainphonenumber = mainphonenumber;
+    }
+
+    public Customer(String name, String address, String address2, String mainphonenumber, String Account, String AccountId) {
+        this.name = name;
+        this.address = address;
+        this.address2 = address2;
+        this.mainphonenumber = mainphonenumber;
+        this.Account = Account;
+        this.AccountId = AccountId;
+    }
+    
+    public String getContactId() {
+        return ContactId;
+    }
+
+    public void setContactId(String ContactId) {
+        this.ContactId = ContactId;
+    }
+
+    public String getContactFullName() {
+        return contactFullName;
+    }
+
+    public void setContactFullName(String contactFullName) {
+        this.contactFullName = contactFullName;
+    }
+    
+    
     public String getAccount() {
         return Account;
     }
@@ -33,24 +86,7 @@ public class Customer {
     }
     
 
-    public Customer() {
-    }
-
-    public Customer(String name, String address, String address2, String mainphonenumber) {
-        this.name = name;
-        this.address = address;
-        this.address2 = address2;
-        this.mainphonenumber = mainphonenumber;
-    }
-
-    public Customer(String name, String address, String address2, String mainphonenumber, String Account, String AccountId) {
-        this.name = name;
-        this.address = address;
-        this.address2 = address2;
-        this.mainphonenumber = mainphonenumber;
-        this.Account = Account;
-        this.AccountId = AccountId;
-    }
+    
     
     
     

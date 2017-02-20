@@ -29,6 +29,10 @@ public class QuoteInvoice {
     public QuoteInvoice(Customer customer) {
         customerDetails = customer;
     }
+
+    public QuoteInvoice() {
+        
+    }
             
     public void addCustomer(Customer customer){
         customerDetails = customer;

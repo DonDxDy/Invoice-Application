@@ -49,7 +49,7 @@ public class MyLogging {
     }
     getProperties();
     Date date = new Date();
-    SimpleDateFormat app = new SimpleDateFormat("dd-MM-yyyy");
+    SimpleDateFormat app = new SimpleDateFormat("dd-MM-yyyy");    
     String dateApp = app.format(date);
     logFile = this.logFile + dateApp + ".log";
     logger = Logger.getLogger(MyLogging.class.getName());
