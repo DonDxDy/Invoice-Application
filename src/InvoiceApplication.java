@@ -21,8 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.sf.jxls.exception.ParsePropertyException;
 import net.sf.jxls.transformer.XLSTransformer;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 
 public class InvoiceApplication  extends SiebelBusinessService {
@@ -64,6 +66,9 @@ public class InvoiceApplication  extends SiebelBusinessService {
             } catch (IOException e) {
                 e.printStackTrace(new PrintWriter(errors));
                 MyLogging.log(Level.SEVERE, "ERROR:IOException:"+ errors.toString());
+            } catch (InvalidFormatException ex) {
+                ex.printStackTrace(new PrintWriter(errors));
+                MyLogging.log(Level.SEVERE, "ERROR:InvalidFormatException:"+ errors.toString());
             }
         }
         
