@@ -49,7 +49,7 @@ public class InvoiceApplication  extends SiebelBusinessService {
                 quoteinvoice = ss.getQuoteLabour(quoteId, quoteinvoice);
                 quoteinvoice = ss.getQuoteParts(quoteId, quoteinvoice);
                 Map beans = new HashMap();
-                beans.put("quoteinvoice", quoteinvoice);
+                beans.put("quoteinvoice", quoteinvoice);                
                 XLSTransformer transformer = new XLSTransformer();        
                 transformer.groupCollection("quoteinvoice.labour");
                 transformer.groupCollection("quoteinvoice.part");
