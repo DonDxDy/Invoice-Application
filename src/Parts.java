@@ -15,7 +15,18 @@ public class Parts {
     public String qty;
     public String unitprice;
     public String amount;
+    public String InventoryId;
 
+    public Parts(String sn, String partnumber, String description, String qty, String unitprice, String amount, String InventoryId) {
+        this.sn = sn;
+        this.partnumber = partnumber;
+        this.description = description;
+        this.qty = qty;
+        this.unitprice = unitprice;
+        this.amount = amount;
+        this.InventoryId = InventoryId;
+    }
+    
     public Parts(String sn, String partnumber, String description, String qty, String unitprice, String amount) {
         this.sn = sn;
         this.partnumber = partnumber;
@@ -74,6 +85,14 @@ public class Parts {
 
     public void setAmount(String amount) {
         this.amount = amount;
+    }
+
+    public String getInventoryId() {
+        return InventoryId;
+    }
+
+    public void setInventoryId(String InventoryId) {
+        this.InventoryId = InventoryId;
     }
     
     

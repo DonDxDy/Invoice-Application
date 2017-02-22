@@ -17,11 +17,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.sf.jxls.exception.ParsePropertyException;
 import net.sf.jxls.transformer.XLSTransformer;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -29,7 +28,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 public class InvoiceApplication  extends SiebelBusinessService {
     private String templateFileName = ApplicationProperties.getInvoiceTempate();
-    private String destFileName = "";
+    private String destFileName = ApplicationProperties.getInvoiceTempate();
     private StringWriter errors = new StringWriter();
     
     @Override
@@ -44,33 +43,50 @@ public class InvoiceApplication  extends SiebelBusinessService {
             MyLogging.log(Level.INFO, "quoteId "+quoteId);
             try{                
                 SiebelService ss = new SiebelService();                
-                Customer customer = ss.getCustomer("quoteId");                
+                Customer customer = new Customer();                
+                customer = ss.getCustomer(quoteId);                
                 QuoteInvoice quoteinvoice = new QuoteInvoice(customer);
                 quoteinvoice = ss.getQuoteLabour(quoteId, quoteinvoice);
                 quoteinvoice = ss.getQuoteParts(quoteId, quoteinvoice);
+                quoteinvoice = ss.getQuoteLubricants(quoteId, quoteinvoice);
+                quoteinvoice = ss.getQuoteExpense(quoteId, quoteinvoice);
                 Map beans = new HashMap();
                 beans.put("quoteinvoice", quoteinvoice);
                 XLSTransformer transformer = new XLSTransformer();        
                 transformer.groupCollection("quoteinvoice.labour");
                 transformer.groupCollection("quoteinvoice.part");
+                transformer.groupCollection("quoteinvoice.lubricant");
+                transformer.groupCollection("quoteinvoice.expense");
+                Date date = new Date();
                 SimpleDateFormat extn = new SimpleDateFormat("yyMMddHHmmss");
-                destFileName = templateFileName+customer.getAccountId()+extn+".xls";
-                MyLogging.log(Level.INFO, "destFileName"+destFileName);
+                destFileName = destFileName+customer.getAccountId()+extn.format(date)+".xls";                
                 transformer.transformXLS(templateFileName, beans, destFileName);
+                MyLogging.log(Level.INFO, "destFileName"+destFileName);
             }catch(SiebelException e){
                 e.printStackTrace(new PrintWriter(errors));
+                outputs.setProperty("RETURN", "Error");
+                outputs.setProperty("ERR_MSG", errors.toString());
                 MyLogging.log(Level.SEVERE, "ERROR:SiebelException:"+ errors.toString());
             } catch (ParsePropertyException e) {
                 e.printStackTrace(new PrintWriter(errors));
+                outputs.setProperty("RETURN", "Error");
+                outputs.setProperty("ERR_MSG", errors.toString());
                 MyLogging.log(Level.SEVERE, "ERROR:ParsePropertyException:"+ errors.toString());
             } catch (IOException e) {
                 e.printStackTrace(new PrintWriter(errors));
+                outputs.setProperty("RETURN", "Error");
+                outputs.setProperty("ERR_MSG", errors.toString());
                 MyLogging.log(Level.SEVERE, "ERROR:IOException:"+ errors.toString());
             } catch (InvalidFormatException ex) {
                 ex.printStackTrace(new PrintWriter(errors));
+                outputs.setProperty("RETURN", "Error");
+                outputs.setProperty("ERR_MSG", errors.toString());
                 MyLogging.log(Level.SEVERE, "ERROR:InvalidFormatException:"+ errors.toString());
             }
         }
+        
+        outputs.setProperty("RETURN", "Success");
+        outputs.setProperty("ERR_MSG", "");
         
     }
     
