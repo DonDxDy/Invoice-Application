@@ -36,11 +36,11 @@ public class ExcelInvoiceApplication extends SiebelBusinessService {
             try {
                 String quote_id = inputs.getProperty("QuoteId");
                 MyLogging.log(Level.INFO, "Quote Id is "+inputs.getProperty("QuoteId"));
-               // List<Map> customerDetails = ss.getCustomerDetails(inputs.getProperty("QuoteId"));
-                //List<Customer> thecustomerDetails = ss.getTheCustomerDetails(quote_id);
+               //List<Map> customerDetails = ss.getCustomerDetails(inputs.getProperty("QuoteId"));
+                List<Customer> thecustomerDetails = ss.getTheCustomerDetails(quote_id);
                 List<Labour> labourDetails = ss.getQuoteLabourItems(quote_id);
                // eg.writeCustomerDetailsInInvoice(excelTemplate, customerDetails);
-                //String currTemplate = eg.writeTheCustomerDetailsInInvoice(excelTemplate, thecustomerDetails);
+                String currTemplate = eg.writeTheCustomerDetailsInInvoice(excelTemplate, thecustomerDetails);
                 eg.writeLabourDetailsInInvoice(excelTemplate, labourDetails);
             } catch (SiebelException ex) {
                 ex.printStackTrace(new PrintWriter(errors));
