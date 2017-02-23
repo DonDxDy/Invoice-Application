@@ -31,7 +31,7 @@ public class ExcelInvoiceApplication extends SiebelBusinessService {
             MyLogging.log(Level.INFO, "======= In GenerateInvoice ========");
             SiebelService ss = new SiebelService();
             ExcelGenerator eg = new ExcelGenerator();
-            String excelTemplate = ApplicationProperties.getInvoiceTempate();
+            String excelTemplate = ApplicationProperties.INVOICE_TEMPLATE;
             MyLogging.log(Level.INFO, "Excel Template is "+excelTemplate);
             try {
                 String quote_id = inputs.getProperty("QuoteId");
