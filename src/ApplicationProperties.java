@@ -23,9 +23,10 @@ public class ApplicationProperties {
     private static InetAddress ip = null;
     private static String hIP = "";
     private static String vlogFile = null;
-    private static String templateFile = null;    
+    private static String templateFile = null;
+    private static String thetemplateFile = null;
     private static final String OS = System.getProperty("os.name").toLowerCase();
-    public static String invoice_template ; 
+    public static String INVOICE_TEMPLATE = getInvoiceTempate(); 
     
     private ApplicationProperties(){
         
@@ -46,19 +47,20 @@ public class ApplicationProperties {
             Properties prop = new Properties();
             FileInputStream input = new FileInputStream(propfilepath);
             prop.load(input);
-            invoice_template = prop.getProperty(templateFile);
+            thetemplateFile = prop.getProperty(templateFile);
         }catch (IOException ie) {            
             String err_msg;
             StringWriter errors = new StringWriter();
             ie.printStackTrace(new PrintWriter(errors));
             err_msg = errors.toString();       
-            MyLogging.log(Level.SEVERE, "Error in doInvoke", ie);
+            MyLogging.log(Level.SEVERE, "Error in doInvoke"+ ie);
         }
     }
     
-    public static String getInvoiceTempate(){
+    private static String getInvoiceTempate(){
         initializeProperties();
-        return invoice_template;
+        return thetemplateFile;
     }
+    
     
 }
