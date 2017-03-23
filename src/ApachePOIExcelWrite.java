@@ -43,6 +43,8 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
     
     private String quote_id;
     
+    private String quote_number;
+    
     private final StringWriter error_txt = new StringWriter();
     
     private FileInputStream input_document;
@@ -56,6 +58,7 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
         SiebelPropertySet inputs = new SiebelPropertySet();
         SiebelPropertySet outputs = new SiebelPropertySet();
         inputs.setProperty("QuoteId", "1-1028K");//1-1028K//1-1026S//1-1025Q
+        inputs.setProperty("QuoteNum", "Cool Quote");
         eia.doInvokeMethod("generateExcelDoc", inputs, outputs);
     }
     
@@ -79,6 +82,7 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
                 Sheet my_worksheet = my_xlsx_workbook.getSheet("Estimate");
                 // Declare a Cell object
                 this.quote_id = inputs.getProperty("QuoteId");
+                this.quote_number = inputs.getProperty("QuoteNum");
                 CustomerRecord customerInfo = new CustomerRecord(my_xlsx_workbook, my_worksheet, 6);
                 customerInfo.setQuoteId(this.quote_id);
                 customerInfo.createCellFromList(new QCustomer(), new ContactKey());
@@ -130,11 +134,12 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
                 }
                 my_xlsx_workbook.setForceFormulaRecalculation(true);
                 input_document.close();
-                XGenerator.doCreateBook(my_xlsx_workbook, "webstar_" + this.quote_id);
+                XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.quote_number.replace(" ", "_"));
                 Attachment a = new Attachment("Quote", "Quote Attachment");
                 String filepath = XGenerator.getProperty("filepath");
                 String filename = XGenerator.getProperty("filename");
                 
+                //Attach the file to siebel
                 a.Attach(
                     filepath, 
                     filename, 

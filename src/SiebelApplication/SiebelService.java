@@ -81,9 +81,9 @@ public class SiebelService {
         sbBC.executeQuery2(true, true);
         List = doTrigger(sbBC);
         qM.getExtraParam(sbBC);
-        sbBC.release();
-        sbBC.release();
-        sdb.logoff();
+        //sbBC.release();
+        //sbBC.release();
+        //sdb.logoff();
 
         return List;
     }
