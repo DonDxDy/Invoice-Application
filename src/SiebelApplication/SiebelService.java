@@ -8,13 +8,11 @@ import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
 import com.siebel.data.SiebelPropertySet;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -27,30 +25,21 @@ import java.util.logging.Level;
  * @author Adeyemi
  */
 public class SiebelService {  
-    private SiebelDataBean sdb;
+
+    /**
+     *
+     */
+    protected static SiebelDataBean sdb;
     private StringWriter errors;
     protected static SiebelPropertySet properties, values;
     protected Integer beginCount = 1;
     
-    public static final String BO = "Quote";
-    public static final String BC = "Quote Item";
-    
-    /**
-     *
-     */
-    public SiebelService()
+    public SiebelService(SiebelDataBean conn)
     {
-        try {
-            sdb = ApplicationsConnection.connectSiebelServer();
-        } 
-        catch (IOException ex) 
-        {
-            ex.printStackTrace(new PrintWriter(errors));
-            MyLogging.log(Level.SEVERE, "In Siebel Service method. Error in connecting to Siebel", errors.toString());
-        }
+        sdb = conn;
     }
     
-    public SiebelDataBean getService()
+    public static SiebelDataBean getService() throws IOException
     {
         return sdb;
     }
@@ -70,7 +59,7 @@ public class SiebelService {
 
         SiebelBusObject sbBO = sdb.getBusObject(bO); 
         SiebelBusComp sbBC = sbBO.getBusComp(bC);
-        List<Map<String, String>> List = new ArrayList();
+        List<Map<String, String>> List;
         values = sdb.newPropertySet();
         sbBC.setViewMode(3);
         sbBC.clearToQuery();
@@ -81,9 +70,8 @@ public class SiebelService {
         sbBC.executeQuery2(true, true);
         List = doTrigger(sbBC);
         qM.getExtraParam(sbBC);
-        //sbBC.release();
-        //sbBC.release();
-        //sdb.logoff();
+        sbBC.release();
+        sbBC.release();
 
         return List;
     }
@@ -107,11 +95,13 @@ public class SiebelService {
        String propName = Inputs.getFirstProperty(), propVal;
        Map<String, String> mapProperty = new HashMap();
        // stay in loop if the property name is not an empty string
-       while (!"".equals(propName)) {
+       while (!"".equals(propName)) 
+       {
           propVal = Outputs.getProperty(propName);
           // if a property with the same name does not exist
           // add the name value pair to the output
-          if (Inputs.propertyExists(propName)) {
+          if (Inputs.propertyExists(propName)) 
+          {
              if("Outline Number".equals(propName))
              {
                  propVal = String.valueOf(beginCount++);

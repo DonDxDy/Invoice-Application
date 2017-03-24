@@ -6,12 +6,12 @@
 package generate;
 
 import SiebelApplication.MyLogging;
-import SiebelApplication.SiebelService;
 import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelBusObject;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -19,25 +19,23 @@ import java.util.logging.Level;
  * @author Adeyemi
  */
 public class Attachment {
-    private final SiebelDataBean sdb = new SiebelDataBean();
-    private final SiebelService sbDB;
     private final SiebelBusObject sbBO;
     private final SiebelBusComp sbBC;
     private final static String YES = "Y";
     private final static String NO = "N";
     private String sGetFileReturn = "";
-    
+    private Map<String, String> properties;
     
     /**
      *
+     * @param conn
      * @param BO
      * @param BC
      * @throws SiebelException
      */
-    public Attachment(String BO, String BC) throws SiebelException
+    public Attachment(SiebelDataBean conn, String BO, String BC) throws SiebelException
     {
-        sbDB = new SiebelService();        
-        sbBO = sbDB.getService().getBusObject(BO);
+        sbBO = conn.getBusObject(BO);
         sbBC = sbBO.getBusComp(BC);
     }
 
@@ -50,8 +48,8 @@ public class Attachment {
         sbBC.setFieldValue("Quote Id", quote_id);
         sbBC.setFieldValue("QuoteFileDeferFlg", "R");
         sbBC.setFieldValue("QuoteFileDockStatFlg", "E");
-        sbBC.setFieldValue("QuoteFileAutoUpdFlg", "Y");
-        sbBC.setFieldValue("QuoteFileDockReqFlg", "N");
+        sbBC.setFieldValue("QuoteFileAutoUpdFlg", YES);
+        sbBC.setFieldValue("QuoteFileDockReqFlg", NO);
         MyLogging.log(Level.INFO, "sAbsoluteFileName: "+sAbsoluteFileName);
         MyLogging.log(Level.INFO, "sAttachmentName: "+sAttachmentName);
         MyLogging.log(Level.INFO, "storeAsLink(cond): "+storeAsLink(cond));
@@ -64,13 +62,28 @@ public class Attachment {
         //file system
         sGetFileReturn = sbBC.invokeMethod("CreateFile", args);
         sbBC.writeRecord();
-
+        properties.put("aGetFileReturn", sGetFileReturn);
         if (!"Success".equals(sGetFileReturn))
         {
             throw new IOException("Error attaching file!");
         }
     }
     
+    /**
+     *
+     * @param K
+     * @return
+     */
+    public String getProperty(String K)
+    {
+        return properties.get(K);
+    }
+    
+    /**
+     * 
+     * @param cond
+     * @return 
+     */
     private String storeAsLink(Boolean cond)
     {
         String output = NO;

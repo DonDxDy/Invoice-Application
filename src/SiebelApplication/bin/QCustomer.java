@@ -6,9 +6,9 @@
 package SiebelApplication.bin;
 
 import SiebelApplication.MyLogging;
-import SiebelApplication.SiebelService;
 import SiebelApplication.SiebelServiceExtended;
 import com.siebel.data.SiebelBusComp;
+import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
 import com.siebel.data.SiebelPropertySet;
 import java.util.ArrayList;
@@ -20,12 +20,18 @@ import java.util.logging.Level;
  *
  * @author Adeyemi
  */
-public class QCustomer implements IQuote{
+public class QCustomer extends SiebelServiceExtended implements IQuote{
     
     private static SiebelPropertySet set;
     private static String Id;
     private String searchSpec;
     private String value = "";
+    List<Map<String, String>> quoteItem;
+    
+    public QCustomer(SiebelDataBean conn)
+    {
+        super(conn);
+    }
     
     @Override
     public List<Map<String, String>> getQuoteItems(String id) throws SiebelException
@@ -40,14 +46,12 @@ public class QCustomer implements IQuote{
     private List<Map<String, String>> quoteItem(String quote_id) throws SiebelException
     {
         Id = quote_id;
-        List<Map<String, String>> quoteItem = new ArrayList();
         
-        SiebelService ss = new SiebelServiceExtended();
         set = new SiebelPropertySet();
         set.setProperty("Account", "2");
         this.value = "Account Id";
-        ss.setSField(set);
-        quoteItem = ss.getSField("Quote", "Quote", this);
+        this.setSField(set);
+        quoteItem = this.getSField("Quote", "Quote", this);
             
         return quoteItem;
     }
@@ -55,17 +59,14 @@ public class QCustomer implements IQuote{
     private List<Map<String, String>> accountItem(String account_id) throws SiebelException
     {
         Id = account_id;
-        List<Map<String, String>> accountItem = new ArrayList();
         
-        SiebelService ss = new SiebelServiceExtended();
         set = new SiebelPropertySet();
         set.setProperty("Main Phone Number", "2");
-        set.setProperty("City", "2");
         set.setProperty("Street Address", "2");
         this.value = "";
-        ss.setSField(set);
-        accountItem = ss.getSField("Account", "Account", this);
-        return accountItem;
+        this.setSField(set);
+        quoteItem = this.getSField("Account", "Account", this);
+        return quoteItem;
     }
     
 

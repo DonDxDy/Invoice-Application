@@ -8,9 +8,9 @@ package SiebelApplication.bin;
 import SiebelApplication.MyLogging;
 import SiebelApplication.SiebelService;
 import com.siebel.data.SiebelBusComp;
+import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
 import com.siebel.data.SiebelPropertySet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -19,30 +19,51 @@ import java.util.logging.Level;
  *
  * @author Adeyemi
  */
-public class QLabour implements IQuote{
+public class QLabour extends SiebelService implements IQuote{
     
     private static SiebelPropertySet set;
     private String quoteId;
+    private List<Map<String, String>> quoteItem;
+    private static final String BO = "Quote";
+    private static final String BC = "Quote Item";
     
+    /**
+     *
+     * @param conn
+     */
+    public QLabour(SiebelDataBean conn)
+    {
+        super(conn);
+    }
+    
+    /**
+     * 
+     * @param quote_id
+     * @return
+     * @throws SiebelException 
+     */
     @Override
     public List<Map<String, String>> getQuoteItems(String quote_id) throws SiebelException
     {
         this.quoteId = quote_id;
-        List<Map<String, String>> quoteItem = new ArrayList();
-        SiebelService ss = new SiebelService();
         set = new SiebelPropertySet();
         set.setProperty("Outline Number", "0");
         set.setProperty("Part Number", "1");
         set.setProperty("Product", "2");
-        set.setProperty("Product Inventory Item Id", "7");
-        set.setProperty("Quantity Requested", "8");
+        set.setProperty("Quantity Requested", "7");
+        set.setProperty("Adjusted List Price - Display", "8");
         set.setProperty("Item Price", "9");
-        ss.setSField(set);
-        quoteItem = ss.getSField(SiebelService.BO, SiebelService.BC, this);
+        this.setSField(set);
+        quoteItem = this.getSField(BO, BC, this);
         MyLogging.log(Level.INFO, "Creating siebel objects Labour Quote: " + quoteItem);
         return quoteItem;
     }
     
+    /**
+     * 
+     * @param sbBC
+     * @throws SiebelException 
+     */
     @Override
     public void searchSpec(SiebelBusComp sbBC) throws SiebelException 
     {

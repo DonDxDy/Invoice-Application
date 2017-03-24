@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 import SiebelApplication.ApplicationProperties;
+import SiebelApplication.ApplicationsConnection;
 import SiebelApplication.IProperties;
 import SiebelApplication.MyLogging;
 import SiebelApplication.bin.QCustomer;
@@ -11,6 +12,7 @@ import SiebelApplication.bin.QExpenses;
 import SiebelApplication.bin.QLabour;
 import SiebelApplication.bin.QLubricant;
 import SiebelApplication.bin.QParts;
+import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelPropertySet;
 import com.siebel.eai.SiebelBusinessService;
 import com.siebel.eai.SiebelBusinessServiceException;
@@ -50,6 +52,7 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
     private FileInputStream input_document;
 
     public ApachePOIExcelWrite() {
+        this.quote_number = "";
         this.input_document = null;
     }
     
@@ -57,7 +60,7 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
         ApachePOIExcelWrite eia = new ApachePOIExcelWrite();
         SiebelPropertySet inputs = new SiebelPropertySet();
         SiebelPropertySet outputs = new SiebelPropertySet();
-        inputs.setProperty("QuoteId", "1-1028K");//1-1028K//1-1026S//1-1025Q
+        inputs.setProperty("QuoteId", "1-1025Q");//1-1028K//1-1026S//1-1025Q
         inputs.setProperty("QuoteNum", "Cool Quote");
         eia.doInvokeMethod("generateExcelDoc", inputs, outputs);
     }
@@ -70,7 +73,7 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
             {
                 //
                 IProperties AP = new ApplicationProperties();
-                
+                SiebelDataBean conn = ApplicationsConnection.connectSiebelServer();
                 //Get excel path
                 inputFile = AP.setProperties(IProperties.NIX_INPUT_KEY, IProperties.WIN_INPUT_KEY).getProperty() + XGenerator.getExcelExt();
                 
@@ -85,39 +88,39 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
                 this.quote_number = inputs.getProperty("QuoteNum");
                 CustomerRecord customerInfo = new CustomerRecord(my_xlsx_workbook, my_worksheet, 6);
                 customerInfo.setQuoteId(this.quote_id);
-                customerInfo.createCellFromList(new QCustomer(), new ContactKey());
+                customerInfo.createCellFromList(new QCustomer(conn), new ContactKey());
                 customerInfo.setNextRow(0);
 
 
                 InvoiceExcel labour, parts, lubricant, expenses;
 
-                int startRowAt = 17, nextRowAt = 0;
+                int startRowAt = 17, nextRowAt;
                 labour = parts = lubricant = expenses = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
 
                 //
                 labour.setQuoteId(this.quote_id);
                 labour.setStartRow(startRowAt);
-                labour.createCellFromList(new QLabour(), new ProductKey());
+                labour.createCellFromList(new QLabour(conn), new ProductKey());
                 XGenerator.doMerge(my_worksheet, labour.next(6) - 2, 0, 1, 10, false);
                 XGenerator.doMerge(my_worksheet, labour.next(6) - 1, 2, 1, 5, false);
                 // 
                 parts.setQuoteId(this.quote_id);
                 parts.setStartRow(labour.next(6));
                 //System.out.println(labour.next(6));
-                parts.createCellFromList(new QParts(), new ProductKey());
+                parts.createCellFromList(new QParts(conn), new ProductKey());
                 XGenerator.doMerge(my_worksheet, parts.next(4) - 2, 0, 1, 10, false);
                 XGenerator.doMerge(my_worksheet, parts.next(4) - 1, 2, 1, 5, false);
                 // Creates the lubricant row in excel sheet
                 lubricant.setQuoteId(this.quote_id);
                 lubricant.setStartRow(parts.next(4));
-                lubricant.createCellFromList(new QLubricant(), new ProductKey());
+                lubricant.createCellFromList(new QLubricant(conn), new ProductKey());
                 //System.out.println(parts.next(5));
                 XGenerator.doMerge(my_worksheet, lubricant.next(4) - 2, 0, 1, 10, false);
                 XGenerator.doMerge(my_worksheet, lubricant.next(4) - 1, 2, 1, 5, false);
                 // 
                 expenses.setQuoteId(this.quote_id);
                 expenses.setStartRow(lubricant.next(4));
-                expenses.createCellFromList(new QExpenses(), new ProductKey());
+                expenses.createCellFromList(new QExpenses(conn), new ProductKey());
                 nextRowAt = expenses.next(5);
                 XGenerator.doMerge(my_worksheet, (nextRowAt - 2), 7, 1, 3, false);
                 for(int i = 0; i < 9; i++){
@@ -135,7 +138,7 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
                 my_xlsx_workbook.setForceFormulaRecalculation(true);
                 input_document.close();
                 XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.quote_number.replace(" ", "_"));
-                Attachment a = new Attachment("Quote", "Quote Attachment");
+                Attachment a = new Attachment(conn, "Quote", "Quote Attachment");
                 String filepath = XGenerator.getProperty("filepath");
                 String filename = XGenerator.getProperty("filename");
                 
@@ -146,10 +149,9 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
                     Boolean.FALSE, 
                     quote_id
                 );
+                outputs.setProperty("getFileReturn", a.getProperty("aGetFileReturn"));
                 
-                outputs.setProperty("QuoteId", quote_id);
-                outputs.setProperty("filepath", filepath);
-                outputs.setProperty("filename", filename);
+                boolean logoff = conn.logoff();
                 my_xlsx_workbook.close();
                 System.out.println("Done");
             } 

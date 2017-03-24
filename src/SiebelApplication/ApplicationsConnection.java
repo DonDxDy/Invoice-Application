@@ -155,11 +155,4 @@ public class ApplicationsConnection {
         }
         return dataBean;
     }
-    
-    public static void main(String[] args) throws SQLException, IOException{        
-        //ApplicationsConnection adc = new ApplicationsConnection();  
-        SiebelDataBean ds = ApplicationsConnection.connectSiebelServer();
-        //Connection conn = ApplicationsConnection.connectToEBSDatabase();
-        //Connection conn = ApplicationsConnection.connectToSiebelDatabase();
-    }
 }

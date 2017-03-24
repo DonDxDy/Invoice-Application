@@ -6,6 +6,7 @@
 package SiebelApplication;
 
 import com.siebel.data.SiebelBusComp;
+import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
 import com.siebel.data.SiebelPropertySet;
 import java.util.ArrayList;
@@ -21,7 +22,21 @@ import java.util.Map;
 public class SiebelServiceExtended extends SiebelService
 {
     //<editor-fold defaultstate="collapsed" desc="/*comment*/">
+    /**
+     * 
+     * @param service 
+     */
+    public SiebelServiceExtended(SiebelDataBean service)
+    {
+        super(service);
+    }
     
+    /**
+     * 
+     * @param sbBC
+     * @return
+     * @throws SiebelException 
+     */
     @Override
     protected List<Map<String, String>> doTrigger(SiebelBusComp sbBC) throws SiebelException
     {
@@ -35,6 +50,12 @@ public class SiebelServiceExtended extends SiebelService
         return list;
     }
     
+    /**
+     * 
+     * @param Inputs
+     * @param Outputs
+     * @return 
+     */
     private List<Map<String, String>> Service_PreInvokeMethod (SiebelPropertySet Inputs, SiebelPropertySet Outputs)
     {
        String propName = Inputs.getFirstProperty(), propVal;
@@ -46,8 +67,8 @@ public class SiebelServiceExtended extends SiebelService
           // if a property with the same name does not exist
           // add the name value pair to the output
           if (Inputs.propertyExists(propName)) {
-             mapProperty.put(Inputs.getProperty(propName), propVal);
-             setList.add(mapProperty);
+            mapProperty.put(Inputs.getProperty(propName), propVal);
+            setList.add(mapProperty);
           }
           propName = Inputs.getNextProperty();
 
