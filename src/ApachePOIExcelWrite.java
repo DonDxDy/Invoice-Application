@@ -154,31 +154,42 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
                 boolean logoff = conn.logoff();
                 my_xlsx_workbook.close();
                 System.out.println("Done");
+                outputs.setProperty("status", "success");
             } 
             catch (FileNotFoundException ex) 
             {
                 ex.printStackTrace(new PrintWriter(error_txt));
-                MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + error_txt.toString());
+                MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + ex.getMessage() + error_txt.toString());
+                outputs.setProperty("status", "failed");
+                outputs.setProperty("error_message", error_txt.toString());
             } 
             catch (IOException ex) 
             {
                 ex.printStackTrace(new PrintWriter(error_txt));
-                MyLogging.log(Level.SEVERE, "Caught IO Exception: " + ex.getMessage());
+                MyLogging.log(Level.SEVERE, "Caught IO Exception: " + ex.getMessage() + error_txt.toString());
+                outputs.setProperty("status", "failed");
+                outputs.setProperty("error_message", error_txt.toString());
             } 
             catch (InvalidFormatException ex) 
             {
                 ex.printStackTrace(new PrintWriter(error_txt));
-                MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + ex.getMessage());
+                MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + ex.getMessage() + error_txt.toString());
+                outputs.setProperty("status", "failed");
+                outputs.setProperty("error_message", error_txt.toString());
             } 
             catch (EncryptedDocumentException ex) 
             {
                 ex.printStackTrace(new PrintWriter(error_txt));
-                MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + ex.getMessage());
+                MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + ex.getMessage() + error_txt.toString());
+                outputs.setProperty("status", "failed");
+                outputs.setProperty("error_message", error_txt.toString());
             } 
             catch (Exception ex) 
             {
                 ex.printStackTrace(new PrintWriter(error_txt));
-                MyLogging.log(Level.SEVERE, "Caught Exception: " + error_txt.toString());
+                MyLogging.log(Level.SEVERE, "Caught Exception: " + ex.getMessage() + error_txt.toString());
+                outputs.setProperty("status", "failed");
+                outputs.setProperty("error_message", error_txt.toString());
             }
         }
     }

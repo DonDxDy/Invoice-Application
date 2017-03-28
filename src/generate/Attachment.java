@@ -11,6 +11,7 @@ import com.siebel.data.SiebelBusObject;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -24,7 +25,7 @@ public class Attachment {
     private final static String YES = "Y";
     private final static String NO = "N";
     private String sGetFileReturn = "";
-    private Map<String, String> properties;
+    private Map<String, String> properties = new HashMap();
     
     /**
      *
@@ -61,8 +62,8 @@ public class Attachment {
         //call CreateFile method to attach a file on the server to the Siebel
         //file system
         sGetFileReturn = sbBC.invokeMethod("CreateFile", args);
-        sbBC.writeRecord();
         properties.put("aGetFileReturn", sGetFileReturn);
+        sbBC.writeRecord();
         if (!"Success".equals(sGetFileReturn))
         {
             throw new IOException("Error attaching file!");

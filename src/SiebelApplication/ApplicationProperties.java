@@ -26,7 +26,8 @@ public class ApplicationProperties implements IProperties{
     private static String propfilepath = "";
     private static InetAddress ip = null;
     private static String hIP = "";
-    private static String vlogFile = null;    
+    private static String vlogFile = null;
+    private static String templateFile = null;    
     private static String inv_templateFile = null;
     private static String inv_generated_path = null;
     private static final String OS = System.getProperty("os.name").toLowerCase();
@@ -44,7 +45,6 @@ public class ApplicationProperties implements IProperties{
             vlogFile = "nix_connect_logfile";
             inv_templateFile = IProperties.NIX_INPUT_KEY;
             inv_generated_path = IProperties.NIX_OUTPUT_KEY;
-                
         } 
         else if (OS.contains("win")) 
         {
@@ -65,6 +65,9 @@ public class ApplicationProperties implements IProperties{
             ex.printStackTrace(new PrintWriter(errors));
             
         }
+        MyLogging.log(Level.INFO, "Properties File: " + prop_file_path);
+        MyLogging.log(Level.INFO, "Templates File: " + inv_templateFile);
+        MyLogging.log(Level.INFO, "Generation File: " + inv_generated_path);
         return prop;
         /*ebs_database = prop.getProperty("ebs_database");
         ebs_dbuser = prop.getProperty("ebs_dbuser");
@@ -92,5 +95,12 @@ public class ApplicationProperties implements IProperties{
     {
         Properties prop = initializePropertyValues();
         return prop.getProperty(inv_generated_path);
+    }
+    
+    public static void main(String[] args) {
+        initializePropertyValues();
+        System.out.println(ApplicationProperties.prop_file_path);
+        System.out.println(ApplicationProperties.inv_templateFile);
+        System.out.println(ApplicationProperties.inv_generated_path);
     }
 }
