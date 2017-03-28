@@ -51,12 +51,13 @@ public class Attachment {
         sbBC.setFieldValue("QuoteFileDockStatFlg", "E");
         sbBC.setFieldValue("QuoteFileAutoUpdFlg", YES);
         sbBC.setFieldValue("QuoteFileDockReqFlg", NO);
+        sbBC.setFieldValue("PLXQuoteAttFileType", "ESTIMATE");
         MyLogging.log(Level.INFO, "sAbsoluteFileName: "+sAbsoluteFileName);
         MyLogging.log(Level.INFO, "sAttachmentName: "+sAttachmentName);
         MyLogging.log(Level.INFO, "storeAsLink(cond): "+storeAsLink(cond));
         String[] args = new String[3];
         args[0] = sAbsoluteFileName;
-        //args[0] = "/usr/app/siebel/intg/excel/webstar_1-1028K_23032017173915.xls";
+        //args[0] = "/usr/app/siebel/intg/excel/webstar_1-1028K_23032017173917.xls";
         args[1] = "QuoteFileName";
         args[2] = storeAsLink(cond);
         //call CreateFile method to attach a file on the server to the Siebel

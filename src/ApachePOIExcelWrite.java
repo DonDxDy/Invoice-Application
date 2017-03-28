@@ -56,15 +56,6 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
         this.input_document = null;
     }
     
-    public static void main(String[] args) throws SiebelBusinessServiceException {
-        ApachePOIExcelWrite eia = new ApachePOIExcelWrite();
-        SiebelPropertySet inputs = new SiebelPropertySet();
-        SiebelPropertySet outputs = new SiebelPropertySet();
-        inputs.setProperty("QuoteId", "1-1025Q");//1-1028K//1-1026S//1-1025Q
-        inputs.setProperty("QuoteNum", "Cool Quote");
-        eia.doInvokeMethod("generateExcelDoc", inputs, outputs);
-    }
-    
     @Override
     public void doInvokeMethod(String MethodName, SiebelPropertySet inputs, SiebelPropertySet outputs) throws SiebelBusinessServiceException {
         if(MethodName.equalsIgnoreCase("GenerateExcelDoc"))
@@ -149,7 +140,7 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
                     Boolean.FALSE, 
                     quote_id
                 );
-                outputs.setProperty("getFileReturn", a.getProperty("aGetFileReturn"));
+                //outputs.setProperty("getFileReturn", a.getProperty("aGetFileReturn"));
                 
                 boolean logoff = conn.logoff();
                 my_xlsx_workbook.close();
