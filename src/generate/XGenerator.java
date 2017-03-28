@@ -104,10 +104,8 @@ public class XGenerator {
      */
     public static String dirpath() throws Exception
     {
-        IProperties AP = new ApplicationProperties();
         String dirpath = "";
-        AP.setProperties(IProperties.NIX_OUTPUT_KEY, IProperties.WIN_OUTPUT_KEY);
-        dirpath = AP.getProperty();
+        dirpath = ApplicationProperties.INVOICE_GEN_PATH;
         if(!createDir(dirpath)){
             throw new Exception("Directory " + dirpath + " not found or could not be created");
         }

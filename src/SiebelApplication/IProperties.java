@@ -28,7 +28,7 @@ public interface IProperties {
      * @param win
      * @return
      */
-    public IProperties setProperties(String nix, String win);
+    //public IProperties setProperties(String nix, String win);
 
     /**
      *
@@ -36,5 +36,5 @@ public interface IProperties {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public String getProperty() throws FileNotFoundException, IOException;
+    //public String getProperty() throws FileNotFoundException, IOException;
 }

@@ -72,10 +72,10 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
             try 
             {
                 //
-                IProperties AP = new ApplicationProperties();
+                //IProperties AP = new ApplicationProperties();
                 SiebelDataBean conn = ApplicationsConnection.connectSiebelServer();
                 //Get excel path
-                inputFile = AP.setProperties(IProperties.NIX_INPUT_KEY, IProperties.WIN_INPUT_KEY).getProperty() + XGenerator.getExcelExt();
+                inputFile = ApplicationProperties.INVOICE_TEMPLATE;
                 
                 //Read Excel document first
                 input_document = new FileInputStream(new File(inputFile));
