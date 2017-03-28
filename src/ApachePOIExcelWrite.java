@@ -5,7 +5,6 @@
  */
 import SiebelApplication.ApplicationProperties;
 import SiebelApplication.ApplicationsConnection;
-import SiebelApplication.IProperties;
 import SiebelApplication.MyLogging;
 import SiebelApplication.bin.QCustomer;
 import SiebelApplication.bin.QExpenses;
