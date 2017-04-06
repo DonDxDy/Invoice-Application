@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package generate;
+package common.element;
 
-import SiebelApplication.ApplicationProperties;
-import SiebelApplication.IProperties;
+import Helper.HelperAP;
 import SiebelApplication.MyLogging;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,7 +15,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -39,7 +37,7 @@ public class XGenerator {
     public static void doMerge(Sheet worksheet,int rowIndex, int columnIndex, int rowSpan, int columnSpan, boolean border)
     {
         range = new CellRangeAddress(rowIndex, rowIndex + rowSpan - 1, columnIndex, columnIndex + columnSpan - 1);
-        Cell cell = worksheet.getRow(rowIndex).getCell(columnIndex);
+        //Cell cell = worksheet.getRow(rowIndex).getCell(columnIndex);
         if(CopyRow.getNbOfMergedRegions(worksheet, rowIndex + rowSpan - 1) <= 0)
         {
            worksheet.addMergedRegion(range);
@@ -104,8 +102,7 @@ public class XGenerator {
      */
     public static String dirpath() throws Exception
     {
-        String dirpath = "";
-        dirpath = ApplicationProperties.INVOICE_GEN_PATH;
+        String dirpath = HelperAP.getGeneratedPath();
         if(!createDir(dirpath)){
             throw new Exception("Directory " + dirpath + " not found or could not be created");
         }

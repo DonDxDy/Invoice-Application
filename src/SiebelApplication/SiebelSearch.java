@@ -6,13 +6,9 @@ import com.siebel.data.SiebelBusObject;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
 import com.siebel.data.SiebelPropertySet;
+import SiebelApplication.objects.Impl.Impl;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import SiebelApplication.objects.Impl.Impl;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -24,7 +20,7 @@ import SiebelApplication.objects.Impl.Impl;
  *
  * @author Adeyemi
  */
-public class SiebelService {  
+public class SiebelSearch {  
 
     /**
      *
@@ -33,8 +29,9 @@ public class SiebelService {
     private StringWriter errors;
     protected static SiebelPropertySet properties, values;
     protected Integer beginCount = 1;
+    public SiebelBusComp sbBC;
     
-    public SiebelService(SiebelDataBean conn)
+    public SiebelSearch(SiebelDataBean conn)
     {
         sdb = conn;
     }
@@ -54,12 +51,12 @@ public class SiebelService {
         properties = property;
     }
     
-    public List<Map<String, String>> getSField(String bO, String bC, Impl qM) throws SiebelException
+    public SiebelPropertySet getSField(String bO, String bC, Impl qM) throws SiebelException
     {
 
         SiebelBusObject sbBO = sdb.getBusObject(bO); 
-        SiebelBusComp sbBC = sbBO.getBusComp(bC);
-        List<Map<String, String>> List;
+        sbBC = sbBO.getBusComp(bC);
+        SiebelPropertySet List;
         values = sdb.newPropertySet();
         sbBC.setViewMode(3);
         sbBC.clearToQuery();
@@ -69,48 +66,25 @@ public class SiebelService {
         qM.searchSpec(sbBC);
         sbBC.executeQuery2(true, true);
         List = doTrigger(sbBC);
-        qM.getExtraParam(sbBC);
         sbBC.release();
         sbBC.release();
 
         return List;
     }
     
-    protected List<Map<String, String>> doTrigger(SiebelBusComp sbBC) throws SiebelException
+    protected SiebelPropertySet doTrigger(SiebelBusComp sbBC) throws SiebelException
     {
-        
-        List<Map<String, String>> list = new ArrayList();
         boolean isRecord = sbBC.firstRecord();
         while (isRecord)
         {
             sbBC.getMultipleFieldValues(properties, values);
-            list.add(Service_PreInvokeMethod(properties, values));
             isRecord = sbBC.nextRecord();
         }
-        return list;
+        return values;
     }
     
-    private Map<String, String> Service_PreInvokeMethod (SiebelPropertySet Inputs, SiebelPropertySet Outputs)
+    public String getFieldValue(String string) throws SiebelException
     {
-       String propName = Inputs.getFirstProperty(), propVal;
-       Map<String, String> mapProperty = new HashMap();
-       // stay in loop if the property name is not an empty string
-       while (!"".equals(propName)) 
-       {
-          propVal = Outputs.getProperty(propName);
-          // if a property with the same name does not exist
-          // add the name value pair to the output
-          if (Inputs.propertyExists(propName)) 
-          {
-             if("Outline Number".equals(propName))
-             {
-                 propVal = String.valueOf(beginCount++);
-             }
-             mapProperty.put(Inputs.getProperty(propName), propVal);
-          }
-          propName = Inputs.getNextProperty();
-
-       }
-       return mapProperty;
+        return sbBC.getFieldValue(string);
     }
 }

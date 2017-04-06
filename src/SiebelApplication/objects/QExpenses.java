@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package SiebelApplication.bin;
+package SiebelApplication.objects;
 
 import SiebelApplication.MyLogging;
 import SiebelApplication.SiebelService;
@@ -14,12 +14,13 @@ import com.siebel.data.SiebelPropertySet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import SiebelApplication.objects.Impl.Impl;
 
 /**
  *
  * @author Adeyemi
  */
-public class QParts extends SiebelService implements IQuote{
+public class QExpenses extends SiebelService implements Impl{
     
     private static SiebelPropertySet set;
     private String quoteId;
@@ -31,34 +32,32 @@ public class QParts extends SiebelService implements IQuote{
      * 
      * @param conn 
      */
-    public QParts(SiebelDataBean conn)
+    public QExpenses(SiebelDataBean conn)
     {
         super(conn);
     }
     
     /**
-     *
+     * 
      * @param quote_id
      * @return
-     * @throws SiebelException
+     * @throws SiebelException 
      */
     @Override
-    public List<Map<String, String>> getQuoteItems(String quote_id) throws SiebelException
+    public List<Map<String, String>> getItems(String quote_id) throws SiebelException
     {
         this.quoteId = quote_id;
         set = new SiebelPropertySet();
-        set.setProperty("Outline Number", "0");
-        set.setProperty("Part Number", "1");
         set.setProperty("Product", "2");
         set.setProperty("Quantity Requested", "7");
-        set.setProperty("Item Price", "8");
-        set.setProperty("Extended Line Total - Display", "9");
+        set.setProperty("Unit Price - Display", "8");
+        set.setProperty("Item Price", "9");
         this.setSField(set);
         quoteItem = this.getSField(BO, BC, this);
-        MyLogging.log(Level.INFO, "Creating siebel objects Parts: " + quoteItem);
+        MyLogging.log(Level.INFO, "Creating siebel objects Expenses: " + quoteItem);
         return quoteItem;
     }
-
+    
     /**
      * 
      * @param sbBC
@@ -68,7 +67,7 @@ public class QParts extends SiebelService implements IQuote{
     public void searchSpec(SiebelBusComp sbBC) throws SiebelException 
     {
         sbBC.setSearchSpec("Quote Id", quoteId); 
-        sbBC.setSearchSpec("Product Type", "Equipment");
+        sbBC.setSearchSpec("Product Type", "Travel Expense");
     }
     
     /**

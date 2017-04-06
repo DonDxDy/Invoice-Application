@@ -17,8 +17,15 @@ public interface IProperties {
     /**
      *
      */
-    public static final String NIX_INPUT_KEY = "nix_invoice_template";
-    public static final String WIN_INPUT_KEY = "win_invoice_template";
+    public static final String NIX_INVOICE_INPUT_KEY = "nix_invoice_template";
+    public static final String WIN_INVOICE_INPUT_KEY = "win_invoice_template";
+    
+     /**
+     *
+     */
+    public static final String NIX_WAYBILL_INPUT_KEY = "nix_waybill_template";
+    public static final String WIN_WAYBILL_INPUT_KEY = "win_waybill_template";
+    
     public static final String NIX_OUTPUT_KEY = "nix_generated_path";
     public static final String WIN_OUTPUT_KEY = "win_generated_path";
     
@@ -28,7 +35,7 @@ public interface IProperties {
      * @param win
      * @return
      */
-    //public IProperties setProperties(String nix, String win);
+    public IProperties setProperties(String nix, String win);
 
     /**
      *
@@ -36,5 +43,5 @@ public interface IProperties {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    //public String getProperty() throws FileNotFoundException, IOException;
+    public String getProperty() throws FileNotFoundException, IOException;
 }

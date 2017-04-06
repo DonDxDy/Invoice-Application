@@ -12,13 +12,21 @@ import com.siebel.eai.SiebelBusinessServiceException;
  *
  * @author Adeyemi
  */
-public class ApachePOIExcelWriteTest {
-    public static void main(String[] args) throws SiebelBusinessServiceException {
+public class ApachePOIExcelWriteTest 
+{
+
+    /**
+     *
+     * @param args
+     * @throws SiebelBusinessServiceException
+     */
+    public static void main(String[] args) throws SiebelBusinessServiceException 
+    {
         ApachePOIExcelWrite eia = new ApachePOIExcelWrite();
         SiebelPropertySet inputs = new SiebelPropertySet();
         SiebelPropertySet outputs = new SiebelPropertySet();
-        inputs.setProperty("QuoteId", "1-1025Q");//1-1028K//1-1026S//1-1025Q
+        inputs.setProperty("QuoteId", "1-1025Q");//1-1028K//1-1026S//1-1025Q//1-3247471
         inputs.setProperty("QuoteNum", "Cool Quote");
-        eia.doInvokeMethod("generateExcelDoc", inputs, outputs);
+        eia.doInvokeMethod("QuoteExcelGenerator", inputs, outputs);
     }
 }

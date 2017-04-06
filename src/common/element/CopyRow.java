@@ -1,4 +1,4 @@
-package generate;
+package common.element;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -13,6 +13,7 @@ package generate;
 //import src.ClonedStyleFactory.newStyleBasedOn;
 //import java.ClonedStyleFactory.newStyleBasedOn;
 //import static ClonedStyleFactory.newStyleBasedOn;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -52,6 +53,17 @@ public class CopyRow {
             }
         }
         copyAnyMergedRegions(worksheet, sourceRow, newRow);
+    }
+    
+    private boolean isEmptyRow(Row row){
+        boolean isEmptyRow = true;
+            for(int cellNum = row.getFirstCellNum(); cellNum < row.getLastCellNum(); cellNum++){
+               Cell cell = row.getCell(cellNum);
+               if(cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK && StringUtils.isNotBlank(cell.toString())){
+               isEmptyRow = false;
+               }    
+            }
+        return isEmptyRow;
     }
 
     private static void copyCellStyle(Workbook workbook, Cell oldCell, Cell newCell) {

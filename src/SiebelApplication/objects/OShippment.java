@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package SiebelApplication.bin;
+package SiebelApplication.objects;
 
 import SiebelApplication.MyLogging;
 import SiebelApplication.SiebelServiceExtended;
@@ -11,61 +11,65 @@ import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
 import com.siebel.data.SiebelPropertySet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import SiebelApplication.objects.Impl.Impl;
 
 /**
  *
  * @author Adeyemi
  */
-public class QCustomer extends SiebelServiceExtended implements IQuote{
+public class OShippment extends SiebelServiceExtended implements Impl
+{
     
     private static SiebelPropertySet set;
     private static String Id;
     private String searchSpec;
+    private String searchKey;
     private String value = "";
     List<Map<String, String>> quoteItem;
     
-    public QCustomer(SiebelDataBean conn)
+    public OShippment(SiebelDataBean conn)
     {
         super(conn);
     }
     
     @Override
-    public List<Map<String, String>> getQuoteItems(String id) throws SiebelException
+    public List<Map<String, String>> getItems(String id) throws SiebelException
     {
-        List<Map<String, String>> listFinal = new ArrayList();
-        listFinal.addAll(quoteItem(id));
-        listFinal.addAll(accountItem(searchSpec));
+        List<Map<String, String>> listFinal;
+        findOrderItem(id);
+        listFinal = orderItem(searchSpec);
         MyLogging.log(Level.INFO,"Creating siebel objects Customer: " + listFinal);
         return listFinal;
     }
     
-    private List<Map<String, String>> quoteItem(String quote_id) throws SiebelException
+    private void findOrderItem(String quote_id) throws SiebelException
     {
         Id = quote_id;
         
         set = new SiebelPropertySet();
         set.setProperty("Account", "2");
-        this.value = "Account Id";
+        this.value = "Order Number";
+        searchKey = "Order Number";
         this.setSField(set);
-        quoteItem = this.getSField("Quote", "Quote", this);
+        quoteItem = this.getSField("Order Entry", "Order Entry - Line Items", this);
             
-        return quoteItem;
+        //return quoteItem;
     }
     
-    private List<Map<String, String>> accountItem(String account_id) throws SiebelException
+    private List<Map<String, String>> orderItem(String account_id) throws SiebelException
     {
         Id = account_id;
-        
+        System.out.println("Account: " + account_id);
         set = new SiebelPropertySet();
-        set.setProperty("Main Phone Number", "2");
-        set.setProperty("Street Address", "2");
+        set.setProperty("Scheduled Delivery Date", "3");
+        set.setProperty("Waybill Number", "3");
         this.value = "";
+        searchKey = "Order Id";
         this.setSField(set);
-        quoteItem = this.getSField("Account", "Account", this);
+        quoteItem = this.getSField("Order Entry", "FS Shipment", this);
         return quoteItem;
     }
     
@@ -73,7 +77,7 @@ public class QCustomer extends SiebelServiceExtended implements IQuote{
     @Override
     public void searchSpec(SiebelBusComp sbBC) throws SiebelException 
     {
-        sbBC.setSearchSpec("Id", Id);  
+        sbBC.setSearchSpec(searchKey, Id);  
     }
     
     @Override

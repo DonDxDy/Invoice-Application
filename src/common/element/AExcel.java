@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package generate;
+package common.element;
 
-import SiebelApplication.bin.IQuote;
 import invoiceapplication.IKey;
 import invoiceapplication.ProductKey;
 import invoiceapplication.StringInt;
@@ -18,6 +17,8 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import SiebelApplication.objects.Impl.Impl;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 
 /**
  *
@@ -64,14 +65,14 @@ public abstract class AExcel {
         this.firstRow = startRow;
         this.rowCount = 0;
     }
-
+    
     /**
      *
      * @param qM
      * @param iKey
      * @throws Exception
      */
-    abstract public void createCellFromList(IQuote qM, IKey iKey) throws Exception;
+    abstract public void createCellFromList(Impl qM, IKey iKey) throws Exception;
     
     /**
      *
@@ -81,10 +82,10 @@ public abstract class AExcel {
      * @param sheet
      * @throws Exception
      */
-    abstract public void createCellFromList( IQuote qM, IKey iKey, Workbook book, Sheet sheet) throws Exception;
+    abstract public void createCellFromList( Impl qM, IKey iKey, Workbook book, Sheet sheet) throws Exception;
     
-    protected void createCell(IQuote list, IKey iKey) throws Exception{
-        List<Map<String, String>> List = list.getQuoteItems(quote_id);
+    protected void createCell(Impl list, IKey iKey) throws Exception{
+        List<Map<String, String>> List = list.getItems(quote_id);
         rowCount = List.size();
         CellStyle style = workbook.createCellStyle();
         style.setBorderLeft(BorderStyle.THIN);
@@ -101,14 +102,18 @@ public abstract class AExcel {
             // it to the next row including all its properties
             // or create a new row
             if(iKey instanceof ProductKey)
-                CopyRow.copyRow(workbook, worksheet, RowIndex.row(sheetrow.getRowNum()), RowIndex.row(sheetrow.getRowNum() + 1));
-    
+            {
+                if(i != rowCount - 1)
+                {
+                    CopyRow.copyRow(workbook, worksheet, RowIndex.row(sheetrow.getRowNum() + 1), RowIndex.row(sheetrow.getRowNum() + 2));
+                }
+            }
             for (Map.Entry<String, String> entry : temp.entrySet()) {
                 int key = iKey.productKeyToInt(entry.getKey());
                 value = entry.getValue();
                 
-                sheetcell = sheetrow.createCell(key);
-                sheetcell.setCellStyle(style);
+                sheetcell = sheetrow.getCell(key, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                //sheetcell.setCellStyle(style);
                 
                 //  
                 // Check if the value returned is an integer.
@@ -153,6 +158,7 @@ public abstract class AExcel {
     */
     public Integer next(Integer jump)
     {
+        rowCount = rowCount <= 0 ? 1 : rowCount;
         return firstRow + rowCount + jump;
     }
 }

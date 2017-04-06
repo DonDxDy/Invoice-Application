@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package SiebelApplication.bin;
+package SiebelApplication.objects;
 
 import SiebelApplication.MyLogging;
 import SiebelApplication.SiebelService;
@@ -14,12 +14,13 @@ import com.siebel.data.SiebelPropertySet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import SiebelApplication.objects.Impl.Impl;
 
 /**
  *
  * @author Adeyemi
  */
-public class QLubricant extends SiebelService implements IQuote{
+public class QParts extends SiebelService implements Impl{
     
     private static SiebelPropertySet set;
     private String quoteId;
@@ -31,7 +32,7 @@ public class QLubricant extends SiebelService implements IQuote{
      * 
      * @param conn 
      */
-    public QLubricant(SiebelDataBean conn)
+    public QParts(SiebelDataBean conn)
     {
         super(conn);
     }
@@ -43,30 +44,32 @@ public class QLubricant extends SiebelService implements IQuote{
      * @throws SiebelException
      */
     @Override
-    public List<Map<String, String>> getQuoteItems(String quote_id) throws SiebelException
+    public List<Map<String, String>> getItems(String quote_id) throws SiebelException
     {
         this.quoteId = quote_id;
         set = new SiebelPropertySet();
+        set.setProperty("Outline Number", "0");
+        set.setProperty("Part Number", "1");
         set.setProperty("Product", "2");
         set.setProperty("Quantity Requested", "7");
         set.setProperty("Item Price", "8");
         set.setProperty("Extended Line Total - Display", "9");
         this.setSField(set);
         quoteItem = this.getSField(BO, BC, this);
-        MyLogging.log(Level.INFO, "Creating siebel objects Lubricant: " + quoteItem);
+        MyLogging.log(Level.INFO, "Creating siebel objects Parts: " + quoteItem);
         return quoteItem;
     }
-    
+
     /**
      * 
      * @param sbBC
      * @throws SiebelException 
      */
     @Override
-    public void searchSpec(SiebelBusComp sbBC) throws SiebelException
+    public void searchSpec(SiebelBusComp sbBC) throws SiebelException 
     {
         sbBC.setSearchSpec("Quote Id", quoteId); 
-        sbBC.setSearchSpec("Product Type", "Lubricants");
+        sbBC.setSearchSpec("Product Type", "Equipment");
     }
     
     /**
