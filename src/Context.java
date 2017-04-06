@@ -1,5 +1,6 @@
 
 import com.siebel.data.SiebelPropertySet;
+import com.siebel.eai.SiebelBusinessServiceException;
 import common.impl.Generator;
 
 /*
@@ -14,7 +15,7 @@ import common.impl.Generator;
  */
 public class Context {
     
-    public static void callMethod(Generator call, SiebelPropertySet inputs, SiebelPropertySet outputs)
+    public static void callMethod(Generator call, SiebelPropertySet inputs, SiebelPropertySet outputs) throws SiebelBusinessServiceException
     {
         call.generateExcelDoc(inputs, outputs);
     }
