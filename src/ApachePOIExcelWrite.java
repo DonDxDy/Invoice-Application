@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import SiebelApplication.MyLogging;
+import com.plexadasi.SiebelApplication.MyLogging;
 import com.siebel.data.SiebelPropertySet;
 import com.siebel.eai.SiebelBusinessService;
 import com.siebel.eai.SiebelBusinessServiceException;
-import common.OrderExcelGenerator;
-import common.QuoteExcelGenerator;
+import com.plexadasi.common.OrderExcelGenerator;
+import com.plexadasi.common.QuoteExcelGenerator;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.logging.Level;

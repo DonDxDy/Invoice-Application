@@ -1,7 +1,7 @@
 
 import com.siebel.data.SiebelPropertySet;
 import com.siebel.eai.SiebelBusinessServiceException;
-import common.impl.Generator;
+import com.plexadasi.common.impl.Generator;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

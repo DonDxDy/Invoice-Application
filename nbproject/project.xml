@@ -3,7 +3,7 @@
     <type>org.netbeans.modules.java.j2seproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
-            <name>InvoiceApplication</name>
+            <name>CreateExcel</name>
             <explicit-platform explicit-source-supported="true"/>
             <source-roots>
                 <root id="src.dir"/>
@@ -13,7 +13,7 @@
             </test-roots>
         </data>
         <libraries xmlns="http://www.netbeans.org/ns/ant-project-libraries/1">
-            <definitions></definitions>
+            <definitions/>
         </libraries>
         <references xmlns="http://www.netbeans.org/ns/ant-project-references/1"/>
     </configuration>
