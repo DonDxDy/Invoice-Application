@@ -5,28 +5,25 @@
  */
 package com.plexadasi.SiebelApplication.object;
 
-import com.plexadasi.SiebelApplication.MyLogging;
-import com.plexadasi.SiebelApplication.SiebelServiceExtended;
+import com.plexadasi.SiebelApplication.SiebelSearch;
 import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
 import com.siebel.data.SiebelPropertySet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
+import java.io.IOException;
+import java.util.HashMap;
 
 /**
  *
  * @author Adeyemi
  */
-public class QCustomer extends SiebelServiceExtended implements Impl{
+public class QCustomer extends SiebelSearch implements Impl{
     
     private static SiebelPropertySet set;
     private static String Id;
-    private String searchSpec;
-    private String value = "";
     List<Map<String, String>> quoteItem;
     
     public QCustomer(SiebelDataBean conn)
@@ -35,39 +32,37 @@ public class QCustomer extends SiebelServiceExtended implements Impl{
     }
     
     @Override
-    public List<Map<String, String>> getItems(String id) throws SiebelException
-    {
-        List<Map<String, String>> listFinal = new ArrayList();
-        listFinal.addAll(quoteItem(id));
-        listFinal.addAll(accountItem(searchSpec));
-        MyLogging.log(Level.INFO,"Creating siebel objects Customer: " + searchSpec);
-        MyLogging.log(Level.INFO,"Creating siebel objects Customer: " + listFinal);
-        return listFinal;
-    }
-    
-    private List<Map<String, String>> quoteItem(String quote_id) throws SiebelException
+    public List<Map<String, String>> getItems(String quote_id) throws SiebelException, IOException 
     {
         Id = quote_id;
-        
+        Map<String, String> mapObj = new HashMap();
         set = new SiebelPropertySet();
-        set.setProperty("Account", "2");
-        this.value = "Account Id";
+        set.setProperty("Account", "");
+        set.setProperty("Account Id", "");
         this.setSField(set);
-        quoteItem = this.getSField("Quote", "Quote", this);
-            
-        return quoteItem;
-    }
-    
-    private List<Map<String, String>> accountItem(String account_id) throws SiebelException
-    {
-        Id = account_id;
+        SiebelPropertySet prop = this.getSField("Quote", "Quote", this);
+        
+        Id = prop.getProperty("Account Id");
         
         set = new SiebelPropertySet();
         set.setProperty("Main Phone Number", "2");
+        set.setProperty("Country", "2");
+        set.setProperty("State", "2");
+        set.setProperty("City", "2");
         set.setProperty("Street Address", "2");
-        this.value = "";
         this.setSField(set);
-        quoteItem = this.getSField("Account", "Account", this);
+        SiebelPropertySet prop2 = this.getSField("Account", "Account", this);
+        mapObj.put("2", prop.getProperty("Account"));
+        mapObj.put("2", prop2.getProperty("Street Address"));
+        mapObj.put("2", 
+            prop2.getProperty("City") + ", " + 
+            prop2.getProperty("State") + ", " +
+            prop2.getProperty("Country") + "."
+        );
+        mapObj.put("2", prop2.getProperty("Main Phone Number"));
+        mapObj.put("2", Id);
+        mapObj.put("2", Id);
+        quoteItem.add(mapObj);
         return quoteItem;
     }
     
@@ -79,17 +74,5 @@ public class QCustomer extends SiebelServiceExtended implements Impl{
     }
     
     @Override
-    public void getExtraParam(SiebelBusComp sbBC)
-    {
-        try 
-        {
-            if(!"".equals(this.value))
-            {
-                this.searchSpec = sbBC.getFieldValue(this.value);
-            }
-        } 
-        catch (SiebelException ex) {
-            MyLogging.log(Level.SEVERE, "Caught Exception: " + ex.getMessage());
-        }
-    }
+    public void getExtraParam(SiebelBusComp sbBC){}
 }
