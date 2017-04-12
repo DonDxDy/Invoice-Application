@@ -152,31 +152,31 @@ public class QuoteExcelGenerator implements Generator{
         {
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + ex.getMessage() + error_txt.toString());
-            throw new SiebelBusinessServiceException("FILE_NOT_FOUND_EXCEPTION", error_txt.toString()); 
+            throw new SiebelBusinessServiceException("FILE_NOT_FOUND_EXCPT", error_txt.toString()); 
         } 
         catch (IOException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught IO Exception: " + ex.getMessage() + error_txt.toString());
-            throw new SiebelBusinessServiceException("IO_EXCEPTION", error_txt.toString());
+            throw new SiebelBusinessServiceException("IO_EXCPT", error_txt.toString());
         } 
         catch (InvalidFormatException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + ex.getMessage() + error_txt.toString());
-            throw new SiebelBusinessServiceException("IVALID_FORMAT_EXCEPTION", error_txt.toString());
+            throw new SiebelBusinessServiceException("IVALID_FORMAT_EXCPT", error_txt.toString());
         } 
         catch (EncryptedDocumentException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + ex.getMessage() + error_txt.toString());
-            throw new SiebelBusinessServiceException("ENCRYPTED_DOC_EXCEPTION", error_txt.toString());
+            throw new SiebelBusinessServiceException("ENCRYPTED_DOC_EXCPT", error_txt.toString());
         } 
         catch (Exception ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught Exception: " + ex.getMessage() + error_txt.toString());
-            throw new SiebelBusinessServiceException("FILE_NOT_FOUND_EXCEPTION", error_txt.toString());
+            throw new SiebelBusinessServiceException("CUST_EXCPT", error_txt.toString());
         }
     }
 }

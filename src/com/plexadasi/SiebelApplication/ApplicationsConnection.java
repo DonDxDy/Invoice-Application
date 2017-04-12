@@ -37,6 +37,7 @@ public class ApplicationsConnection {
     private static String vlogFile = "";   
     private static String entrpr_name = "";
     private static String gateway_server = "";
+    private static String sieb_objmgr = "";
     private static String username = "";
     private static String password = "";
     private static String sieb_database = "";
@@ -78,6 +79,7 @@ public class ApplicationsConnection {
         ebs_dbpassword = prop.getProperty("ebs_dbpassword");
         entrpr_name = prop.getProperty("entrpr_name");
         gateway_server = prop.getProperty("gateway_server");
+        sieb_objmgr = prop.getProperty("sieb_objmgr");
         username = prop.getProperty("username");
         password = prop.getProperty("password");
         sieb_database = prop.getProperty("sieb_database");
@@ -141,7 +143,7 @@ public class ApplicationsConnection {
         initializePropertyValues();
         MyLogging.log(Level.INFO,"Connecting to Siebel .... ");
         SiebelDataBean dataBean = null;
-        String connectString = String.format("Siebel://"+gateway_server+":"+gateway_port+"/"+entrpr_name+"/eautoObjMgr_enu");
+        String connectString = String.format("Siebel://"+gateway_server+":"+gateway_port+"/"+entrpr_name+"/"+sieb_objmgr);
         MyLogging.log(Level.INFO,"Connection string is connectString:{0} ",connectString);
         try {
             dataBean = new SiebelDataBean();

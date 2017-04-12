@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -23,8 +24,8 @@ import java.util.HashMap;
 public class QCustomer extends SiebelSearch implements Impl{
     
     private static SiebelPropertySet set;
-    private static String Id;
-    List<Map<String, String>> quoteItem;
+    private static String Id = "";
+    List<Map<String, String>> quoteItem = new ArrayList();
     
     public QCustomer(SiebelDataBean conn)
     {
@@ -43,7 +44,7 @@ public class QCustomer extends SiebelSearch implements Impl{
         SiebelPropertySet prop = this.getSField("Quote", "Quote", this);
         
         Id = prop.getProperty("Account Id");
-        
+        System.out.println(prop.toString());
         set = new SiebelPropertySet();
         set.setProperty("Main Phone Number", "2");
         set.setProperty("Country", "2");
