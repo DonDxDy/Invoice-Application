@@ -5,6 +5,7 @@
  */
 package com.plexadasi.SiebelApplication.object;
 
+import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.SiebelSearch;
 import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelDataBean;
@@ -16,6 +17,7 @@ import com.plexadasi.SiebelApplication.object.Impl.Impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 /**
  *
@@ -39,9 +41,9 @@ public class QCustomer extends SiebelSearch implements Impl{
         SiebelPropertySet prop, prop2, prop3;
         Id = quote_id;
         searchSpec = "Id";
-        Map<String, String> mapObj = new HashMap();
         set = new SiebelPropertySet();
         set.setProperty("Name", "");
+        set.setProperty("Account", "");
         set.setProperty("Account Id", "");
         this.setSField(set);
         prop = this.getSField("Quote", "Quote", this);
@@ -49,6 +51,7 @@ public class QCustomer extends SiebelSearch implements Impl{
         Id = prop.getProperty("Account Id");
         searchSpec = "Id";
         set = new SiebelPropertySet();
+        set.setProperty("Name", "");
         set.setProperty("Main Phone Number", "2");
         set.setProperty("Country", "2");
         set.setProperty("State", "2");
@@ -66,22 +69,36 @@ public class QCustomer extends SiebelSearch implements Impl{
         set.setProperty("Odometer UOM", "");
         prop3 = this.getSField("Auto Vehicle", "Auto Vehicle", this);
         
-        mapObj.put("2", prop.getProperty("Name"));
+        Map<String, String> mapObj = new HashMap();
+        mapObj.put("2", prop.getProperty("Account"));
         quoteItem.add(mapObj);
+        mapObj = new HashMap();
         mapObj.put("2", prop2.getProperty("Street Address"));
         quoteItem.add(mapObj);
+        mapObj = new HashMap();
         mapObj.put("2", 
             prop2.getProperty("City") + ", " + 
             prop2.getProperty("State") + ", " +
             prop2.getProperty("Country") + "."
         );
         quoteItem.add(mapObj);
+        mapObj = new HashMap();
         mapObj.put("2", prop2.getProperty("Main Phone Number"));
         quoteItem.add(mapObj);
-        mapObj.put("2", Id);
+        mapObj = new HashMap();
+        mapObj.put("2", prop2.getProperty("Name"));
         quoteItem.add(mapObj);
-        mapObj.put("2", Id);
+        mapObj = new HashMap();
+        mapObj.put("6", prop3.getProperty("Serial Number"));
         quoteItem.add(mapObj);
+        mapObj = new HashMap();
+        mapObj.put("5", prop3.getProperty("Engine Num"));
+        quoteItem.add(mapObj);
+        mapObj = new HashMap();
+        mapObj.put("4", prop3.getProperty("Model"));
+        mapObj.put("7", prop3.getProperty("Odometer UOM"));
+        quoteItem.add(mapObj);
+        MyLogging.log(Level.INFO, "Customer: " + quoteItem);
         return quoteItem;
     }
     

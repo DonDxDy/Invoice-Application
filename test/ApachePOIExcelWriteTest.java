@@ -25,7 +25,7 @@ public class ApachePOIExcelWriteTest
         ApachePOIExcelWrite eia = new ApachePOIExcelWrite();
         SiebelPropertySet inputs = new SiebelPropertySet();
         SiebelPropertySet outputs = new SiebelPropertySet();
-        inputs.setProperty("QuoteId", "1-10Z0T");//1-1028K//1-1026S//1-1025Q//1-3247471
+        inputs.setProperty("QuoteId", "1-22FC0");//1-1028K//1-1026S//1-1025Q//1-3247471
         inputs.setProperty("QuoteNum", "Cool Quote");
         eia.doInvokeMethod("QuoteExcelGenerator", inputs, outputs);
     }
