@@ -82,7 +82,7 @@ public class OAddress extends SiebelServiceExtended implements Impl
         set.setProperty("Ship To City", "1");
         set.setProperty("Ship To State", "1");
         this.value = "";
-        searchKey = "Order Id";
+        searchKey = "Shipment Number";
         ss.setSField(set);
         setProp = ss.getSField("Order Entry", "FS Shipment", this);
         text = setProp.getProperty("Ship To Account") + " " + setProp.getProperty("Ship To") + " " + setProp.getProperty("Ship To City") + ", " + setProp.getProperty("Ship To State") + ".";

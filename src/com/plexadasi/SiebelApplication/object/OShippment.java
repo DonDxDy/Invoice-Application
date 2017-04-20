@@ -39,8 +39,9 @@ public class OShippment extends SiebelServiceExtended implements Impl
     public List<Map<String, String>> getItems(String id) throws SiebelException
     {
         List<Map<String, String>> listFinal;
-        findOrderItem(id);
-        listFinal = orderItem(searchSpec);
+        //findOrderItem(id);
+        MyLogging.log(Level.INFO, "Search param" + id);
+        listFinal = orderItem(id);
         MyLogging.log(Level.INFO,"Creating siebel objects Customer: " + listFinal);
         return listFinal;
     }
@@ -55,19 +56,19 @@ public class OShippment extends SiebelServiceExtended implements Impl
         searchKey = "Order Number";
         this.setSField(set);
         quoteItem = this.getSField("Order Entry", "Order Entry - Line Items", this);
-            
+          System.out.println(quoteItem);  
         //return quoteItem;
     }
     
-    private List<Map<String, String>> orderItem(String account_id) throws SiebelException
+    private List<Map<String, String>> orderItem(String order_id) throws SiebelException
     {
-        Id = account_id;
-        System.out.println("Account: " + account_id);
+        Id = order_id;
+        System.out.println("Account: " + order_id);
         set = new SiebelPropertySet();
         set.setProperty("Scheduled Delivery Date", "3");
         set.setProperty("Waybill Number", "3");
         this.value = "";
-        searchKey = "Order Id";
+        searchKey = "Shipment Number";
         this.setSField(set);
         quoteItem = this.getSField("Order Entry", "FS Shipment", this);
         return quoteItem;

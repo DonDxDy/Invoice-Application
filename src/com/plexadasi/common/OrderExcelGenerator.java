@@ -48,6 +48,7 @@ public class OrderExcelGenerator implements Generator{
     private final StringWriter error_txt = new StringWriter();
     
     private FileInputStream input_document;
+    private String ship_id;
 
     public OrderExcelGenerator() {
         this.order_number = "";
@@ -77,9 +78,10 @@ public class OrderExcelGenerator implements Generator{
             // Declare a Cell object
             this.order_id = inputs.getProperty("OrderId");
             this.order_number = inputs.getProperty("OrderNum");
+            this.ship_id = inputs.getProperty("ShipId");
             
             InvoiceExcel customerInfo = new InvoiceExcel(my_xlsx_workbook, my_worksheet, 3);
-            customerInfo.setQuoteId(this.order_id);
+            customerInfo.setQuoteId(this.ship_id);
             customerInfo.createCellFromList(new OShippment(conn), new ContactKey());
             customerInfo.setStartRow(8);
             customerInfo.createCellFromList(new OAddress(conn), new ContactKey());
@@ -97,7 +99,8 @@ public class OrderExcelGenerator implements Generator{
             my_xlsx_workbook.setForceFormulaRecalculation(true);
             input_document.close();
             XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.order_number.replace(" ", "_"));
-            Attachment a = new Attachment(conn, "Quote", "Quote Attachment");
+            Attachment a = new Attachment(conn, "Order Entry", "Order Entry Attachment");
+            a.setType("Order");
             String filepath = XGenerator.getProperty("filepath");
             String filename = XGenerator.getProperty("filename");
             
