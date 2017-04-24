@@ -4,14 +4,14 @@ package com.plexadasi.common;
 import com.plexadasi.Helper.HelperAP;
 import com.plexadasi.SiebelApplication.ApplicationsConnection;
 import com.plexadasi.SiebelApplication.MyLogging;
-import com.plexadasi.SiebelApplication.object.OAddress;
+import com.plexadasi.SiebelApplication.object.JCard;
+import com.plexadasi.SiebelApplication.object.Job;
 import com.plexadasi.SiebelApplication.object.OParts;
-import com.plexadasi.SiebelApplication.object.OShippment;
+import com.plexadasi.common.element.Attachment;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelPropertySet;
-import com.plexadasi.common.element.Attachment;
 import com.plexadasi.common.element.InvoiceExcel;
-import com.plexadasi.common.element.WaybillAttachment;
+import com.plexadasi.common.element.JobCardAttachment;
 import com.plexadasi.common.element.XGenerator;
 import com.plexadasi.common.impl.Generator;
 import com.plexadasi.invoiceapplication.ContactKey;
@@ -39,20 +39,20 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
  *
  * @author SAP Training
  */
-public class OrderExcelGenerator implements Generator{
+public class JobCardGenerator implements Generator{
     private String inputFile = "";
     
-    private String order_id;
+    private String job_id;
     
-    private String order_number;
+    private String job_number;
     
     private final StringWriter error_txt = new StringWriter();
     
     private FileInputStream input_document;
-    private String ship_id;
+    private String account_id;
 
-    public OrderExcelGenerator() {
-        this.order_number = "";
+    public JobCardGenerator() {
+        this.job_number = "";
         this.input_document = null;
     }
     
@@ -69,23 +69,30 @@ public class OrderExcelGenerator implements Generator{
             //IProperties AP = new ApplicationProperties();
             SiebelDataBean conn = ApplicationsConnection.connectSiebelServer();
             //Get excel path
-            inputFile = HelperAP.getWaybillTemplate();
+            inputFile = HelperAP.getJobCardTemplate();
             //Read Excel document first
+            MyLogging.log(Level.INFO, inputFile);
             input_document = new FileInputStream(new File(inputFile));
             // Convert it into a POI object
             Workbook my_xlsx_workbook = WorkbookFactory.create(input_document);
             // Read excel sheet that needs to be updated
             Sheet my_worksheet = my_xlsx_workbook.getSheet("Sheet1");
             // Declare a Cell object
-            this.order_id = inputs.getProperty("OrderId");
-            this.order_number = inputs.getProperty("OrderNum");
-            this.ship_id = inputs.getProperty("ShipId");
+            this.job_id = inputs.getProperty("JobId");
+            this.job_number = inputs.getProperty("JobNum");
+            this.account_id = inputs.getProperty("AccId");
             
-            InvoiceExcel customerInfo = new InvoiceExcel(my_xlsx_workbook, my_worksheet, 3);
-            customerInfo.setJobId(this.ship_id);
-            customerInfo.createCellFromList(new OShippment(conn), new ContactKey());
-            customerInfo.setStartRow(8);
-            customerInfo.createCellFromList(new OAddress(conn), new ContactKey());
+            InvoiceExcel jobCardInfo = new InvoiceExcel(my_xlsx_workbook, my_worksheet, 5);
+            //jobCardInfo.setJobId(this.account_id);
+            //jobCardInfo.createCellFromList(new JAccount(conn), new ContactKey());
+            JCard jCard = new JCard(conn);
+            jobCardInfo.setJobId(this.job_id);
+            jobCardInfo.setStartRow(8);
+            jobCardInfo.createCellFromList(jCard, new ContactKey());
+            jobCardInfo.setJobId(this.job_id);
+            jobCardInfo.setStartRow(jobCardInfo.next(4));
+            jobCardInfo.createCellFromList(new Job(conn), new ProductKey());
+           
             
             
             InvoiceExcel parts;
@@ -95,16 +102,17 @@ public class OrderExcelGenerator implements Generator{
             
             //
             parts.setStartRow(startRowAt);
-            parts.setJobId(order_id);
+            parts.setJobId(job_id);
             parts.createCellFromList(new OParts(conn), new ProductKey());
             my_xlsx_workbook.setForceFormulaRecalculation(true);
             input_document.close();
-            XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.order_number.replace(" ", "_"));
+            XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.job_number.replace(" ", "_"));
             String filepath = XGenerator.getProperty("filepath");
             String filename = XGenerator.getProperty("filename");
             
-            Attachment a = new WaybillAttachment(conn, order_id);
+            Attachment a = new JobCardAttachment(conn, job_id);
             //Attach the file to siebel
+            
             a.Attach(
                 filepath,
                 filename,

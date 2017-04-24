@@ -6,7 +6,6 @@
 package com.plexadasi.SiebelApplication.object;
 
 import com.plexadasi.SiebelApplication.MyLogging;
-import com.plexadasi.SiebelApplication.SiebelService;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
 import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelDataBean;
@@ -14,51 +13,53 @@ import com.siebel.data.SiebelException;
 import com.siebel.data.SiebelPropertySet;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 /**
  *
  * @author Adeyemi
  */
-public class OParts extends SiebelService implements Impl{
-    
+public class Job implements Impl
+{
     private static SiebelPropertySet set;
-    private String orderId;
-    private List<Map<String, String>> orderItem;
-    private static final String BO = "Order Entry";
-    private static final String BC = "Order Entry - Line Items";
-    
+    private String job_id;
+    private List<Map<String, String>> quoteItem = new ArrayList<Map<String, String>>();
+    private String searchSpec;
+    private final String searchKey = "Parent SH Id";
+    private static final String BO = "Auto Vehicle";
+    private static final String BC = "PLX Auto Job Card";
+    private static JComplaints complaints;
+    private static JDiagnosis diagnosis;
+    private static JRemedy remedy;
     /**
      * 
      * @param conn 
      */
-    public OParts(SiebelDataBean conn)
+    public Job(SiebelDataBean conn)
     {
-        super(conn);
+        complaints = new JComplaints(conn);
+        diagnosis = new JDiagnosis(conn);
+        remedy = new JRemedy(conn);
     }
     
     /**
      *
-     * @param order_id
+     * @param id
      * @return
      * @throws SiebelException
      */
     @Override
-    public List<Map<String, String>> getItems(String order_id) throws SiebelException
+    public List<Map<String, String>> getItems(String id) throws SiebelException
     {
-        this.orderId = order_id;
-        set = new SiebelPropertySet();
-        set.setProperty("Outline Number", "1");
-        set.setProperty("Part Number", "2");
-        set.setProperty("Product", "3");
-        set.setProperty("Product Description", "4");
-        set.setProperty("Quantity Requested", "5");
-        set.setProperty("Account", "6");
-        set.setProperty("Order Number", "7");
-        this.setSField(set);
-        orderItem = this.getSField(BO, BC, this);
-        MyLogging.log(Level.INFO, "Creating siebel objects Parts: " + orderItem);
-        return orderItem;
+        //Map<String, String> map = new HashMap();
+        //map.put("1", "CUSTOMER'S COMPLAINT");
+        //quoteItem.add(map);
+        quoteItem.addAll(complaints.getItems(id));
+        quoteItem.addAll(diagnosis.getItems(id));
+        quoteItem.addAll(remedy.getItems(id));
+        MyLogging.log(Level.INFO, "Creating siebel objects Job: " + quoteItem);
+        return quoteItem;
     }
 
     /**
@@ -67,11 +68,7 @@ public class OParts extends SiebelService implements Impl{
      * @throws SiebelException 
      */
     @Override
-    public void searchSpec(SiebelBusComp sbBC) throws SiebelException 
-    {
-        sbBC.setSearchSpec("Order Number", orderId); 
-        sbBC.setSearchSpec("Product Type", "Equipment");
-    }
+    public void searchSpec(SiebelBusComp sbBC) throws SiebelException {}
     
     /**
      *

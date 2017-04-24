@@ -112,4 +112,9 @@ public class OAddress extends SiebelServiceExtended implements Impl
             MyLogging.log(Level.SEVERE, "Caught Exception: " + ex.getMessage());
         }
     }
+
+    @Override
+    public void searchSpec(SiebelBusComp sbBC, String type) throws SiebelException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

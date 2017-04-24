@@ -29,6 +29,9 @@ public interface IProperties {
     public static final String NIX_OUTPUT_KEY = "nix_generated_path";
     public static final String WIN_OUTPUT_KEY = "win_generated_path";
     
+    public static final String NIX_JOBCARD_INPUT_KEY = "nix_jobcard_template";
+    public static final String WIN_JOBCARD_INPUT_KEY = "win_jobcard_template";
+    
     /**
      *
      * @param nix

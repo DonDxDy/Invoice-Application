@@ -131,7 +131,7 @@ public abstract class AExcel {
         }
     }
     
-    public void setQuoteId(String quote_id)
+    public void setJobId(String quote_id)
     {
         this.quote_id = quote_id;
     }

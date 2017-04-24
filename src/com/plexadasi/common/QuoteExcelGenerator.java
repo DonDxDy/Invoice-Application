@@ -15,6 +15,7 @@ import com.siebel.eai.SiebelBusinessServiceException;
 import com.plexadasi.common.element.Attachment;
 import com.plexadasi.common.element.InvoiceExcel;
 import com.plexadasi.common.element.InvoiceExcelTotal;
+import com.plexadasi.common.element.QuoteAttachment;
 import com.plexadasi.common.element.XGenerator;
 import com.plexadasi.common.impl.Generator;
 import com.plexadasi.invoiceapplication.ContactKey;
@@ -85,7 +86,7 @@ public class QuoteExcelGenerator implements Generator{
             this.quote_id = inputs.getProperty("QuoteId");
             this.quote_number = inputs.getProperty("QuoteNum");
             InvoiceExcel customerInfo = new InvoiceExcel(my_xlsx_workbook, my_worksheet, 6);
-            customerInfo.setQuoteId(this.quote_id);
+            customerInfo.setJobId(this.quote_id);
             customerInfo.createCellFromList(new QCustomer(conn), new ContactKey());
             customerInfo.setNextRow(0);
             InvoiceExcelTotal labour;
@@ -93,27 +94,27 @@ public class QuoteExcelGenerator implements Generator{
             int startRowAt = 17, nextRowAt;
             labour = parts = lubricant = expenses = new InvoiceExcelTotal(my_xlsx_workbook, my_worksheet);
             //
-            labour.setQuoteId(this.quote_id);
+            labour.setJobId(this.quote_id);
             labour.setStartRow(startRowAt);
             labour.createCellFromList(new QLabour(conn), new ProductKey());
             XGenerator.doMerge(my_worksheet, labour.next(6) - 2, 0, 1, 10, false);
             XGenerator.doMerge(my_worksheet, labour.next(6) - 1, 2, 1, 5, false);
             //
-            parts.setQuoteId(this.quote_id);
+            parts.setJobId(this.quote_id);
             parts.setStartRow(labour.next(6));
             //System.out.println(labour.next(6));
             parts.createCellFromList(new QParts(conn), new ProductKey());
             XGenerator.doMerge(my_worksheet, parts.next(4) - 2, 0, 1, 10, false);
             XGenerator.doMerge(my_worksheet, parts.next(4) - 1, 2, 1, 5, false);
             // Creates the lubricant row in excel sheet
-            lubricant.setQuoteId(this.quote_id);
+            lubricant.setJobId(this.quote_id);
             lubricant.setStartRow(parts.next(4));
             lubricant.createCellFromList(new QLubricant(conn), new ProductKey());
             //System.out.println(parts.next(5));
             XGenerator.doMerge(my_worksheet, lubricant.next(4) - 2, 0, 1, 10, false);
             XGenerator.doMerge(my_worksheet, lubricant.next(4) - 1, 2, 1, 5, false);
             //
-            expenses.setQuoteId(this.quote_id);
+            expenses.setJobId(this.quote_id);
             expenses.setStartRow(lubricant.next(4));
             expenses.createCellFromList(new QExpenses(conn), new ProductKey());
             nextRowAt = expenses.next(5);
@@ -132,15 +133,14 @@ public class QuoteExcelGenerator implements Generator{
             }   my_xlsx_workbook.setForceFormulaRecalculation(true);
             input_document.close();
             XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.quote_number.replace(" ", "_"));
-            Attachment a = new Attachment(conn, "Quote", "Quote Attachment");
+            Attachment a = new QuoteAttachment(conn, quote_id);
             String filepath = XGenerator.getProperty("filepath");
             String filename = XGenerator.getProperty("filename");
             //Attach the file to siebel
             a.Attach(
-                    filepath,
-                    filename,
-                    Boolean.FALSE,
-                    quote_id
+                filepath,
+                filename,
+                Boolean.FALSE
             );
             //outputs.setProperty("getFileReturn", a.getProperty("aGetFileReturn"));
             boolean logoff = conn.logoff();

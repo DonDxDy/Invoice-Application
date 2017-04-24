@@ -76,4 +76,9 @@ public class QLubricant extends SiebelService implements Impl{
      */
     @Override
     public void getExtraParam(SiebelBusComp sbBC){};
+
+    @Override
+    public void searchSpec(SiebelBusComp sbBC, String type) throws SiebelException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

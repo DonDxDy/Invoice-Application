@@ -29,6 +29,11 @@ public class HelperAP
         return AP.getProperty();
     }
 
+    public static String getJobCardTemplate() throws IOException {
+        AP.setProperties(IProperties.NIX_JOBCARD_INPUT_KEY, IProperties.WIN_JOBCARD_INPUT_KEY);
+        return AP.getProperty();
+    }
+
     public static String getGeneratedPath() throws IOException
     {
         AP.setProperties(IProperties.NIX_OUTPUT_KEY, IProperties.WIN_OUTPUT_KEY);

@@ -4,12 +4,12 @@
  * and open the template in the editor.
  */
 import com.plexadasi.SiebelApplication.MyLogging;
+import com.plexadasi.common.JobCardGenerator;
 import com.siebel.data.SiebelPropertySet;
 import com.siebel.eai.SiebelBusinessService;
 import com.siebel.eai.SiebelBusinessServiceException;
 import com.plexadasi.common.OrderExcelGenerator;
 import com.plexadasi.common.QuoteExcelGenerator;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.logging.Level;
 
@@ -38,6 +38,10 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
         else if(MethodName.equalsIgnoreCase("OrderExcelGenerator"))
         {
             Context.callMethod(new OrderExcelGenerator(), inputs, outputs);
+        }
+        else if(MethodName.equalsIgnoreCase("JobCardGenerator"))
+        {
+            Context.callMethod(new JobCardGenerator(), inputs, outputs);
         }
         else
         {

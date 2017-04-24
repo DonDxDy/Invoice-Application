@@ -11,6 +11,7 @@ import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
 import com.siebel.data.SiebelPropertySet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -19,63 +20,65 @@ import com.plexadasi.SiebelApplication.object.Impl.Impl;
 /**
  *
  * @author Adeyemi
+ * Job Card Object
  */
-public class QExpenses extends SiebelService implements Impl{
+public class JAccount extends SiebelService implements Impl
+{
     
     private static SiebelPropertySet set;
-    private String quoteId;
-    private List<Map<String, String>> quoteItem;
-    private static final String BO = "Quote";
-    private static final String BC = "Quote Item";
+    private static String Id;
+    private String searchSpec;
+    private String searchKey;
+    List<Map<String, String>> quoteItem = new ArrayList();
+    private static final String BO = "Account";
+    private static final String BC = "Account";
+    private static SiebelDataBean CONN;
     
-    /**
-     * 
-     * @param conn 
-     */
-    public QExpenses(SiebelDataBean conn)
+    public JAccount(SiebelDataBean conn)
     {
         super(conn);
+        CONN = conn;
     }
     
     /**
      * 
-     * @param quote_id
+     * @param id
      * @return
      * @throws SiebelException 
      */
     @Override
-    public List<Map<String, String>> getItems(String quote_id) throws SiebelException
+    public List<Map<String, String>> getItems(String id) throws SiebelException
     {
-        this.quoteId = quote_id;
+        List<Map<String, String>> listFinal;
+        JCard v = new JCard(CONN);
+        listFinal = accountItem(id);
+        MyLogging.log(Level.INFO,"Creating siebel objects Customer: " + listFinal);
+        return listFinal;
+    }
+    
+    private List<Map<String, String>> accountItem(String account_id) throws SiebelException
+    {
+        Id = account_id;
         set = new SiebelPropertySet();
-        set.setProperty("Product", "2");
-        set.setProperty("Quantity Requested", "7");
-        set.setProperty("Unit Price - Display", "8");
-        set.setProperty("Item Price", "9");
+        set.setProperty("Name", "1");
+        set.setProperty("Street Address", "1");
+        set.setProperty("Email Address", "1");
+        set.setProperty("Main Phone Number", "1");
+        searchKey = "Id";
         this.setSField(set);
         quoteItem = this.getSField(BO, BC, this);
-        MyLogging.log(Level.INFO, "Creating siebel objects Expenses: " + quoteItem);
         return quoteItem;
     }
     
-    /**
-     * 
-     * @param sbBC
-     * @throws SiebelException 
-     */
+
     @Override
     public void searchSpec(SiebelBusComp sbBC) throws SiebelException 
     {
-        sbBC.setSearchSpec("Quote Id", quoteId); 
-        sbBC.setSearchSpec("Product Type", "Travel Expense");
+        sbBC.setSearchSpec(searchKey, Id);  
     }
-    
-    /**
-     *
-     * @param sbBC
-     */
+
     @Override
-    public void getExtraParam(SiebelBusComp sbBC){};
+    public void getExtraParam(SiebelBusComp sbBC) {}
 
     @Override
     public void searchSpec(SiebelBusComp sbBC, String type) throws SiebelException {

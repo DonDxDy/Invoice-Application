@@ -1,6 +1,7 @@
 package com.plexadasi.SiebelApplication;
 
 
+import static com.plexadasi.SiebelApplication.SiebelSearchAssoc.properties;
 import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelBusObject;
 import com.siebel.data.SiebelDataBean;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
+import java.util.logging.Level;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -24,7 +26,7 @@ import com.plexadasi.SiebelApplication.object.Impl.Impl;
  *
  * @author Adeyemi
  */
-public class SiebelService {  
+public class SiebelServiceAssoc {  
 
     /**
      *
@@ -32,11 +34,14 @@ public class SiebelService {
     protected static SiebelDataBean sdb;
     private StringWriter errors;
     protected static SiebelPropertySet properties, values;
+    public SiebelBusComp sbBC, priBC;
     protected Integer beginCount = 1;
+    private List<Map<String, String>> List = new ArrayList<Map<String, String>>();
     
-    public SiebelService(SiebelDataBean conn)
+    public SiebelServiceAssoc(SiebelDataBean conn)
     {
         sdb = conn;
+        properties = values = new SiebelPropertySet();
     }
     
     public static SiebelDataBean getService() throws IOException
@@ -54,25 +59,33 @@ public class SiebelService {
         properties = property;
     }
     
-    public List<Map<String, String>> getSField(String bO, String bC, Impl qM) throws SiebelException
+    public List<Map<String, String>> getSField(String bO, String pBC, String bC, Impl qM) throws SiebelException
     {
-
         SiebelBusObject sbBO = sdb.getBusObject(bO); 
-        SiebelBusComp sbBC = sbBO.getBusComp(bC);
-        List<Map<String, String>> List;
+        priBC = sbBO.getBusComp(pBC);
+        SiebelBusObject sbBO2 = sdb.getBusObject(bO); 
+        sbBC = sbBO2.getBusComp(bC);
         values = sdb.newPropertySet();
-        sbBC.setViewMode(3);
-        sbBC.clearToQuery();
-        // Activate all the fields
-        sbBC.activateMultipleFields(properties);
+        priBC.setViewMode(3);
+        priBC.clearToQuery();
+        
         //Get search specification
-        qM.searchSpec(sbBC);
-        sbBC.executeQuery2(true, true);
-        List = doTrigger(sbBC);
-        qM.getExtraParam(sbBC);
+        qM.searchSpec(priBC, pBC);
+        priBC.executeQuery2(true, true);
+        if(priBC.firstRecord())
+        {
+            sbBC.setViewMode(3);
+            sbBC.clearToQuery();
+            sbBC.activateMultipleFields(properties);
+            //Get search specification
+            qM.searchSpec(sbBC, bC);
+            sbBC.executeQuery2(true, true);
+            List = doTrigger(sbBC);
+        }
         sbBC.release();
-        sbBC.release();
-
+        priBC.release();
+        sbBO.release();
+        
         return List;
     }
     
@@ -83,6 +96,7 @@ public class SiebelService {
         boolean isRecord = sbBC.firstRecord();
         while (isRecord)
         {
+            MyLogging.log(Level.INFO, "Will it work? ." + isRecord);
             sbBC.getMultipleFieldValues(properties, values);
             list.add(Service_PreInvokeMethod(properties, values));
             isRecord = sbBC.nextRecord();
