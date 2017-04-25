@@ -15,7 +15,9 @@ import java.util.List;
 import java.util.Map;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
 
@@ -25,84 +27,125 @@ import java.util.logging.Level;
  */
 public class QCustomer extends SiebelSearch implements Impl{
     
-    private static SiebelPropertySet set;
+    private static SiebelPropertySet set, getQuote, getAccount, getVehicle;
     private static String Id = "";
     List<Map<String, String>> quoteItem = new ArrayList();
     private String searchSpec;
+    private final QVehicle vehicleObj;
+    private final QAccount accountObj;
+    private final Date date;
+    private final SimpleDateFormat dateFormat;
+    private String accountName;
+    private String address;
+    private String city;
+    private String state;
+    private String country;
+    private String phoneNumber;
+    private String firstName;
+    private String lastName;
+    private String vehicleNo;
+    private String engineNo;
+    private String model;
+    private String km;
     
     public QCustomer(SiebelDataBean conn)
     {
         super(conn);
+        vehicleObj = new QVehicle(conn);
+        accountObj = new QAccount(conn);
+        date = new Date();
+        dateFormat = new SimpleDateFormat("dd.MM.yyyy");
     }
     
+    private Boolean isNull(String val)
+    {
+        boolean output = false;
+        if(val == null || "".equals(val))
+        {
+            output = true;
+        }
+        return output;
+    }
     @Override
     public List<Map<String, String>> getItems(String quote_id) throws SiebelException, IOException 
     {
-        SiebelPropertySet prop, prop2, prop3;
-        Id = quote_id;
-        searchSpec = "Id";
-        set = new SiebelPropertySet();
-        set.setProperty("Name", "");
-        set.setProperty("Account", "");
-        set.setProperty("Account Id", "");
-        this.setSField(set);
-        prop = this.getSField("Quote", "Quote", this);
-        System.out.println(prop.toString());
-        Id = prop.getProperty("Account Id");
-        searchSpec = "Id";
-        set = new SiebelPropertySet();
-        set.setProperty("Name", "");
-        set.setProperty("Main Phone Number", "2");
-        set.setProperty("Country", "2");
-        set.setProperty("State", "2");
-        set.setProperty("City", "2");
-        set.setProperty("Street Address", "2");
-        this.setSField(set);
-        prop2 = this.getSField("Account", "Account", this);
+        getQuote = getAccount = getVehicle = new SiebelPropertySet();
+        getQuote = activateFields(quote_id);
+        Id = getQuote.getProperty("Account Id");
+        if(!"".equals(Id))
+        {
+            getAccount = accountObj.activateFields(Id);
+        }
+        Id = getQuote.getProperty("PLX Vehicle VIN");
+        if(!"".equals(Id))
+        {
+            getVehicle = vehicleObj.activateFields(Id);
+        }
         
-        Id = quote_id;
-        searchSpec = "Id";
-        set = new SiebelPropertySet();
-        set.setProperty("Serial Number", "");
-        set.setProperty("Engine Num", "");
-        set.setProperty("Model", "");
-        set.setProperty("Odometer UOM", "");
-        prop3 = this.getSField("Auto Vehicle", "Auto Vehicle", this);
+        accountName = !isNull(getQuote.getProperty("Account")) ? getQuote.getProperty("Account") : "";
+        address     = !isNull(getAccount.getProperty("Street Address")) ? getAccount.getProperty("Street Address") : "";
+        city        = !isNull(getAccount.getProperty("City")) ? getAccount.getProperty("City") + "," : "";
+        state       = !isNull(getAccount.getProperty("State")) ? getAccount.getProperty("State") + "," : "";
+        country     = !isNull(getAccount.getProperty("Country")) ? getAccount.getProperty("Country") + "." : "";
+        phoneNumber = !isNull(getAccount.getProperty("Main Phone Number")) ? getAccount.getProperty("Main Phone Number") : "";
+        firstName   = !isNull(getQuote.getProperty("Contact First Name")) ? getQuote.getProperty("Contact First Name") : "";
+        lastName    = !isNull(getQuote.getProperty("Contact Last Name")) ? getQuote.getProperty("Contact Last Name") : "";
+        vehicleNo   = !isNull(getVehicle.getProperty(V_NUMBER)) ? getVehicle.getProperty(V_NUMBER) : "";
+        engineNo    = !isNull(getVehicle.getProperty(V_ENGINE_NUM)) ? getVehicle.getProperty(V_ENGINE_NUM) : "";
+        model       = !isNull(getVehicle.getProperty(V_MODEL)) ? getVehicle.getProperty(V_MODEL) : "";
+        km          = !isNull(getVehicle.getProperty("Odometer UOM")) ? getVehicle.getProperty("Odometer UOM") : "";
         
         Map<String, String> mapObj = new HashMap();
-        mapObj.put("2", prop.getProperty("Account"));
+        mapObj.put("2", accountName);
+        mapObj.put("9", dateFormat.format(date));
         quoteItem.add(mapObj);
         mapObj = new HashMap();
-        mapObj.put("2", prop2.getProperty("Street Address"));
+        mapObj.put("2", address);
         quoteItem.add(mapObj);
         mapObj = new HashMap();
         mapObj.put("2", 
-            prop2.getProperty("City") + ", " + 
-            prop2.getProperty("State") + ", " +
-            prop2.getProperty("Country") + "."
+            city + 
+            state +
+            country
         );
         quoteItem.add(mapObj);
         mapObj = new HashMap();
-        mapObj.put("2", prop2.getProperty("Main Phone Number"));
+        mapObj.put("2", phoneNumber);
         quoteItem.add(mapObj);
         mapObj = new HashMap();
-        mapObj.put("2", prop2.getProperty("Name"));
+        mapObj.put("2", firstName + " " + lastName);
         quoteItem.add(mapObj);
         mapObj = new HashMap();
-        mapObj.put("6", prop3.getProperty("Serial Number"));
+        mapObj.put("6", vehicleNo);
         quoteItem.add(mapObj);
         mapObj = new HashMap();
-        mapObj.put("5", prop3.getProperty("Engine Num"));
+        mapObj.put("5", engineNo);
         quoteItem.add(mapObj);
         mapObj = new HashMap();
-        mapObj.put("4", prop3.getProperty("Model"));
-        mapObj.put("7", prop3.getProperty("Odometer UOM"));
+        mapObj.put("4", model);
+        mapObj.put("7", km);
         quoteItem.add(mapObj);
         MyLogging.log(Level.INFO, "Customer: " + quoteItem);
         return quoteItem;
     }
     
-    
+    public SiebelPropertySet activateFields(String quote_id) throws SiebelException
+    {
+        SiebelPropertySet quoteSet;
+        Id = quote_id;
+        searchSpec = "Id";
+        set = new SiebelPropertySet();
+        set.setProperty("Name", "");
+        set.setProperty("Account", "");
+        set.setProperty("Contact First Name", "");
+        set.setProperty("Contact Last Name", BLANK);
+        set.setProperty("Account Id", "");
+        set.setProperty("PLX Vehicle VIN", BLANK);
+        this.setSField(set);
+        quoteSet = this.getSField("Quote", "Quote", this);
+        MyLogging.log(Level.INFO, "Customer: " + quoteSet);
+        return quoteSet;
+    }
 
     @Override
     public void searchSpec(SiebelBusComp sbBC) throws SiebelException 

@@ -20,9 +20,10 @@ public interface Impl {
     public static final String V_MAKE = "Make";
     public static final String V_LICENSE_NO = "Vehicle License Number";
     public static final String V_REG_DATE = "Registered Date";
-    public static final String V_MODEL = "Model";
+    public static final String V_MODEL = "Model (Denorm)";
     public static final String V_NUMBER = "Asset Number";
     public static final String V_ENGINE_NO = "Engine No";
+    public static final String V_ENGINE_NUM = "Engine Num";
     public static final String V_ID = "Vehicle Id";
     // Constant for jobcard
     public static final String J_NUMBER = "Repair Order #";

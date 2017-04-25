@@ -14,9 +14,11 @@ import com.siebel.data.SiebelException;
  */
 public class JobCardAttachment extends Attachment
 {
-    protected String BO       = "Auto Vehicle";
-    protected String BC       = "Asset Mgmt - Asset Attachment";
-    protected String fileName = "AssetFileName";
+    /**
+     * 
+     */
+    //protected String BO       = "Auto Vehicle";
+    //protected String BC       = "Asset Mgmt - Asset Attachment";
     
     /**
      *
@@ -26,7 +28,8 @@ public class JobCardAttachment extends Attachment
      */
     public JobCardAttachment(SiebelDataBean conn, String id) throws SiebelException
     {
-        super(conn, id);
+        super(conn, "Auto Vehicle", "Asset Mgmt - Asset Attachment", id);
+        fieldName = "AssetFileName";
     }
 
     @Override
@@ -34,7 +37,7 @@ public class JobCardAttachment extends Attachment
     {
         //create a new attachment record
         sbBC.newRecord(false);
-        sbBC.setFieldValue(fileName, sAttachmentName);
+        sbBC.setFieldValue(fieldName, sAttachmentName);
         sbBC.setFieldValue("AssetFileSrcType", "FILE");
         sbBC.setFieldValue("Order Id", Id);
         sbBC.setFieldValue("AssetFileDeferFlg", "R");

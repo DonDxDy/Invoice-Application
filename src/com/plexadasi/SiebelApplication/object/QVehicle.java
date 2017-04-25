@@ -22,7 +22,7 @@ import java.util.logging.Level;
  *
  * @author Adeyemi
  */
-public class JVehicle extends SiebelSearch implements Impl
+public class QVehicle extends SiebelSearch implements Impl
 {
     
     private static SiebelPropertySet set;
@@ -33,7 +33,7 @@ public class JVehicle extends SiebelSearch implements Impl
     private static final String BO = "Auto Vehicle";
     private static final String BC = "Auto Vehicle";
     
-    public JVehicle(SiebelDataBean conn)
+    public QVehicle(SiebelDataBean conn)
     {
         super(conn);
     }
@@ -58,16 +58,15 @@ public class JVehicle extends SiebelSearch implements Impl
         return quoteItem;
     }
     
-    public SiebelPropertySet activateFields(String vehicle_id) throws SiebelException
+    public SiebelPropertySet activateFields(String vehicle_num) throws SiebelException
     {
-        Id = vehicle_id;
+        Id = vehicle_num;
         set = new SiebelPropertySet();
-        set.setProperty(V_MAKE, BLANK);
-        set.setProperty(V_MODEL, BLANK);
-        set.setProperty(V_LICENSE_NO, BLANK);
-        set.setProperty(V_REG_DATE, BLANK);
-        set.setProperty(V_NUMBER, BLANK);
-        searchKey = "Asset Id";
+        set.setProperty(V_NUMBER, "");
+        set.setProperty(V_ENGINE_NUM, "");
+        set.setProperty(V_MODEL, "");
+        set.setProperty("Odometer UOM", "");
+        searchKey = "Asset Number";
         this.setSField(set);
         SiebelPropertySet prop = this.getSField(BO, BC, this);
         MyLogging.log(Level.INFO, "Creating objects for Vehicle: "  + prop);

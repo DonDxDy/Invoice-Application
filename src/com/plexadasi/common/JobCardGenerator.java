@@ -4,10 +4,11 @@ package com.plexadasi.common;
 import com.plexadasi.Helper.HelperAP;
 import com.plexadasi.SiebelApplication.ApplicationsConnection;
 import com.plexadasi.SiebelApplication.MyLogging;
+import com.plexadasi.SiebelApplication.object.Impl.Impl;
+import com.plexadasi.SiebelApplication.object.JOrganizationAccount;
 import com.plexadasi.SiebelApplication.object.JCard;
+import com.plexadasi.SiebelApplication.object.JIndividualAccount;
 import com.plexadasi.SiebelApplication.object.Job;
-import com.plexadasi.SiebelApplication.object.OParts;
-import com.plexadasi.common.element.Attachment;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelPropertySet;
 import com.plexadasi.common.element.InvoiceExcel;
@@ -16,6 +17,7 @@ import com.plexadasi.common.element.XGenerator;
 import com.plexadasi.common.impl.Generator;
 import com.plexadasi.invoiceapplication.ContactKey;
 import com.plexadasi.invoiceapplication.ProductKey;
+import com.siebel.eai.SiebelBusinessServiceException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,6 +52,7 @@ public class JobCardGenerator implements Generator{
     
     private FileInputStream input_document;
     private String account_id;
+    private String account_type;
 
     public JobCardGenerator() {
         this.job_number = "";
@@ -62,7 +65,7 @@ public class JobCardGenerator implements Generator{
      * @param outputs the value of outputs
      */
     @Override
-    public void generateExcelDoc(SiebelPropertySet inputs, SiebelPropertySet outputs)
+    public void generateExcelDoc(SiebelPropertySet inputs, SiebelPropertySet outputs)throws SiebelBusinessServiceException
     {
         try {
             //
@@ -81,36 +84,38 @@ public class JobCardGenerator implements Generator{
             this.job_id = inputs.getProperty("JobId");
             this.job_number = inputs.getProperty("JobNum");
             this.account_id = inputs.getProperty("AccId");
+            this.account_type = inputs.getProperty("AccType");
             
-            InvoiceExcel jobCardInfo = new InvoiceExcel(my_xlsx_workbook, my_worksheet, 5);
-            //jobCardInfo.setJobId(this.account_id);
-            //jobCardInfo.createCellFromList(new JAccount(conn), new ContactKey());
+            InvoiceExcel jobCardInfo = new InvoiceExcel(my_xlsx_workbook, my_worksheet, 4);
+            jobCardInfo.setJobId(this.account_id);
+            Impl account = new JOrganizationAccount(conn);
+            if(account_type.equalsIgnoreCase("organization"))
+            {
+                account = new JOrganizationAccount(conn);
+            }
+            else if(account_type.equalsIgnoreCase("individual"))
+            {
+                account = new JIndividualAccount(conn);
+            }
+            else
+            {
+                throw new SiebelBusinessServiceException("CUST_EXCEPT", "Account type not supported.");
+            }
+            jobCardInfo.createCellFromList(account, new ContactKey());
             JCard jCard = new JCard(conn);
             jobCardInfo.setJobId(this.job_id);
             jobCardInfo.setStartRow(8);
             jobCardInfo.createCellFromList(jCard, new ContactKey());
-            jobCardInfo.setJobId(this.job_id);
+            jobCardInfo.setJobId(jCard.findJobProperty(job_id, "Id"));
             jobCardInfo.setStartRow(jobCardInfo.next(4));
             jobCardInfo.createCellFromList(new Job(conn), new ProductKey());
            
-            
-            
-            InvoiceExcel parts;
-            
-            int startRowAt = 17;
-            parts = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
-            
-            //
-            parts.setStartRow(startRowAt);
-            parts.setJobId(job_id);
-            parts.createCellFromList(new OParts(conn), new ProductKey());
             my_xlsx_workbook.setForceFormulaRecalculation(true);
-            input_document.close();
             XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.job_number.replace(" ", "_"));
             String filepath = XGenerator.getProperty("filepath");
             String filename = XGenerator.getProperty("filename");
             
-            Attachment a = new JobCardAttachment(conn, job_id);
+            JobCardAttachment a = new JobCardAttachment(conn, job_id);
             //Attach the file to siebel
             
             a.Attach(
@@ -120,6 +125,7 @@ public class JobCardGenerator implements Generator{
             );
             
             boolean logoff = conn.logoff();
+            input_document.close();
             my_xlsx_workbook.close();
             System.out.println("Done");
             outputs.setProperty("status", "success");

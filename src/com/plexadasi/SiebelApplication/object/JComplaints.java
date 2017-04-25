@@ -6,7 +6,7 @@
 package com.plexadasi.SiebelApplication.object;
 
 import com.plexadasi.SiebelApplication.MyLogging;
-import com.plexadasi.SiebelApplication.SiebelServiceAssoc;
+import com.plexadasi.SiebelApplication.SiebelService;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
 import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelDataBean;
@@ -22,15 +22,14 @@ import java.util.logging.Level;
  *
  * @author Adeyemi
  */
-public class JComplaints extends SiebelServiceAssoc implements Impl
+public class JComplaints extends SiebelService implements Impl
 {
     private static SiebelPropertySet set;
     private String job_id;
     private final List<Map<String, String>> quoteItem = new ArrayList<Map<String, String>>();
     private final Map<String, String> map = new HashMap();
-    private final String searchKey = "SH #";
+    private final String searchKey = "Parent SH Id";
     private static final String BO = "Auto Vehicle";
-    private static final String PRIBC = "eAuto Service History";
     private static final String BC = "PLX Auto Job Card";
     
     /**
@@ -60,7 +59,7 @@ public class JComplaints extends SiebelServiceAssoc implements Impl
         set.setProperty("Type Of Work", "4");
         set.setProperty("Amount", "11");
         this.setSField(set);
-        quoteItem.addAll(this.getSField(BO, PRIBC, BC, this));
+        quoteItem.addAll(this.getSField(BO, BC, this));
         MyLogging.log(Level.INFO, "Creating siebel objects JComplaint: " + quoteItem);
         return quoteItem;
     }
@@ -71,21 +70,15 @@ public class JComplaints extends SiebelServiceAssoc implements Impl
      * @throws SiebelException 
      */
     @Override
-    public void searchSpec(SiebelBusComp sbBC) throws SiebelException{}
+    public void searchSpec(SiebelBusComp sbBC) throws SiebelException
+    {
+        sbBC.setSearchSpec(searchKey, job_id);
+        sbBC.setSearchSpec("Type", "JOB_CARD"); 
+        sbBC.setSearchSpec("Operation Line No", "Customers Complaint");
+    }
     
     @Override
-    public void searchSpec(SiebelBusComp sbBC, String type) throws SiebelException 
-    {
-        if(type.equals(PRIBC))
-        {
-            sbBC.setSearchSpec(searchKey, job_id);
-        }
-        else if(BC.equals(type))
-        { 
-            sbBC.setSearchSpec("Type", "JOB_CARD"); 
-            sbBC.setSearchSpec("Operation Line No", "Customers Complaint");
-        }
-    }
+    public void searchSpec(SiebelBusComp sbBC, String type) throws SiebelException{}
     
     /**
      *

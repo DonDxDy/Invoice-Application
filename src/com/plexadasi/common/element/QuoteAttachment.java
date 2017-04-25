@@ -14,9 +14,8 @@ import com.siebel.data.SiebelException;
  */
 public class QuoteAttachment extends Attachment
 {
-    protected String BO       = "Quote";
-    protected String BC       = "Quote Attachment";
-    protected String fileName = "QuoteFileName";
+    //protected String BO       = "Quote";
+    //protected String BC       = "Quote Attachment";
     
     /**
      *
@@ -26,7 +25,8 @@ public class QuoteAttachment extends Attachment
      */
     public QuoteAttachment(SiebelDataBean conn, String id) throws SiebelException
     {
-        super(conn, id);
+        super(conn, "Quote", "Quote Attachment", id);
+        fieldName = "QuoteFileName";
     }
 
     @Override
@@ -34,7 +34,7 @@ public class QuoteAttachment extends Attachment
     {
         //create a new attachment record
         sbBC.newRecord(false); 
-        sbBC.setFieldValue("QuoteFileName", sAttachmentName);
+        sbBC.setFieldValue(fieldName, sAttachmentName);
         sbBC.setFieldValue("QuoteFileSrcType", "FILE");
         sbBC.setFieldValue("Quote Id", Id);
         sbBC.setFieldValue("QuoteFileDeferFlg", "R");

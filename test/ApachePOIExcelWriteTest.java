@@ -10,7 +10,7 @@ import com.siebel.eai.SiebelBusinessServiceException;
 
 /**
  *
- * @author Adeyemi
+     * @author Adeyemi
  */
 public class ApachePOIExcelWriteTest 
 {
@@ -26,7 +26,9 @@ public class ApachePOIExcelWriteTest
         SiebelPropertySet outputs = new SiebelPropertySet();
         inputs.setProperty("JobId", "1-3518152");//1-1028K//1-1026S//1-1025Q//1-3247471//
         inputs.setProperty("JobNum", "Job Card");
-        inputs.setProperty("ShipId", "1-3271146");
-        eia.doInvokeMethod("JobCardGenerator", inputs, outputs);
+        inputs.setProperty("AccId", "1-3271146");
+        inputs.setProperty("QuoteId", "1-24PCG");
+        inputs.setProperty("QuoteNum", "Quotes 1-2315P");
+        eia.doInvokeMethod("QuoteExcelGenerator", inputs, outputs);
     }
 }

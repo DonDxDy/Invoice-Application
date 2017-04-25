@@ -91,6 +91,7 @@ public class JCard extends SiebelSearch implements Impl
     private SiebelPropertySet activateFields(String id) throws SiebelException
     {
         Id = id;
+        MyLogging.log(Level.INFO, "Check Id found: " + Id);
         set = new SiebelPropertySet();
         set.setProperty("SH #", BLANK);
         set.setProperty(J_KM, BLANK);
