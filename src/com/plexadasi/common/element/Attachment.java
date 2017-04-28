@@ -10,7 +10,11 @@ import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelBusObject;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
+import com.siebel.eai.SiebelBusinessServiceException;
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -28,6 +32,8 @@ abstract public class Attachment {
     private final Map<String, String> properties = new HashMap();
     protected static String Id;
     protected String fieldName;
+    protected File file;
+    protected StringWriter ERROR = new StringWriter();
     
     /**
      *
@@ -46,24 +52,33 @@ abstract public class Attachment {
     
     abstract protected void activateFields(String sAttachmentName) throws SiebelException;
 
-    public void Attach(String sAbsoluteFileName, String sAttachmentName, Boolean cond) throws SiebelException, IOException
+    public void Attach(String sAbsoluteFileName, String sAttachmentName, Boolean cond) throws SiebelBusinessServiceException, IOException
     {
-        activateFields(sAbsoluteFileName);
-        MyLogging.log(Level.INFO, "sAbsoluteFileName: "+sAbsoluteFileName);
-        MyLogging.log(Level.INFO, "sAttachmentName: "+sAttachmentName);
-        MyLogging.log(Level.INFO, "storeAsLink(cond): "+storeAsLink(cond));
-        String[] args = new String[3];
-        args[0] = sAbsoluteFileName;
-        args[1] = fieldName;
-        args[2] = storeAsLink(cond);
-        //call CreateFile method to attach a file on the server to the Siebel
-        //file system
-        sGetFileReturn = sbBC.invokeMethod("CreateFile", args);
-        properties.put("aGetFileReturn", sGetFileReturn);
-        sbBC.writeRecord();
-        if (!"Success".equals(sGetFileReturn))
-        {
-            throw new IOException("Error attaching file!");
+        try {
+            activateFields(sAbsoluteFileName);
+            file = new File(sAbsoluteFileName);
+            MyLogging.log(Level.INFO, "sAbsoluteFileName: " + sAbsoluteFileName);
+            MyLogging.log(Level.INFO, "sAttachmentName: " + sAttachmentName);
+            MyLogging.log(Level.INFO, "storeAsLink(cond): " + storeAsLink(cond));
+            String[] args = new String[3];
+            args[0] = sAbsoluteFileName;
+            args[1] = fieldName;
+            args[2] = storeAsLink(cond);
+            //call CreateFile method to attach a file on the server to the Siebel
+            //file system
+            sGetFileReturn = sbBC.invokeMethod("CreateFile", args);
+            properties.put("aGetFileReturn", sGetFileReturn);
+            sbBC.writeRecord();
+            if (!"Success".equals(sGetFileReturn)) 
+            {
+                deleteAttachmentFromFs(sAbsoluteFileName);
+                throw new IOException("Error attaching file!");
+            }
+        } catch (SiebelException ex) {
+            deleteAttachmentFromFs(sAbsoluteFileName);
+            ex.printStackTrace(new PrintWriter(ERROR));
+            MyLogging.log(Level.SEVERE, "Caught IOException: " + ERROR.toString());
+            throw new SiebelBusinessServiceException("CAUGHT_EXCEPT", ERROR.toString());
         }
     }
     
@@ -90,5 +105,15 @@ abstract public class Attachment {
             output = YES;
         }
         return output;
+    }
+    
+    private void deleteAttachmentFromFs(String sAbsoluteFileName) throws IOException
+    {
+        
+        boolean delete = file.delete();
+        if(!delete)
+        {
+            throw new IOException("Error Attaching file. \nError deleting file " + sAbsoluteFileName + " from file system.");
+        }
     }
 }

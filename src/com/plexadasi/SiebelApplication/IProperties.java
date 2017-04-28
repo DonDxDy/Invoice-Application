@@ -5,6 +5,7 @@
  */
 package com.plexadasi.SiebelApplication;
 
+import com.siebel.eai.SiebelBusinessServiceException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -43,8 +44,7 @@ public interface IProperties {
     /**
      *
      * @return
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @throws com.siebel.eai.SiebelBusinessServiceException
      */
-    public String getProperty() throws FileNotFoundException, IOException;
+    public String getProperty() throws SiebelBusinessServiceException;
 }

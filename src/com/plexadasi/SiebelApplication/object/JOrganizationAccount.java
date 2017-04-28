@@ -26,7 +26,7 @@ import java.util.HashMap;
 public class JOrganizationAccount extends SiebelSearch implements Impl
 {
     
-    private static SiebelPropertySet set;
+    private static SiebelPropertySet set, getVehicle;
     private static String Id;
     private String searchSpec;
     private String searchKey;
@@ -35,11 +35,16 @@ public class JOrganizationAccount extends SiebelSearch implements Impl
     private static final String BO = "Account";
     private static final String BC = "Account";
     private static SiebelDataBean CONN;
+    private final JVehicle vehicle;
+    private final JCard card;
     
     public JOrganizationAccount(SiebelDataBean conn)
     {
         super(conn);
         CONN = conn;
+        vehicle = new JVehicle(conn);
+        card = new JCard(conn);
+        set = getVehicle = new SiebelPropertySet();
     }
     
     /**
@@ -52,7 +57,8 @@ public class JOrganizationAccount extends SiebelSearch implements Impl
     public List<Map<String, String>> getItems(String id) throws SiebelException
     {
         List<Map<String, String>> listFinal;
-        JCard v = new JCard(CONN);
+        getVehicle = vehicle.activateFields(card.findJobProperty(id, V_ID));
+        id = getVehicle.getProperty(V_ACCOUNT_NAME);
         listFinal = accountItem(id);
         MyLogging.log(Level.INFO,"Creating siebel objects Customer: " + listFinal);
         return listFinal;
@@ -67,10 +73,11 @@ public class JOrganizationAccount extends SiebelSearch implements Impl
         set.setProperty("Street Address", "1");
         set.setProperty("Email Address", "1");
         set.setProperty("Main Phone Number", "1");
-        searchKey = "Id";
+        searchKey = "Name";
         this.setSField(set);
         SiebelPropertySet getProp = this.getSField(BO, BC, this);
-        map.put("1", getProp.getProperty("First Name") + " " + getProp.getProperty("Last Name"));
+        getProp.addChild(getVehicle);
+        map.put("1", getProp.getChild(0).getProperty(V_FIRST_NAME) + " " + getProp.getChild(0).getProperty(V_LAST_NAME));
         quoteItem.add(map);
         map = new HashMap();
         map.put("1", getProp.getProperty("Street Address"));

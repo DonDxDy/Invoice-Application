@@ -96,7 +96,6 @@ public class SiebelServiceAssoc {
         boolean isRecord = sbBC.firstRecord();
         while (isRecord)
         {
-            MyLogging.log(Level.INFO, "Will it work? ." + isRecord);
             sbBC.getMultipleFieldValues(properties, values);
             list.add(Service_PreInvokeMethod(properties, values));
             isRecord = sbBC.nextRecord();

@@ -39,7 +39,7 @@ public class JobCardAttachment extends Attachment
         sbBC.newRecord(false);
         sbBC.setFieldValue(fieldName, sAttachmentName);
         sbBC.setFieldValue("AssetFileSrcType", "FILE");
-        sbBC.setFieldValue("Order Id", Id);
+        sbBC.setFieldValue("Asset Id", Id);
         sbBC.setFieldValue("AssetFileDeferFlg", "R");
         sbBC.setFieldValue("AssetFileDockStatFlg", "E");
         sbBC.setFieldValue("AssetFileAutoUpdFlg", YES);

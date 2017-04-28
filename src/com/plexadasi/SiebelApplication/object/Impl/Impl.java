@@ -17,22 +17,25 @@ import java.util.Map;
  */
 public interface Impl {
     // Constant for vehicle
-    public static final String V_MAKE = "Make";
-    public static final String V_LICENSE_NO = "Vehicle License Number";
-    public static final String V_REG_DATE = "Registered Date";
-    public static final String V_MODEL = "Model (Denorm)";
-    public static final String V_NUMBER = "Asset Number";
-    public static final String V_ENGINE_NO = "Engine No";
-    public static final String V_ENGINE_NUM = "Engine Num";
-    public static final String V_ID = "Vehicle Id";
+    public static final String V_MAKE               = "Make (Denorm)";
+    public static final String V_LICENSE_NO         = "Vehicle License Number";
+    public static final String V_REG_DATE           = "Registered Date";
+    public static final String V_MODEL              = "Model (Denorm)";
+    public static final String V_NUMBER             = "Asset Number";
+    public static final String V_ENGINE_NO          = "Engine No";
+    public static final String V_ENGINE_NUM         = "Engine Num";
+    public static final String V_ID                 = "Vehicle Id";
+    public static final String V_FIRST_NAME         = "Primary Contact First Name";
+    public static final String V_LAST_NAME          = "Primary Contact Last Name";
+    public static final String V_ACCOUNT_NAME       = "Account Name";
     // Constant for jobcard
-    public static final String J_NUMBER = "Repair Order #";
-    public static final String J_KM = "Current Mileage";
-    public static final String J_RECIEVED_DATE = "Created Date";
-    public static final String J_BROUGHT_BY = "Last Name";
-    public static final String J_DEADLINE = "Work Order DeadLine";
-    public static final String J_ACC_INFO = "Account Info";
-    public static final String BLANK = "";
+    public static final String J_NUMBER             = "Repair Order #";
+    public static final String J_KM                 = "Current Mileage";
+    public static final String J_RECIEVED_DATE      = "Created Date";
+    public static final String J_BROUGHT_BY         = "Last Name";
+    public static final String J_DEADLINE           = "Work Order DeadLine";
+    public static final String J_ACC_INFO           = "Account Info";
+    public static final String BLANK                = "";
     
     public List<Map<String, String>> getItems(String quote_id) throws SiebelException, IOException;
     

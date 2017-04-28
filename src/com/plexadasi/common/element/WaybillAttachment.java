@@ -14,7 +14,7 @@ import com.siebel.data.SiebelException;
  */
 public class WaybillAttachment extends Attachment
 {
-    //protected String BO       = "Order Enty";
+    //protected String BO       = "Order Entry";
     //protected String BC       = "Order Entry Attachment";
     
     /**
@@ -25,7 +25,7 @@ public class WaybillAttachment extends Attachment
      */
     public WaybillAttachment(SiebelDataBean conn, String id) throws SiebelException
     {
-        super(conn, "Order Enty", "Order Entry Attachment", id);
+        super(conn, "Order Entry", "Order Entry Attachment", id);
         fieldName = "OrderFileName";
     }
 
