@@ -14,6 +14,7 @@ import com.siebel.data.SiebelPropertySet;
 import java.util.List;
 import java.util.Map;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
+import com.plexadasi.invoiceapplication.DataTypeCheck;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,15 +58,6 @@ public class QCustomer extends SiebelSearch implements Impl{
         dateFormat = new SimpleDateFormat("dd.MM.yyyy");
     }
     
-    private Boolean isNull(String val)
-    {
-        boolean output = false;
-        if(val == null || "".equals(val))
-        {
-            output = true;
-        }
-        return output;
-    }
     @Override
     public List<Map<String, String>> getItems(String quote_id) throws SiebelException, IOException 
     {
@@ -82,18 +74,18 @@ public class QCustomer extends SiebelSearch implements Impl{
             getVehicle = vehicleObj.activateFields(Id);
         }
         
-        accountName = !isNull(getQuote.getProperty("Account")) ? getQuote.getProperty("Account") : "";
-        address     = !isNull(getAccount.getProperty("Street Address")) ? getAccount.getProperty("Street Address") : "";
-        city        = !isNull(getAccount.getProperty("City")) ? getAccount.getProperty("City") + "," : "";
-        state       = !isNull(getAccount.getProperty("State")) ? getAccount.getProperty("State") + "," : "";
-        country     = !isNull(getAccount.getProperty("Country")) ? getAccount.getProperty("Country") + "." : "";
-        phoneNumber = !isNull(getAccount.getProperty("Main Phone Number")) ? getAccount.getProperty("Main Phone Number") : "";
-        firstName   = !isNull(getQuote.getProperty("Contact First Name")) ? getQuote.getProperty("Contact First Name") : "";
-        lastName    = !isNull(getQuote.getProperty("Contact Last Name")) ? getQuote.getProperty("Contact Last Name") : "";
-        vehicleNo   = !isNull(getVehicle.getProperty(V_NUMBER)) ? getVehicle.getProperty(V_NUMBER) : "";
-        engineNo    = !isNull(getVehicle.getProperty(V_ENGINE_NUM)) ? getVehicle.getProperty(V_ENGINE_NUM) : "";
-        model       = !isNull(getVehicle.getProperty(V_MODEL)) ? getVehicle.getProperty(V_MODEL) : "";
-        km          = !isNull(getVehicle.getProperty("Odometer UOM")) ? getVehicle.getProperty("Odometer UOM") : "";
+        accountName = getProperty(getQuote, ACCOUNT);
+        address     = getProperty(getQuote, STREET_ADDRESS);
+        city        = getProperty(getAccount, CITY);
+        state       = getProperty(getAccount, STATE);
+        country     = getProperty(getAccount, COUNTRY);
+        phoneNumber = getProperty(getAccount, PHONE_NUMBER);
+        firstName   = getProperty(getQuote, Q_CONTACT_FN);
+        lastName    = getProperty(getQuote, Q_CONTACT_LN);
+        vehicleNo   = getProperty(getVehicle, V_NUMBER);
+        engineNo    = getProperty(getVehicle, V_ENGINE_NUM);
+        model       = getProperty(getVehicle, V_MODEL);
+        km          = getProperty(getVehicle, V_ODOMETER);
         
         Map<String, String> mapObj = new HashMap();
         mapObj.put("2", accountName);
@@ -103,11 +95,11 @@ public class QCustomer extends SiebelSearch implements Impl{
         mapObj.put("2", address);
         quoteItem.add(mapObj);
         mapObj = new HashMap();
-        mapObj.put("2", 
-            city + 
-            state +
-            country
-        );
+        
+        city        = !DataTypeCheck.isNull(city) ? city + ", " : BLANK;
+        state       = !DataTypeCheck.isNull(state) ? state + ", " : BLANK;
+        country     = !DataTypeCheck.isNull(country) ? country + "." : BLANK;
+        mapObj.put("2", city + state + country);
         quoteItem.add(mapObj);
         mapObj = new HashMap();
         mapObj.put("2", phoneNumber);
@@ -136,15 +128,20 @@ public class QCustomer extends SiebelSearch implements Impl{
         searchSpec = "Id";
         set = new SiebelPropertySet();
         set.setProperty("Name", "");
-        set.setProperty("Account", "");
-        set.setProperty("Contact First Name", "");
-        set.setProperty("Contact Last Name", BLANK);
+        set.setProperty(ACCOUNT, "");
+        set.setProperty(Q_CONTACT_FN, "");
+        set.setProperty(Q_CONTACT_LN, BLANK);
         set.setProperty("Account Id", "");
         set.setProperty("PLX Vehicle VIN", BLANK);
         this.setSField(set);
         quoteSet = this.getSField("Quote", "Quote", this);
         MyLogging.log(Level.INFO, "Customer: " + quoteSet);
         return quoteSet;
+    }
+    
+    private static String getProperty(SiebelPropertySet propertySet, String property)
+    {
+       return !DataTypeCheck.isNull(propertySet.getProperty(property)) ? propertySet.getProperty(property) : BLANK; 
     }
 
     @Override

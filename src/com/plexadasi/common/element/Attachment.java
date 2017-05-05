@@ -56,7 +56,6 @@ abstract public class Attachment {
     {
         try {
             activateFields(sAbsoluteFileName);
-            file = new File(sAbsoluteFileName);
             MyLogging.log(Level.INFO, "sAbsoluteFileName: " + sAbsoluteFileName);
             MyLogging.log(Level.INFO, "sAttachmentName: " + sAttachmentName);
             MyLogging.log(Level.INFO, "storeAsLink(cond): " + storeAsLink(cond));
@@ -74,7 +73,9 @@ abstract public class Attachment {
                 deleteAttachmentFromFs(sAbsoluteFileName);
                 throw new IOException("Error attaching file!");
             }
-        } catch (SiebelException ex) {
+        } 
+        catch (SiebelException ex) 
+        {
             deleteAttachmentFromFs(sAbsoluteFileName);
             ex.printStackTrace(new PrintWriter(ERROR));
             MyLogging.log(Level.SEVERE, "Caught IOException: " + ERROR.toString());
@@ -110,10 +111,14 @@ abstract public class Attachment {
     private void deleteAttachmentFromFs(String sAbsoluteFileName) throws IOException
     {
         
-        boolean delete = file.delete();
-        if(!delete)
+        file = new File(sAbsoluteFileName);
+        if(file.exists())
         {
-            throw new IOException("Error Attaching file. \nError deleting file " + sAbsoluteFileName + " from file system.");
+            boolean delete = file.delete();
+            if(!delete)
+            {
+                throw new IOException("Error Attaching file. \nError deleting file " + sAbsoluteFileName + " from file system.");
+            }
         }
     }
 }

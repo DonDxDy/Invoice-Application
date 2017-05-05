@@ -58,12 +58,12 @@ public class QAccount extends SiebelSearch implements Impl
     {
         Id = account_id;
         set = new SiebelPropertySet();
-        set.setProperty("Main Phone Number", "2");
-        set.setProperty("Country", "2");
-        set.setProperty("State", "2");
-        set.setProperty("City", "2");
-        set.setProperty("Street Address", "2");
-        searchKey = "Id";
+        set.setProperty(PHONE_NUMBER, "2");
+        set.setProperty(COUNTRY, "2");
+        set.setProperty(STATE, "2");
+        set.setProperty(CITY, "2");
+        set.setProperty(STREET_ADDRESS, "2");
+        searchKey = FIELD_ID ;
         this.setSField(set);
         SiebelPropertySet prop = this.getSField(BO, BC, this);
         MyLogging.log(Level.INFO, "Creating objects for QAccount: "  + prop);

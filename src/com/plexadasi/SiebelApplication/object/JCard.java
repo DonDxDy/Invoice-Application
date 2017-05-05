@@ -93,14 +93,14 @@ public class JCard extends SiebelSearch implements Impl
         Id = id;
         MyLogging.log(Level.INFO, "Check Id found: " + Id);
         set = new SiebelPropertySet();
-        set.setProperty("SH #", BLANK);
+        set.setProperty(J_SH_ID, BLANK);
         set.setProperty(J_KM, BLANK);
         set.setProperty(J_RECIEVED_DATE, BLANK);
         set.setProperty(J_BROUGHT_BY, BLANK);
         set.setProperty(V_ID, BLANK);
         set.setProperty(J_DEADLINE, BLANK);
         set.setProperty(J_ACC_INFO, BLANK);
-        searchKey = "SH #";
+        searchKey = J_SH_ID;
         this.setSField(set);
         return this.getSField(BO, BC, this);
     }

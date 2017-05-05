@@ -2,7 +2,7 @@ package com.plexadasi.common;
 
 
 import com.plexadasi.Helper.HelperAP;
-import com.plexadasi.SiebelApplication.ApplicationsConnection;
+import com.plexadasi.connect.siebel.SiebelConnect;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.object.QCustomer;
 import com.plexadasi.SiebelApplication.object.QExpenses;
@@ -73,7 +73,7 @@ public class QuoteExcelGenerator implements Generator{
         try {
             //
             //IProperties AP = new ApplicationProperties2();
-            SiebelDataBean conn = ApplicationsConnection.connectSiebelServer();
+            SiebelDataBean conn = SiebelConnect.connectSiebelServer();
             //Get excel path
             inputFile = HelperAP.getInvoiceTemplate();
             //Read Excel document first

@@ -61,7 +61,7 @@ public class OAddress extends SiebelServiceExtended implements Impl
         Id = quote_id;
         
         set = new SiebelPropertySet();
-        set.setProperty("Account", "2");
+        set.setProperty(ACCOUNT, "2");
         this.value = "Order Number";
         searchKey = "Order Number";
         this.setSField(set);

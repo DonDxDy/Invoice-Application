@@ -1,5 +1,5 @@
 
-import com.plexadasi.SiebelApplication.ApplicationsConnection;
+import com.plexadasi.connect.ApplicationsConnection;
 import com.plexadasi.common.element.JobCardAttachment;
 import com.siebel.data.SiebelException;
 import com.siebel.eai.SiebelBusinessServiceException;

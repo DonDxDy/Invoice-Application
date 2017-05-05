@@ -2,7 +2,6 @@ package com.plexadasi.common;
 
 
 import com.plexadasi.Helper.HelperAP;
-import com.plexadasi.SiebelApplication.ApplicationsConnection;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.object.OAddress;
 import com.plexadasi.SiebelApplication.object.OParts;
@@ -12,8 +11,10 @@ import com.siebel.data.SiebelPropertySet;
 import com.plexadasi.common.element.Attachment;
 import com.plexadasi.common.element.InvoiceExcel;
 import com.plexadasi.common.element.WaybillAttachment;
+import com.plexadasi.common.element.WaybillAttachmentSales;
 import com.plexadasi.common.element.XGenerator;
 import com.plexadasi.common.impl.Generator;
+import com.plexadasi.connect.siebel.SiebelConnect;
 import com.plexadasi.invoiceapplication.ContactKey;
 import com.plexadasi.invoiceapplication.ProductKey;
 import java.io.File;
@@ -39,20 +40,24 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
  *
  * @author SAP Training
  */
-public class OrderExcelGenerator implements Generator{
-    private String inputFile = "";
+public class OrderExcelGenerator implements Generator
+{
+    private String inputFile;
     
     private String order_id;
     
     private String order_number;
     
+    private String ship_id;
+    
+    private String orderType;
+    
     private final StringWriter error_txt = new StringWriter();
     
     private FileInputStream input_document;
-    private String ship_id;
 
     public OrderExcelGenerator() {
-        this.order_number = "";
+        this.orderType = this.ship_id = this.inputFile = this.order_number = "";
         this.input_document = null;
     }
     
@@ -66,8 +71,7 @@ public class OrderExcelGenerator implements Generator{
     {
         try {
             //
-            //IProperties AP = new ApplicationProperties();
-            SiebelDataBean conn = ApplicationsConnection.connectSiebelServer();
+            SiebelDataBean conn = SiebelConnect.connectSiebelServer();
             //Get excel path
             inputFile = HelperAP.getWaybillTemplate();
             //Read Excel document first
@@ -80,6 +84,7 @@ public class OrderExcelGenerator implements Generator{
             this.order_id = inputs.getProperty("OrderId");
             this.order_number = inputs.getProperty("OrderNum");
             this.ship_id = inputs.getProperty("ShipId");
+            this.orderType = inputs.getProperty("OrderType");
             
             InvoiceExcel customerInfo = new InvoiceExcel(my_xlsx_workbook, my_worksheet, 3);
             customerInfo.setJobId(this.ship_id);
@@ -100,10 +105,21 @@ public class OrderExcelGenerator implements Generator{
             my_xlsx_workbook.setForceFormulaRecalculation(true);
             input_document.close();
             XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.order_number.replace(" ", "_"));
-            String filepath = XGenerator.getProperty("filepath");
+            //String filepath = XGenerator.getProperty("filepath");
             String filename = XGenerator.getProperty("filename");
+            String filepath = "/usr/app/siebel/intg/excel/weststar_TEST_02052017153845.xls";
             
-            Attachment a = new WaybillAttachment(conn, order_id);
+            Attachment a = null;
+            
+            if(orderType.equalsIgnoreCase("Sales Order"))
+            {
+                a = new WaybillAttachmentSales(conn, order_id);
+            }
+            else if(orderType.equalsIgnoreCase("Purchase Order"))
+            {
+                a = new WaybillAttachment(conn, order_id);
+            }
+            
             //Attach the file to siebel
             a.Attach(
                 filepath,

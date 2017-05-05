@@ -26,9 +26,15 @@ public class ApachePOIExcelWriteTest
         SiebelPropertySet outputs = new SiebelPropertySet();
         inputs.setProperty("JobId", "1-3579601");//1-1028K//1-1026S//1-1025Q//1-3247471//
         inputs.setProperty("JobNum", "Job Card");
+        //eia.doInvokeMethod("JobCardGenerator", inputs, outputs);
         
         inputs.setProperty("QuoteId", "1-24PCG");
         inputs.setProperty("QuoteNum", "Quotes 1-2315P");
-        eia.doInvokeMethod("QuoteExcelGenerator", inputs, outputs);
+        
+        inputs.setProperty("OrderId", "1-3606601");
+        inputs.setProperty("OrderNum", "Quotes 1-3606601");
+        inputs.setProperty("OrderType", "Sales Order");
+        inputs.setProperty("ShipId", "1-3271146");
+        eia.doInvokeMethod("OrderExcelGenerator", inputs, outputs);
     }
 }

@@ -70,8 +70,8 @@ public class JVehicle extends SiebelSearch implements Impl
         set.setProperty(V_FIRST_NAME, BLANK);
         set.setProperty(V_LAST_NAME, BLANK);
         set.setProperty(V_ACCOUNT_NAME, BLANK);
-        set.setProperty("Account Type", BLANK);
-        searchKey = "Asset Id";
+        set.setProperty(ACCOUNT_TYPE, BLANK);
+        searchKey = V_ASSET_ID;
         this.setSField(set);
         SiebelPropertySet prop = this.getSField(BO, BC, this);
         MyLogging.log(Level.INFO, "Creating objects for Vehicle: "  + prop);

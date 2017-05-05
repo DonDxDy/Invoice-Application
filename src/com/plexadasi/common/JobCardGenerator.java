@@ -2,12 +2,10 @@ package com.plexadasi.common;
 
 
 import com.plexadasi.Helper.HelperAP;
-import com.plexadasi.SiebelApplication.ApplicationsConnection;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
 import com.plexadasi.SiebelApplication.object.JOrganizationAccount;
 import com.plexadasi.SiebelApplication.object.JCard;
-import com.plexadasi.SiebelApplication.object.JIndividualAccount;
 import com.plexadasi.SiebelApplication.object.Job;
 import com.plexadasi.common.element.Attachment;
 import com.siebel.data.SiebelDataBean;
@@ -16,6 +14,7 @@ import com.plexadasi.common.element.InvoiceExcel;
 import com.plexadasi.common.element.JobCardAttachment;
 import com.plexadasi.common.element.XGenerator;
 import com.plexadasi.common.impl.Generator;
+import com.plexadasi.connect.siebel.SiebelConnect;
 import com.plexadasi.invoiceapplication.ContactKey;
 import com.plexadasi.invoiceapplication.ProductKey;
 import com.siebel.eai.SiebelBusinessServiceException;
@@ -52,11 +51,9 @@ public class JobCardGenerator implements Generator{
     private final StringWriter error_txt = new StringWriter();
     
     private FileInputStream input_document;
-    private String account_Name;
-    private String account_type;
 
     public JobCardGenerator() {
-        this.job_number = this.account_Name = this.account_type = "";
+        this.job_number = "";
         this.input_document = null;
     }
     
@@ -68,10 +65,10 @@ public class JobCardGenerator implements Generator{
     @Override
     public void generateExcelDoc(SiebelPropertySet inputs, SiebelPropertySet outputs)throws SiebelBusinessServiceException
     {
-        try {
+        try 
+        {
             //
-            //IProperties AP = new ApplicationProperties();
-            SiebelDataBean conn = ApplicationsConnection.connectSiebelServer();
+            SiebelDataBean conn = SiebelConnect.connectSiebelServer();
             //Get excel path
             inputFile = HelperAP.getJobCardTemplate();
             //Read Excel document first
@@ -99,6 +96,7 @@ public class JobCardGenerator implements Generator{
             my_xlsx_workbook.setForceFormulaRecalculation(true);
             XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.job_number.replace(" ", "_"));
             String filepath = XGenerator.getProperty("filepath");
+            //String filepath = "/usr/app/siebel/excel/weststar_TEST_02052017153845.xls";
             String filename = XGenerator.getProperty("filename");
             String asset_id = jCard.findJobProperty(job_id, Impl.V_ID);
             MyLogging.log(Level.INFO, "Asset Number: " + asset_id);
