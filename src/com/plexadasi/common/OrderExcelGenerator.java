@@ -100,14 +100,14 @@ public class OrderExcelGenerator implements Generator
             
             //
             parts.setStartRow(startRowAt);
-            parts.setJobId(order_id);
+            parts.setJobId(order_number);
             parts.createCellFromList(new OParts(conn), new ProductKey());
             my_xlsx_workbook.setForceFormulaRecalculation(true);
             input_document.close();
             XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.order_number.replace(" ", "_"));
-            //String filepath = XGenerator.getProperty("filepath");
+            String filepath = XGenerator.getProperty("filepath");
             String filename = XGenerator.getProperty("filename");
-            String filepath = "/usr/app/siebel/intg/excel/weststar_TEST_02052017153845.xls";
+            //String filepath = "/usr/app/siebel/intg/excel/weststar_TEST_02052017153845.xls";
             
             Attachment a = null;
             

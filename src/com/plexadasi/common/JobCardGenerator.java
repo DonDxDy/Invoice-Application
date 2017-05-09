@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -148,6 +149,6 @@ public class JobCardGenerator implements Generator{
             MyLogging.log(Level.SEVERE, "Caught Exception: " + ex.getMessage() + error_txt.toString());
             outputs.setProperty("status", "failed");
             outputs.setProperty("error_message", error_txt.toString());
-        }
+        } 
     }
 }

@@ -9,7 +9,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -44,7 +43,7 @@ public class ApplicationProperties implements IProperties{
         }
         else
         {
-            throw new NullPointerException("Null pointer exception");
+            throw new NullPointerException("This operating system is not supported.");
         }
         return this;
     }
@@ -64,14 +63,20 @@ public class ApplicationProperties implements IProperties{
         {
             ex.printStackTrace(new PrintWriter(ERROR));
             MyLogging.log(Level.SEVERE, "Caught FileNotFoundExceptionn:" + ERROR.toString());
-            throw new SiebelBusinessServiceException("CAUGHT_EXCEPT", ERROR.toString());
+            throw new SiebelBusinessServiceException("FILE_NOT_FOUND_EXCEPT", "Template could not be found or does not exist. Please ask your administratr for more information.");
         } 
         catch (IOException ex) 
         {
             ex.printStackTrace(new PrintWriter(ERROR));
             MyLogging.log(Level.SEVERE, "Caught IOException:" + ERROR.toString());
-            throw new SiebelBusinessServiceException("CAUGHT_EXCEPT", ERROR.toString());
+            throw new SiebelBusinessServiceException("CAUGHT_EXCEPT", ex.getMessage());
         } 
+        catch(NullPointerException ex)
+        {
+            ex.printStackTrace(new PrintWriter(ERROR));
+            MyLogging.log(Level.SEVERE, "Caught IOException:" + ERROR.toString());
+            throw new SiebelBusinessServiceException("NULL_POINTER_EXCEPT", ex.getMessage());
+        }
         finally 
         {
             try 
@@ -82,7 +87,7 @@ public class ApplicationProperties implements IProperties{
             {
                 ex.printStackTrace(new PrintWriter(ERROR));
                 MyLogging.log(Level.SEVERE, "Caught IOException:" + ERROR.toString());
-                throw new SiebelBusinessServiceException("CAUGHT_EXCEPT", ERROR.toString());
+                throw new SiebelBusinessServiceException("FILE_NOT_CLOSED_EXCEPT", ex.getMessage());
             }
         }
         return stringOutput;

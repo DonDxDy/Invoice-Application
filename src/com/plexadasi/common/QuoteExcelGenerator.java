@@ -130,7 +130,8 @@ public class QuoteExcelGenerator implements Generator{
                         }
                     }
                 }
-            }   my_xlsx_workbook.setForceFormulaRecalculation(true);
+            }   
+            my_xlsx_workbook.setForceFormulaRecalculation(true);
             input_document.close();
             XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.quote_number.replace(" ", "_"));
             Attachment a = new QuoteAttachment(conn, quote_id);
@@ -151,32 +152,32 @@ public class QuoteExcelGenerator implements Generator{
         catch (FileNotFoundException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + ex.getMessage() + error_txt.toString());
-            throw new SiebelBusinessServiceException("FILE_NOT_FOUND_EXCPT", error_txt.toString()); 
+            MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + error_txt.toString());
+            throw new SiebelBusinessServiceException("FILE_NOT_FOUND_EXCPT", ex.getMessage()); 
         } 
         catch (IOException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught IO Exception: " + ex.getMessage() + error_txt.toString());
-            throw new SiebelBusinessServiceException("IO_EXCPT", error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught IO Exception: " + error_txt.toString());
+            throw new SiebelBusinessServiceException("IO_EXCPT", ex.getMessage());
         } 
         catch (InvalidFormatException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + ex.getMessage() + error_txt.toString());
-            throw new SiebelBusinessServiceException("IVALID_FORMAT_EXCPT", error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + error_txt.toString());
+            throw new SiebelBusinessServiceException("IVALID_FORMAT_EXCPT", ex.getMessage());
         } 
         catch (EncryptedDocumentException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + ex.getMessage() + error_txt.toString());
-            throw new SiebelBusinessServiceException("ENCRYPTED_DOC_EXCPT", error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + error_txt.toString());
+            throw new SiebelBusinessServiceException("ENCRYPTED_DOC_EXCPT", ex.getMessage());
         } 
         catch (Exception ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Exception: " + ex.getMessage() + error_txt.toString());
-            throw new SiebelBusinessServiceException("CUST_EXCPT", error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught Exception: " + error_txt.toString());
+            throw new SiebelBusinessServiceException("CUST_EXCPT", ex.getMessage());
         }
     }
 }

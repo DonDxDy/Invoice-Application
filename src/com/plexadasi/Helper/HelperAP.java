@@ -8,7 +8,6 @@ package com.plexadasi.Helper;
 import com.plexadasi.SiebelApplication.ApplicationProperties;
 import com.plexadasi.SiebelApplication.IProperties;
 import com.siebel.eai.SiebelBusinessServiceException;
-import java.io.IOException;
 
 /**
  *

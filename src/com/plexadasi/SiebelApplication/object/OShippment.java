@@ -53,7 +53,7 @@ public class OShippment extends SiebelServiceExtended implements Impl
         set = new SiebelPropertySet();
         set.setProperty("Account", "2");
         this.value = "Order Number";
-        searchKey = "Order Number";
+        searchKey = "Id";
         this.setSField(set);
         quoteItem = this.getSField("Order Entry", "Order Entry - Line Items", this);
           System.out.println(quoteItem);  
