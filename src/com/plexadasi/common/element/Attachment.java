@@ -23,7 +23,8 @@ import java.util.logging.Level;
  *
  * @author Adeyemi
  */
-abstract public class Attachment {
+abstract public class Attachment 
+{
     protected final SiebelBusObject sbBO;
     protected final SiebelBusComp sbBC;
     public final static String YES = "Y";

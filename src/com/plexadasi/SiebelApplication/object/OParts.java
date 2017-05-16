@@ -20,8 +20,8 @@ import java.util.logging.Level;
  *
  * @author Adeyemi
  */
-public class OParts extends SiebelService implements Impl{
-    
+public class OParts extends SiebelService implements Impl
+{
     private static SiebelPropertySet set;
     private String orderId;
     private List<Map<String, String>> orderItem;

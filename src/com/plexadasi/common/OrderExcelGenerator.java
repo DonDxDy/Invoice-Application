@@ -91,7 +91,7 @@ public class OrderExcelGenerator implements Generator
             customerInfo.createCellFromList(new OShippment(conn), new ContactKey());
             customerInfo.setStartRow(8);
             customerInfo.createCellFromList(new OAddress(conn), new ContactKey());
-            
+            customerInfo = null;
             
             InvoiceExcel parts;
             
@@ -108,9 +108,9 @@ public class OrderExcelGenerator implements Generator
             String filepath = XGenerator.getProperty("filepath");
             String filename = XGenerator.getProperty("filename");
             //String filepath = "/usr/app/siebel/intg/excel/weststar_TEST_02052017153845.xls";
-            
-            Attachment a = null;
-            
+            parts = null;
+            Attachment a = new WaybillAttachment(conn, order_id);
+            /*
             if(orderType.equalsIgnoreCase("Sales Order"))
             {
                 a = new WaybillAttachmentSales(conn, order_id);
@@ -119,14 +119,14 @@ public class OrderExcelGenerator implements Generator
             {
                 a = new WaybillAttachment(conn, order_id);
             }
-            
+            */
             //Attach the file to siebel
             a.Attach(
                 filepath,
                 filename,
                 Boolean.FALSE
             );
-            
+            a = null;
             boolean logoff = conn.logoff();
             my_xlsx_workbook.close();
             System.out.println("Done");
@@ -137,14 +137,14 @@ public class OrderExcelGenerator implements Generator
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + ex.getMessage() + error_txt.toString());
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", error_txt.toString());
+            outputs.setProperty("error_message", ex.getMessage());
         } 
         catch (IOException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught IO Exception: " + ex.getMessage() + error_txt.toString());
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", error_txt.toString());
+            outputs.setProperty("error_message", ex.getMessage());
         } 
         catch (InvalidFormatException ex) 
         {
@@ -158,14 +158,14 @@ public class OrderExcelGenerator implements Generator
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + ex.getMessage() + error_txt.toString());
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", error_txt.toString());
+            outputs.setProperty("error_message", ex.getMessage());
         } 
         catch (Exception ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught Exception: " + ex.getMessage() + error_txt.toString());
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", error_txt.toString());
+            outputs.setProperty("error_message", ex.getMessage());
         }
     }
 }
