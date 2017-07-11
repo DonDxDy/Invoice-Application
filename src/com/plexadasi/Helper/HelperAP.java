@@ -40,4 +40,9 @@ public class HelperAP
         AP.setProperties(IProperties.NIX_OUTPUT_KEY, IProperties.WIN_OUTPUT_KEY);
         return AP.getProperty();
     }
+
+    public static String getInvoiceTemplate2() throws SiebelBusinessServiceException {
+        AP.setProperties(IProperties.NIX_INVOICE_INPUT_KEY2, IProperties.WIN_INVOICE_INPUT_KEY2);
+        return AP.getProperty();
+    }
 }

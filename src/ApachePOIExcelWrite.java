@@ -10,6 +10,7 @@ import com.siebel.eai.SiebelBusinessService;
 import com.siebel.eai.SiebelBusinessServiceException;
 import com.plexadasi.common.OrderExcelGenerator;
 import com.plexadasi.common.QuoteExcelGenerator;
+import com.plexadasi.common.QuoteExcelGenerator2;
 import java.io.Writer;
 import java.util.logging.Level;
 
@@ -33,7 +34,13 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
         }
         if(MethodName.equalsIgnoreCase("QuoteExcelGenerator"))
         {
-            Context.callMethod(new QuoteExcelGenerator(), inputs, outputs);
+            if("Workshop Template".equals(inputs.getProperty("Type"))){
+                Context.callMethod(new QuoteExcelGenerator(), inputs, outputs);
+            }else if("Parts Template".equals(inputs.getProperty("Type"))){
+                Context.callMethod(new QuoteExcelGenerator2(), inputs, outputs);
+            }else{
+                throw new SiebelBusinessServiceException("NO_TYPE", "Type not found.");
+            }
         }
         else if(MethodName.equalsIgnoreCase("OrderExcelGenerator"))
         {

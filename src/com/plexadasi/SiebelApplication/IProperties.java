@@ -21,6 +21,10 @@ public interface IProperties {
     public static final String NIX_INVOICE_INPUT_KEY = "nix_invoice_template";
     public static final String WIN_INVOICE_INPUT_KEY = "win_invoice_template";
     
+    public static final String NIX_INVOICE_INPUT_KEY2 = "nix_invoice_template_second";
+    
+    public static final String WIN_INVOICE_INPUT_KEY2 = "win_invoice_template_second";
+    
      /**
      *
      */
