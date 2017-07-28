@@ -3,19 +3,14 @@ package com.plexadasi.common;
 
 import com.plexadasi.Helper.HelperAP;
 import com.plexadasi.SiebelApplication.MyLogging;
-import com.plexadasi.SiebelApplication.object.OAddress;
-import com.plexadasi.SiebelApplication.object.OParts;
-import com.plexadasi.SiebelApplication.object.OShippment;
 import com.plexadasi.SiebelApplication.object.QOrderBillToAccount;
-import com.plexadasi.SiebelApplication.object.QParts;
 import com.plexadasi.SiebelApplication.object.QParts2;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelPropertySet;
 import com.plexadasi.common.element.Attachment;
 import com.plexadasi.common.element.InvoiceExcel;
+import com.plexadasi.common.element.InvoiceExcelTotal2;
 import com.plexadasi.common.element.QuoteAttachment;
-import com.plexadasi.common.element.WaybillAttachment;
-import com.plexadasi.common.element.WaybillAttachmentSales;
 import com.plexadasi.common.element.XGenerator;
 import com.plexadasi.common.impl.Generator;
 import com.plexadasi.connect.siebel.SiebelConnect;
@@ -52,6 +47,8 @@ public class QuoteExcelGenerator2 implements Generator
     
     private String quote_number;
     
+    private String type;
+    
     private final StringWriter error_txt = new StringWriter();
     
     private FileInputStream input_document;
@@ -59,6 +56,7 @@ public class QuoteExcelGenerator2 implements Generator
     public QuoteExcelGenerator2() {
         this.quote_number = null;
         this.input_document = null;
+        this.type = null;
     }
     
     /**
@@ -83,24 +81,28 @@ public class QuoteExcelGenerator2 implements Generator
             // Declare a Cell object
             this.quote_id = inputs.getProperty("QuoteId");
             this.quote_number = inputs.getProperty("QuoteNum");
+            this.type = inputs.getProperty("Type");
+            InvoiceExcel contact;
+            InvoiceExcelTotal2 parts;
             
-            InvoiceExcel parts;
+            contact = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
             
-            parts = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
+            int startRowAt = 3;
+            contact.setJobId(this.quote_id);
+            contact.setStartRow(startRowAt);
+            contact.createCellFromList(new QOrderBillToAccount(conn), new ContactKey());
             
-            int startRowAt = 4;
-            parts.setStartRow(startRowAt);
-            parts.setJobId(this.quote_id);
-            parts.createCellFromList(new QOrderBillToAccount(conn), new ContactKey());
-            
-            startRowAt = 16;
             //
-            parts.setStartRow(startRowAt);
+            startRowAt = 16;
+            parts = new InvoiceExcelTotal2(my_xlsx_workbook, my_worksheet);
             parts.setJobId(this.quote_id);
+            parts.setStartRow(startRowAt);
+            char lastColumn = ((char)'A' + 8);
+            parts.setLastColumn(lastColumn);
             parts.createCellFromList(new QParts2(conn), new ProductKey());
             my_xlsx_workbook.setForceFormulaRecalculation(true);
             input_document.close();
-            XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.quote_number.replace(" ", "_"));
+            XGenerator.doCreateBook(my_xlsx_workbook, "WST-" + this.type.replace(" ", "-") + "_" + this.quote_number.replace(" ", "_"));
             String filepath = XGenerator.getProperty("filepath");
             String filename = XGenerator.getProperty("filename");
             //String filepath = "/usr/app/siebel/intg/excel/weststar_TEST_02052017153845.xls";
@@ -120,38 +122,38 @@ public class QuoteExcelGenerator2 implements Generator
         } 
         catch (FileNotFoundException ex) 
         {
-            ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + ex.getMessage() + error_txt.toString());
             outputs.setProperty("status", "failed");
             outputs.setProperty("error_message", ex.getMessage());
+            ex.printStackTrace(new PrintWriter(error_txt));
+            MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + ex.getMessage() + error_txt.toString());
         } 
         catch (IOException ex) 
         {
-            ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught IO Exception: " + ex.getMessage() + error_txt.toString());
             outputs.setProperty("status", "failed");
             outputs.setProperty("error_message", ex.getMessage());
+            ex.printStackTrace(new PrintWriter(error_txt));
+            MyLogging.log(Level.SEVERE, "Caught IO Exception: " + ex.getMessage() + error_txt.toString());
         } 
         catch (InvalidFormatException ex) 
         {
-            ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + ex.getMessage() + error_txt.toString());
             outputs.setProperty("status", "failed");
             outputs.setProperty("error_message", error_txt.toString());
+            ex.printStackTrace(new PrintWriter(error_txt));
+            MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + ex.getMessage() + error_txt.toString());
         } 
         catch (EncryptedDocumentException ex) 
         {
-            ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + ex.getMessage() + error_txt.toString());
             outputs.setProperty("status", "failed");
             outputs.setProperty("error_message", ex.getMessage());
+            ex.printStackTrace(new PrintWriter(error_txt));
+            MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + ex.getMessage() + error_txt.toString());
         } 
         catch (Exception ex) 
         {
-            ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Exception: " + ex.getMessage() + error_txt.toString());
             outputs.setProperty("status", "failed");
             outputs.setProperty("error_message", ex.getMessage());
+            ex.printStackTrace(new PrintWriter(error_txt));
+            MyLogging.log(Level.SEVERE, "Caught Exception: " + ex.getMessage() + error_txt.toString());
         }
     }
 }

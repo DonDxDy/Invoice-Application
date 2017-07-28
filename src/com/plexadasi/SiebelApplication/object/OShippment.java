@@ -6,6 +6,7 @@
 package com.plexadasi.SiebelApplication.object;
 
 import com.plexadasi.SiebelApplication.MyLogging;
+import com.plexadasi.SiebelApplication.SiebelSearch;
 import com.plexadasi.SiebelApplication.SiebelServiceExtended;
 import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelDataBean;
@@ -13,14 +14,16 @@ import com.siebel.data.SiebelException;
 import com.siebel.data.SiebelPropertySet;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
+import java.util.HashMap;
 
 /**
  *
  * @author Adeyemi
  */
-public class OShippment extends SiebelServiceExtended implements Impl
+public class OShippment extends SiebelSearch implements Impl
 {
     
     private static SiebelPropertySet set;
@@ -55,7 +58,7 @@ public class OShippment extends SiebelServiceExtended implements Impl
         this.value = "Order Number";
         searchKey = "Id";
         this.setSField(set);
-        quoteItem = this.getSField("Order Entry", "Order Entry - Line Items", this);
+        set = this.getSField("Order Entry", "Order Entry - Line Items", this);
           System.out.println(quoteItem);  
         //return quoteItem;
     }
@@ -63,18 +66,36 @@ public class OShippment extends SiebelServiceExtended implements Impl
     private List<Map<String, String>> orderItem(String order_id) throws SiebelException
     {
         Id = order_id;
-        System.out.println("Account: " + order_id);
         set = new SiebelPropertySet();
         set.setProperty("Scheduled Delivery Date", "3");
+        set.setProperty("Carrier", "3");
         set.setProperty("Waybill Number", "3");
+        set.setProperty("Waybill Seq Num", "3");
         this.value = "";
         searchKey = "Shipment Number";
         this.setSField(set);
-        quoteItem = this.getSField("Order Entry", "FS Shipment", this);
+        SiebelPropertySet sets = this.getSField("Order Entry", "FS Shipment", this);
+        int waybillNum = Integer.parseInt(sets.getProperty("Waybill Seq Num"));
+        String waybill = "WB-WS/" + String.format("%04d", waybillNum);
+        quoteItem = new ArrayList();
+        Map<String, String> map = new HashMap();
+        map.put("3", sets.getProperty("Scheduled Delivery Date"));
+        quoteItem.add(map);
+        map = new HashMap();
+        map.put("3", sets.getProperty("Carrier"));
+        quoteItem.add(map);
+        map = new HashMap();
+        map.put("3", waybill);
+        quoteItem.add(map);
+        MyLogging.log(Level.INFO, String.valueOf(quoteItem));
+        Map<String, String> m = new HashMap();
+        m.put("Waybill Number", waybill);
+        if(sets.getProperty("Waybill Number").equals("")){
+            this.writeRecord("Order Entry", "FS Shipment", this, m);
+        }
         return quoteItem;
     }
     
-
     @Override
     public void searchSpec(SiebelBusComp sbBC) throws SiebelException 
     {

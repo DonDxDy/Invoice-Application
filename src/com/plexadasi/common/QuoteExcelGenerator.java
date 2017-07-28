@@ -51,6 +51,8 @@ public class QuoteExcelGenerator implements Generator{
     
     private String quote_number;
     
+    private String type;
+    
     private Boolean output;
     
     private final StringWriter error_txt = new StringWriter();
@@ -60,6 +62,7 @@ public class QuoteExcelGenerator implements Generator{
     public QuoteExcelGenerator() {
         this.quote_number = "";
         this.input_document = null;
+        this.type = null;
     }
     
     /**
@@ -85,6 +88,7 @@ public class QuoteExcelGenerator implements Generator{
             // Declare a Cell object
             this.quote_id = inputs.getProperty("QuoteId");
             this.quote_number = inputs.getProperty("QuoteNum");
+            this.type = inputs.getProperty("Type");
             InvoiceExcel customerInfo = new InvoiceExcel(my_xlsx_workbook, my_worksheet, 6);
             customerInfo.setJobId(this.quote_id);
             customerInfo.createCellFromList(new QCustomer(conn), new ContactKey());
@@ -133,7 +137,7 @@ public class QuoteExcelGenerator implements Generator{
             }   
             my_xlsx_workbook.setForceFormulaRecalculation(true);
             input_document.close();
-            XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.quote_number.replace(" ", "_"));
+            XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.type.replace(" ", "-") + "_" + this.quote_number.replace(" ", "_"));
             Attachment a = new QuoteAttachment(conn, quote_id);
             String filepath = XGenerator.getProperty("filepath");
             String filename = XGenerator.getProperty("filename");
@@ -151,33 +155,38 @@ public class QuoteExcelGenerator implements Generator{
         } 
         catch (FileNotFoundException ex) 
         {
+            outputs.setProperty("status", "failed");
+            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + error_txt.toString());
-            throw new SiebelBusinessServiceException("FILE_NOT_FOUND_EXCPT", ex.getMessage()); 
         } 
         catch (IOException ex) 
         {
+            outputs.setProperty("status", "failed");
+            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught IO Exception: " + error_txt.toString());
-            throw new SiebelBusinessServiceException("IO_EXCPT", ex.getMessage());
         } 
         catch (InvalidFormatException ex) 
         {
+            outputs.setProperty("status", "failed");
+            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + error_txt.toString());
-            throw new SiebelBusinessServiceException("IVALID_FORMAT_EXCPT", ex.getMessage());
         } 
         catch (EncryptedDocumentException ex) 
         {
+            outputs.setProperty("status", "failed");
+            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + error_txt.toString());
-            throw new SiebelBusinessServiceException("ENCRYPTED_DOC_EXCPT", ex.getMessage());
         } 
         catch (Exception ex) 
         {
+            outputs.setProperty("status", "failed");
+            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
             MyLogging.log(Level.SEVERE, "Caught Exception: " + error_txt.toString());
-            throw new SiebelBusinessServiceException("CUST_EXCPT", ex.getMessage());
         }
     }
 }

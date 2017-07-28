@@ -28,15 +28,15 @@ public class ApachePOIExcelWriteTest
         inputs.setProperty("JobNum", "Job Card");
         //eia.doInvokeMethod("JobCardGenerator", inputs, outputs);
         
-        inputs.setProperty("QuoteId", "1-2CUL4");
+        inputs.setProperty("QuoteId", "1-123AY");
         inputs.setProperty("QuoteNum", "Quotes 1-2CUL4");
-        inputs.setProperty("QuoteType", "type2");
+        inputs.setProperty("Type", "Proforma Invoice");
         eia.doInvokeMethod("QuoteExcelGenerator", inputs, outputs);
         
-        inputs.setProperty("OrderId", "1-2BL9S");
-        inputs.setProperty("OrderNum", "1-3900016");
+        inputs.setProperty("OrderId", "1-2C05B");
+        inputs.setProperty("OrderNum", "1-3919295");
         inputs.setProperty("OrderType", "Sales Order");
-        inputs.setProperty("ShipId", "1-3271146");
+        inputs.setProperty("ShipId", "1-4098412");
         //eia.doInvokeMethod("OrderExcelGenerator", inputs, outputs);
     }
 }

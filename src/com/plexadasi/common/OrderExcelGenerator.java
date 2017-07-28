@@ -11,7 +11,6 @@ import com.siebel.data.SiebelPropertySet;
 import com.plexadasi.common.element.Attachment;
 import com.plexadasi.common.element.InvoiceExcel;
 import com.plexadasi.common.element.WaybillAttachment;
-import com.plexadasi.common.element.WaybillAttachmentSales;
 import com.plexadasi.common.element.XGenerator;
 import com.plexadasi.common.impl.Generator;
 import com.plexadasi.connect.siebel.SiebelConnect;
@@ -89,13 +88,13 @@ public class OrderExcelGenerator implements Generator
             InvoiceExcel customerInfo = new InvoiceExcel(my_xlsx_workbook, my_worksheet, 3);
             customerInfo.setJobId(this.ship_id);
             customerInfo.createCellFromList(new OShippment(conn), new ContactKey());
-            customerInfo.setStartRow(8);
+            customerInfo.setStartRow(9);
             customerInfo.createCellFromList(new OAddress(conn), new ContactKey());
             customerInfo = null;
             
             InvoiceExcel parts;
             
-            int startRowAt = 17;
+            int startRowAt = 18;
             parts = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
             
             //
@@ -121,11 +120,12 @@ public class OrderExcelGenerator implements Generator
             }
             */
             //Attach the file to siebel
+            /*
             a.Attach(
                 filepath,
                 filename,
                 Boolean.FALSE
-            );
+            );*/
             a = null;
             boolean logoff = conn.logoff();
             my_xlsx_workbook.close();

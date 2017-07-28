@@ -8,6 +8,7 @@ package com.plexadasi.SiebelApplication.object;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.SiebelSearch;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
+import com.plexadasi.invoiceapplication.DataConverter;
 import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
@@ -29,6 +30,7 @@ public class QOrderBillToAccount extends SiebelSearch implements Impl{
     private List<Map<String, String>> quoteItem;
     private static final String BO = "Quote";
     private static final String BC = "Quote";
+    private QOrderSequence seq;
     
     /**
      * 
@@ -38,6 +40,7 @@ public class QOrderBillToAccount extends SiebelSearch implements Impl{
     {
         super(conn);
         quoteItem = new ArrayList();
+        seq = new QOrderSequence(conn);
     }
     
     /**
@@ -55,12 +58,21 @@ public class QOrderBillToAccount extends SiebelSearch implements Impl{
         set.setProperty("Account", "Account");
         set.setProperty("Billing Account", "Billing Account");
         set.setProperty("Sales Team", "Sales Team");
+        set.setProperty("Contact Home Phone #", "Contact Home Phone #");
+        set.setProperty("Creator EBS Id", "Creator EBS Id");
         this.setSField(set);
         set = this.getSField(BO, BC, this);
+        SiebelPropertySet getSeq = seq.find(BO, quote_id);
+        int startSeq = DataConverter.toInt(getSeq.getProperty("Proforma"));
+        int nextSeq = startSeq + 1;
+        Map<String, String> setField = new HashMap();
+        setField.put("Proforma", String.valueOf(nextSeq));
+        seq.writeTo(BO, quote_id, setField);
         Map<String, String> map =  new HashMap();
-        map.put("8", set.getProperty("Created"));
+        map.put("8", "WS/AS-" + String.format("%04d", startSeq));
         quoteItem.add(map);
         map = new HashMap();
+        map.put("8", set.getProperty("Created"));
         quoteItem.add(map);
         map = new HashMap();
         quoteItem.add(map);
@@ -74,6 +86,12 @@ public class QOrderBillToAccount extends SiebelSearch implements Impl{
         quoteItem.add(map);
         map = new HashMap();
         map.put("8", set.getProperty("Sales Team"));
+        quoteItem.add(map);//Creator EBS Id
+        map = new HashMap();
+        map.put("8", set.getProperty("Contact Home Phone #"));
+        quoteItem.add(map);
+        map = new HashMap();
+        map.put("8", set.getProperty("Creator EBS Id"));
         quoteItem.add(map);
         MyLogging.log(Level.INFO, "Creating siebel objects Parts: " + quoteItem);
         return quoteItem;

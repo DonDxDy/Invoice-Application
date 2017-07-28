@@ -5,34 +5,36 @@
  */
 package com.plexadasi.common.element;
 
+import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.invoiceapplication.IKey;
 import com.plexadasi.invoiceapplication.ProductKey;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
+import java.util.logging.Level;
 
 
 /**
  *
  * @author hp
  */
-public class InvoiceExcelTotal extends AExcel{
-    private final char lastColumn;
+public class InvoiceExcelTotal2 extends AExcel{
+    private char lastColumn;
     private String total;
     
-    public InvoiceExcelTotal()
+    public InvoiceExcelTotal2()
     {
         super();
         this.lastColumn = ((char)'A' + 9);
     }
 
-    public InvoiceExcelTotal(Workbook book, Sheet sheet) {
+    public InvoiceExcelTotal2(Workbook book, Sheet sheet) {
         super(book, sheet);
         this.lastColumn = ((char)'A' + 9);
     }
     
-    public InvoiceExcelTotal(Workbook book, Sheet sheet, int startRow) {
+    public InvoiceExcelTotal2(Workbook book, Sheet sheet, int startRow) {
         super(book, sheet, startRow);
         this.lastColumn = ((char)'A' + 9);
     }
@@ -67,23 +69,27 @@ public class InvoiceExcelTotal extends AExcel{
         return this.total;
     }
     
+    public void setLastColumn(char lastColumn){
+        this.lastColumn = lastColumn;
+    }
+    
     public void Total(IKey iKey)
     {
         if(rowCount % 1 == 0)
         {
             
         }
-        int sumFirstRow = (firstRow), sumLastRow = firstRow + (rowCount) + 1;
+        int sumFirstRow = (firstRow) + 1, sumLastRow = firstRow + (rowCount) + 3;
         CellReference cr = new CellReference(lastColumn + String.valueOf(sumLastRow));
         if(iKey instanceof ProductKey){
             this.sheetrow = worksheet.getRow(cr.getRow());
             this.sheetcell = this.sheetrow.getCell(cr.getCol());
-                XGenerator.doMerge(worksheet, sumLastRow - 1, 7, 1, 2, false);
             if(sumFirstRow != sumLastRow){
-                this.total = "SUM(SUM("+lastColumn+sumFirstRow+":"+lastColumn+(sumLastRow-1)+")+0.00)";
+                this.total = "SUM(SUM("+lastColumn+sumFirstRow+":"+lastColumn+(sumLastRow-3)+")+0.00)";
             }else{
                 this.total = "SUM(0.00)";
             }
+            MyLogging.log(Level.SEVERE, this.total + " " + sumLastRow);
             this.sheetcell.setCellFormula(this.total);
         }
     }

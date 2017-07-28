@@ -34,9 +34,9 @@ public class ApachePOIExcelWrite  extends SiebelBusinessService{
         }
         if(MethodName.equalsIgnoreCase("QuoteExcelGenerator"))
         {
-            if("Workshop Template".equals(inputs.getProperty("Type"))){
+            if("Workshop Template".equalsIgnoreCase(inputs.getProperty("Type"))){
                 Context.callMethod(new QuoteExcelGenerator(), inputs, outputs);
-            }else if("Parts Template".equals(inputs.getProperty("Type"))){
+            }else if("Proforma Invoice".equalsIgnoreCase(inputs.getProperty("Type"))){
                 Context.callMethod(new QuoteExcelGenerator2(), inputs, outputs);
             }else{
                 throw new SiebelBusinessServiceException("NO_TYPE", "Type not found.");

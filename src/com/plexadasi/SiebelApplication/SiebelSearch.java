@@ -9,6 +9,8 @@ import com.siebel.data.SiebelPropertySet;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Map;
+import java.util.logging.Level;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -67,9 +69,27 @@ public class SiebelSearch {
         sbBC.executeQuery2(true, true);
         List = doTrigger(sbBC);
         sbBC.release();
-        sbBC.release();
-
+        sbBO.release();
         return List;
+    }
+    
+    public void writeRecord(String bO, String bC, Impl qM, Map<String, String> setField) throws SiebelException{
+        SiebelBusObject sbBO = sdb.getBusObject(bO); 
+        sbBC = sbBO.getBusComp(bC);
+        sbBC.setViewMode(3);
+        sbBC.clearToQuery();
+        // Activate all the fields
+        sbBC.activateMultipleFields(properties);
+        qM.searchSpec(sbBC);
+        sbBC.executeQuery2(true, true);
+        //sbBC.newRecord(1);
+        doTrigger(sbBC);
+        for(Map.Entry<String, String> entry : setField.entrySet()){
+            sbBC.setFieldValue(entry.getKey(), entry.getValue());
+        }
+        sbBC.writeRecord();
+        sbBC.release();
+        sbBO.release();
     }
     
     protected SiebelPropertySet doTrigger(SiebelBusComp sbBC) throws SiebelException

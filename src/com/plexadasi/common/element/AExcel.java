@@ -31,8 +31,8 @@ public abstract class AExcel {
      */
     protected static Workbook workbook;
     protected static Sheet worksheet;
-    protected static Row sheetrow;
-    protected static Cell sheetcell;
+    protected Row sheetrow;
+    protected Cell sheetcell;
     
     protected static String value;
     protected String quote_id;
