@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
+import com.siebel.eai.SiebelBusinessServiceException;
 
 /**
  *
@@ -42,9 +43,10 @@ public class QExpenses extends SiebelService implements Impl{
      * @param quote_id
      * @return
      * @throws SiebelException 
+     * @throws com.siebel.eai.SiebelBusinessServiceException 
      */
     @Override
-    public List<Map<String, String>> getItems(String quote_id) throws SiebelException
+    public List<Map<String, String>> getItems(String quote_id) throws SiebelException, SiebelBusinessServiceException
     {
         this.quoteId = quote_id;
         set = new SiebelPropertySet();

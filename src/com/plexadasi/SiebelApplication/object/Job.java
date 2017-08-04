@@ -11,6 +11,7 @@ import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
 import com.siebel.data.SiebelPropertySet;
+import com.siebel.eai.SiebelBusinessServiceException;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
@@ -48,9 +49,10 @@ public class Job implements Impl
      * @param id
      * @return
      * @throws SiebelException
+     * @throws com.siebel.eai.SiebelBusinessServiceException
      */
     @Override
-    public List<Map<String, String>> getItems(String id) throws SiebelException
+    public List<Map<String, String>> getItems(String id) throws SiebelException, SiebelBusinessServiceException
     {
         //Map<String, String> map = new HashMap();
         //map.put("1", "CUSTOMER'S COMPLAINT");

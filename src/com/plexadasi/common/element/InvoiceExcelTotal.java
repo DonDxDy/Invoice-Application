@@ -11,6 +11,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -49,18 +51,22 @@ public class InvoiceExcelTotal extends AExcel{
     {
         workbook = book;
         worksheet = sheet;
-        createCell(qM, iKey);
+        createCell(qM.getItems(quote_id), iKey);
         Total(iKey);
     }
     
     @Override
     public void createCellFromList(Impl qM, IKey iKey) throws Exception
     {
-        createCell(qM, iKey);
+        createCell(qM.getItems(quote_id), iKey);
         Total(iKey);
     }
     
-    
+    public void createCellFromList(List<Map<String, String>> qM, IKey iKey) throws Exception
+    {
+        createCell(qM, iKey);
+        Total(iKey);
+    }
     
     public String getTotal()
     {

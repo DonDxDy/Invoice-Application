@@ -67,10 +67,10 @@ public class OShippment extends SiebelSearch implements Impl
     {
         Id = order_id;
         set = new SiebelPropertySet();
-        set.setProperty("Scheduled Delivery Date", "3");
-        set.setProperty("Carrier", "3");
-        set.setProperty("Waybill Number", "3");
-        set.setProperty("Waybill Seq Num", "3");
+        set.setProperty("Scheduled Delivery Date", "5");
+        set.setProperty("Carrier", "5");
+        set.setProperty("Waybill Number", "5");
+        set.setProperty("Waybill Seq Num", "5");
         this.value = "";
         searchKey = "Shipment Number";
         this.setSField(set);
@@ -79,13 +79,13 @@ public class OShippment extends SiebelSearch implements Impl
         String waybill = "WB-WS/" + String.format("%04d", waybillNum);
         quoteItem = new ArrayList();
         Map<String, String> map = new HashMap();
-        map.put("3", sets.getProperty("Scheduled Delivery Date"));
+        map.put("5", sets.getProperty("Scheduled Delivery Date"));
         quoteItem.add(map);
         map = new HashMap();
-        map.put("3", sets.getProperty("Carrier"));
+        map.put("5", waybill);
         quoteItem.add(map);
         map = new HashMap();
-        map.put("3", waybill);
+        map.put("5", sets.getProperty("Carrier"));
         quoteItem.add(map);
         MyLogging.log(Level.INFO, String.valueOf(quoteItem));
         Map<String, String> m = new HashMap();

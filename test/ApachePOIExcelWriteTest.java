@@ -28,7 +28,7 @@ public class ApachePOIExcelWriteTest
         inputs.setProperty("JobNum", "Job Card");
         //eia.doInvokeMethod("JobCardGenerator", inputs, outputs);
         
-        inputs.setProperty("QuoteId", "1-123AY");
+        inputs.setProperty("QuoteId", "1-2HTET");
         inputs.setProperty("QuoteNum", "Quotes 1-2CUL4");
         inputs.setProperty("Type", "Proforma Invoice");
         eia.doInvokeMethod("QuoteExcelGenerator", inputs, outputs);

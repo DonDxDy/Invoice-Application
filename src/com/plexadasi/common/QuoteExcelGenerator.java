@@ -55,11 +55,14 @@ public class QuoteExcelGenerator implements Generator{
     
     private Boolean output;
     
+    private final SiebelDataBean conn;
+    
     private final StringWriter error_txt = new StringWriter();
     
     private FileInputStream input_document;
 
-    public QuoteExcelGenerator() {
+    public QuoteExcelGenerator(SiebelDataBean conn) {
+        this.conn = conn;
         this.quote_number = "";
         this.input_document = null;
         this.type = null;
@@ -76,7 +79,6 @@ public class QuoteExcelGenerator implements Generator{
         try {
             //
             //IProperties AP = new ApplicationProperties2();
-            SiebelDataBean conn = SiebelConnect.connectSiebelServer();
             //Get excel path
             inputFile = HelperAP.getInvoiceTemplate();
             //Read Excel document first
@@ -148,7 +150,6 @@ public class QuoteExcelGenerator implements Generator{
                 Boolean.FALSE
             );
             //outputs.setProperty("getFileReturn", a.getProperty("aGetFileReturn"));
-            boolean logoff = conn.logoff();
             my_xlsx_workbook.close();
             System.out.println("Done");
             output = outputs.setProperty("status", "success");

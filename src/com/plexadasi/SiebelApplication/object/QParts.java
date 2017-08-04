@@ -12,6 +12,7 @@ import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
 import com.siebel.data.SiebelPropertySet;
+import com.siebel.eai.SiebelBusinessServiceException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -42,9 +43,10 @@ public class QParts extends SiebelService implements Impl{
      * @param quote_id
      * @return
      * @throws SiebelException
+     * @throws com.siebel.eai.SiebelBusinessServiceException
      */
     @Override
-    public List<Map<String, String>> getItems(String quote_id) throws SiebelException
+    public List<Map<String, String>> getItems(String quote_id) throws SiebelException, SiebelBusinessServiceException
     {
         this.quoteId = quote_id;
         set = new SiebelPropertySet();

@@ -48,12 +48,15 @@ public class JobCardGenerator implements Generator{
     private String job_id;
     
     private String job_number;
+            
+    private final SiebelDataBean conn;
     
     private final StringWriter error_txt = new StringWriter();
     
     private FileInputStream input_document;
 
-    public JobCardGenerator() {
+    public JobCardGenerator(SiebelDataBean conn) {
+        this.conn = conn;
         this.job_number = "";
         this.input_document = null;
     }
@@ -69,7 +72,6 @@ public class JobCardGenerator implements Generator{
         try 
         {
             //
-            SiebelDataBean conn = SiebelConnect.connectSiebelServer();
             //Get excel path
             inputFile = HelperAP.getJobCardTemplate();
             //Read Excel document first
@@ -109,7 +111,6 @@ public class JobCardGenerator implements Generator{
                 filename,
                 Boolean.FALSE
             );
-            boolean logoff = conn.logoff();
             input_document.close();
             my_xlsx_workbook.close();
             System.out.println("Done");

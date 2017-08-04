@@ -22,7 +22,8 @@ import java.util.ArrayList;
 public class QOrderSequence extends SiebelSearch implements Impl{
     
     private static SiebelPropertySet set;
-    private String quoteId;
+    private String searchSpec;
+    private String id;
     private List<Map<String, String>> quoteItem;
     private static final String BO = "Quote";
     private static final String BC = "PLX Doc Sequence Cache";
@@ -38,7 +39,8 @@ public class QOrderSequence extends SiebelSearch implements Impl{
     }
     
     public SiebelPropertySet find(String BO, String quote_id) throws SiebelException{
-        this.quoteId = quote_id;
+        this.searchSpec = "Id";
+        this.id = quote_id;
         set = new SiebelPropertySet();
         set.setProperty("Proforma", "Proforma");
         this.setSField(set);
@@ -46,8 +48,10 @@ public class QOrderSequence extends SiebelSearch implements Impl{
     }
     
     public void writeTo(String BO, String quote_id, Map<String, String> setField) throws SiebelException{
-        this.quoteId = quote_id;
+        this.searchSpec = "Id";
+        this.id = quote_id;
         set = new SiebelPropertySet();
+        set.setProperty("Id", quote_id);
         set.setProperty("Proforma", "Proforma");
         this.setSField(set);
         this.writeRecord(BO, BC, this, setField);
@@ -55,15 +59,17 @@ public class QOrderSequence extends SiebelSearch implements Impl{
     
     /**
      *
-     * @param quote_id
+     * @param id
      * @return
      * @throws SiebelException
      */
     @Override
-    public List<Map<String, String>> getItems(String quote_id) throws SiebelException
+    public List<Map<String, String>> getItems(String id) throws SiebelException
     {
-        this.quoteId = quote_id;
+        this.searchSpec = "Id";
+        this.id = id;
         set = new SiebelPropertySet();
+        set.setProperty(this.searchSpec, this.id);
         set.setProperty("Proforma", "Proforma");
         this.setSField(set);
         set = this.getSField(BO, BC, this);
@@ -78,7 +84,7 @@ public class QOrderSequence extends SiebelSearch implements Impl{
     @Override
     public void searchSpec(SiebelBusComp sbBC) throws SiebelException 
     {
-        sbBC.setSearchSpec("Id", quoteId); 
+        sbBC.setSearchSpec(this.searchSpec, this.id); 
     }
     
     /**

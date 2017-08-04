@@ -54,8 +54,11 @@ public class OrderExcelGenerator implements Generator
     private final StringWriter error_txt = new StringWriter();
     
     private FileInputStream input_document;
+    
+    private final SiebelDataBean conn;
 
-    public OrderExcelGenerator() {
+    public OrderExcelGenerator(SiebelDataBean conn) {
+        this.conn = conn;
         this.orderType = this.ship_id = this.inputFile = this.order_number = "";
         this.input_document = null;
     }
@@ -70,7 +73,6 @@ public class OrderExcelGenerator implements Generator
     {
         try {
             //
-            SiebelDataBean conn = SiebelConnect.connectSiebelServer();
             //Get excel path
             inputFile = HelperAP.getWaybillTemplate();
             //Read Excel document first
@@ -85,16 +87,16 @@ public class OrderExcelGenerator implements Generator
             this.ship_id = inputs.getProperty("ShipId");
             this.orderType = inputs.getProperty("OrderType");
             
-            InvoiceExcel customerInfo = new InvoiceExcel(my_xlsx_workbook, my_worksheet, 3);
+            InvoiceExcel customerInfo = new InvoiceExcel(my_xlsx_workbook, my_worksheet, 2);
             customerInfo.setJobId(this.ship_id);
             customerInfo.createCellFromList(new OShippment(conn), new ContactKey());
-            customerInfo.setStartRow(9);
-            customerInfo.createCellFromList(new OAddress(conn), new ContactKey());
+            customerInfo.setStartRow(6);
+            customerInfo.createCellFromList(new OAddress(conn, this.order_number), new ContactKey());
             customerInfo = null;
             
             InvoiceExcel parts;
             
-            int startRowAt = 18;
+            int startRowAt = 14;
             parts = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
             
             //
@@ -120,14 +122,13 @@ public class OrderExcelGenerator implements Generator
             }
             */
             //Attach the file to siebel
-            /*
+            
             a.Attach(
                 filepath,
                 filename,
                 Boolean.FALSE
-            );*/
+            );
             a = null;
-            boolean logoff = conn.logoff();
             my_xlsx_workbook.close();
             System.out.println("Done");
             outputs.setProperty("status", "success");

@@ -5,6 +5,7 @@ import com.plexadasi.Helper.HelperAP;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.object.QOrderBillToAccount;
 import com.plexadasi.SiebelApplication.object.QParts2;
+import com.plexadasi.SiebelApplication.object.Quote;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelPropertySet;
 import com.plexadasi.common.element.Attachment;
@@ -13,15 +14,23 @@ import com.plexadasi.common.element.InvoiceExcelTotal2;
 import com.plexadasi.common.element.QuoteAttachment;
 import com.plexadasi.common.element.XGenerator;
 import com.plexadasi.common.impl.Generator;
+import com.plexadasi.connect.ebs.EbsConnect;
 import com.plexadasi.connect.siebel.SiebelConnect;
 import com.plexadasi.invoiceapplication.ContactKey;
 import com.plexadasi.invoiceapplication.ProductKey;
+import com.siebel.eai.SiebelBusinessServiceException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -48,12 +57,19 @@ public class QuoteExcelGenerator2 implements Generator
     private String quote_number;
     
     private String type;
+            
+    private final SiebelDataBean conn;
     
     private final StringWriter error_txt = new StringWriter();
     
     private FileInputStream input_document;
+    
+    private Connection ebsConn = null;
+    
+    private List list = new ArrayList();
 
-    public QuoteExcelGenerator2() {
+    public QuoteExcelGenerator2(SiebelDataBean conn) {
+        this.conn = conn;
         this.quote_number = null;
         this.input_document = null;
         this.type = null;
@@ -65,11 +81,18 @@ public class QuoteExcelGenerator2 implements Generator
      * @param outputs the value of outputs
      */
     @Override
-    public void generateExcelDoc(SiebelPropertySet inputs, SiebelPropertySet outputs)
+    public void generateExcelDoc(SiebelPropertySet inputs, SiebelPropertySet outputs) throws SiebelBusinessServiceException
     {
+        try{
+            ebsConn = EbsConnect.connectToEBSDatabase();
+        }catch(NullPointerException e){
+            MyLogging.log(Level.SEVERE, "Caught Exception: Failed to connect to EBS. Please try again or ask your administrator.");
+            outputs.setProperty("status", "failed");
+            outputs.setProperty("error_message", "Failed to connect to EBS. Please try again or ask your administrator.");
+            throw new SiebelBusinessServiceException("CONN_EXCEPT", "Failed to connect to EBS. Please try again or ask your administrator."); 
+        }
         try {
             //
-            SiebelDataBean conn = SiebelConnect.connectSiebelServer();
             //Get excel path
             inputFile = HelperAP.getInvoiceTemplate2();
             //Read Excel document first
@@ -82,9 +105,8 @@ public class QuoteExcelGenerator2 implements Generator
             this.quote_id = inputs.getProperty("QuoteId");
             this.quote_number = inputs.getProperty("QuoteNum");
             this.type = inputs.getProperty("Type");
-            InvoiceExcel contact;
-            InvoiceExcelTotal2 parts;
-            
+            InvoiceExcel contact, parts;
+            InvoiceExcel qParts;
             contact = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
             
             int startRowAt = 3;
@@ -94,12 +116,41 @@ public class QuoteExcelGenerator2 implements Generator
             
             //
             startRowAt = 16;
-            parts = new InvoiceExcelTotal2(my_xlsx_workbook, my_worksheet);
+            qParts = parts = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
             parts.setJobId(this.quote_id);
             parts.setStartRow(startRowAt);
-            char lastColumn = ((char)'A' + 8);
-            parts.setLastColumn(lastColumn);
-            parts.createCellFromList(new QParts2(conn), new ProductKey());
+            parts.createCellFromList(new QParts2(conn, ebsConn), new ProductKey());
+            
+            SiebelPropertySet set = new SiebelPropertySet();
+            set.setProperty("PLX Quote Total", "PLX Quote Total");
+            set.setProperty("Current Quote Total Net Price", "Current Quote Total Net Price");
+            set.setProperty("Sales Team", "Sales Team");
+            
+            parts.setStartRow(parts.next(0));
+            Quote quote = new Quote(conn);
+            SiebelPropertySet get = quote.find(quote_id, set);
+            Map<String, String> map = new HashMap();
+            map.put("8", get.getProperty("Current Quote Total Net Price"));
+            list.add(map);
+            parts.createCellFromList(list, new ProductKey());
+            
+            parts.setStartRow(qParts.next(1));
+            quote = new Quote(conn);
+            get = quote.find(quote_id, set);
+            list = new ArrayList();
+            map = new HashMap();
+            map.put("8", get.getProperty("PLX Quote Total"));
+            list.add(map);
+            parts.createCellFromList(list, new ProductKey());
+            
+            parts.setStartRow(parts.next(19));
+            quote = new Quote(conn);
+            get = quote.find(quote_id, set);
+            list = new ArrayList();
+            map = new HashMap();
+            map.put("8", get.getProperty("Sales Team"));
+            list.add(map);
+            parts.createCellFromList(list, new ProductKey());
             my_xlsx_workbook.setForceFormulaRecalculation(true);
             input_document.close();
             XGenerator.doCreateBook(my_xlsx_workbook, "WST-" + this.type.replace(" ", "-") + "_" + this.quote_number.replace(" ", "_"));
@@ -109,13 +160,13 @@ public class QuoteExcelGenerator2 implements Generator
             parts = null;
             Attachment a = new QuoteAttachment(conn, quote_id);
             //Attach the file to siebel
+            /*
             a.Attach(
                 filepath,
                 filename,
                 Boolean.FALSE
-            );
+            );*/
             a = null;
-            boolean logoff = conn.logoff();
             my_xlsx_workbook.close();
             System.out.println("Done");
             outputs.setProperty("status", "success");

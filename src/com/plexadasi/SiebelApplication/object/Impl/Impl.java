@@ -7,6 +7,7 @@ package com.plexadasi.SiebelApplication.object.Impl;
 
 import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelException;
+import com.siebel.eai.SiebelBusinessServiceException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,7 @@ public interface Impl {
     public static final String Q_CONTACT_FN         = "Contact First Name";
     public static final String Q_CONTACT_LN         = "Contact Last Name";
     
-    public List<Map<String, String>> getItems(String quote_id) throws SiebelException, IOException;
+    public List<Map<String, String>> getItems(String quote_id) throws SiebelException, SiebelBusinessServiceException, IOException;
     
     public void searchSpec(SiebelBusComp sbBC) throws SiebelException;
     

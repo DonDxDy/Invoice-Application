@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
+import com.siebel.eai.SiebelBusinessServiceException;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -54,7 +55,7 @@ public class SiebelService {
         properties = property;
     }
     
-    public List<Map<String, String>> getSField(String bO, String bC, Impl qM) throws SiebelException
+    public List<Map<String, String>> getSField(String bO, String bC, Impl qM) throws SiebelException, SiebelBusinessServiceException
     {
 
         SiebelBusObject sbBO = sdb.getBusObject(bO); 

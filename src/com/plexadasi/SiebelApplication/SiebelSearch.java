@@ -9,6 +9,7 @@ import com.siebel.data.SiebelPropertySet;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -82,8 +83,10 @@ public class SiebelSearch {
         sbBC.activateMultipleFields(properties);
         qM.searchSpec(sbBC);
         sbBC.executeQuery2(true, true);
-        //sbBC.newRecord(1);
-        doTrigger(sbBC);
+        properties = doTrigger(sbBC);
+        if(properties.getPropertyCount() == 0){
+            sbBC.newRecord(true);
+        }
         for(Map.Entry<String, String> entry : setField.entrySet()){
             sbBC.setFieldValue(entry.getKey(), entry.getValue());
         }

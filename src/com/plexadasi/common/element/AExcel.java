@@ -84,8 +84,8 @@ public abstract class AExcel {
      */
     abstract public void createCellFromList( Impl qM, IKey iKey, Workbook book, Sheet sheet) throws Exception;
     
-    protected void createCell(Impl list, IKey iKey) throws Exception{
-        List<Map<String, String>> List = list.getItems(quote_id);
+    protected void createCell(List<Map<String, String>> list, IKey iKey) throws Exception{
+        List<Map<String, String>> List = list;
         rowCount = List.size();
         CellStyle style = workbook.createCellStyle();
         style.setBorderLeft(BorderStyle.THIN);

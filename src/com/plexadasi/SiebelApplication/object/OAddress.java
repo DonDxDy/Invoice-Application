@@ -18,25 +18,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
+import com.siebel.eai.SiebelBusinessServiceException;
 
 /**
  *
  * @author Adeyemi
  */
-public class OAddress extends SiebelServiceExtended implements Impl
+public class OAddress extends SiebelSearch implements Impl
 {
     
-    private static SiebelPropertySet set;
-    private static String Id;
+    private static SiebelPropertySet set, setChild;
+    private String Id;
     private String searchSpec;
+    private String quoteId;
     private String searchKey;
     private String value = "";
     List<Map<String, String>> quoteItem = new ArrayList();
     private final SiebelSearch ss;
     
-    public OAddress(SiebelDataBean conn)
+    public OAddress(SiebelDataBean conn, String quoteId)
     {
         super(conn);
+        this.quoteId = quoteId;
         ss = new SiebelSearch(conn);
     }
     
@@ -56,18 +59,14 @@ public class OAddress extends SiebelServiceExtended implements Impl
         return listFinal;
     }
     
-    private void findOrderItem(String quote_id) throws SiebelException
+    public SiebelPropertySet findOrderItem(String quote_id, SiebelPropertySet set) throws SiebelException
     {
         Id = quote_id;
         
-        set = new SiebelPropertySet();
-        set.setProperty(ACCOUNT, "2");
         this.value = "Order Number";
-        searchKey = "Id";
+        this.searchKey = "Order Number";
         this.setSField(set);
-        this.getSField("Order Entry", "Order Entry - Line Items", this);
-            
-        //return quoteItem;
+        return this.getSField("Order Entry", "Order Entry - Line Items", this);
     }
     
     private List<Map<String, String>> orderItem(String account_id) throws SiebelException
@@ -76,19 +75,31 @@ public class OAddress extends SiebelServiceExtended implements Impl
         String text;
         Id = account_id;
         set = new SiebelPropertySet();
+        setChild = new SiebelPropertySet();
         SiebelPropertySet setProp;
-        set.setProperty("Ship To Account", "1");
-        set.setProperty("Ship To", "1");
-        set.setProperty("Ship To City State", "1");
-        this.value = "";
-        searchKey = "Shipment Number";
+        set.setProperty("Ship To Account", "5");
+        set.setProperty("Ship To", "5");
+        set.setProperty("Ship To City State", "5");
+        set.setProperty("Primary Order Id", "5");
+        setChild.setProperty("Ship To Contact - First Name", "5");
+        setChild.setProperty("Ship To Contact - Last Name", "5");
+        setChild.setProperty("Ship To Contact Cellular Phone", "5");
+        this.searchKey = "Shipment Number";
         ss.setSField(set);
         setProp = ss.getSField("Order Entry", "FS Shipment", this);
         MyLogging.log(Level.INFO, String.valueOf(setProp));
+        setProp.addChild(this.findOrderItem(this.quoteId, setChild));
+        MyLogging.log(Level.INFO, String.valueOf(setProp));
+        map.put("5", setProp.getChild(0).getProperty("Ship To Contact - First Name") + " " + setProp.getChild(0).getProperty("Ship To Contact - Last Name"));
+        quoteItem.add(map);
+        map = new HashMap();
+        map.put("5", setProp.getChild(0).getProperty("Ship To Contact Cellular Phone"));
+        quoteItem.add(map);
+        map = new HashMap();
         String city = setProp.getProperty("Ship To City State");
         city = (!"".equals(city) ? city + "." : "");
-        text = setProp.getProperty("Ship To Account") + " " + setProp.getProperty("Ship To") + " " + city;
-        map.put("1", text);
+        text =  setProp.getProperty("Ship To") + " " + city;
+        map.put("5", text);
         quoteItem.add(map);
         return quoteItem;
     }
@@ -97,7 +108,8 @@ public class OAddress extends SiebelServiceExtended implements Impl
     @Override
     public void searchSpec(SiebelBusComp sbBC) throws SiebelException 
     {
-        sbBC.setSearchSpec(searchKey, Id);  
+        sbBC.setSearchSpec(this.searchKey, this.Id);  
+        MyLogging.log(Level.INFO, "Search spec: " + this.Id);
     }
     
     @Override
