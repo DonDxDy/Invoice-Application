@@ -2,7 +2,6 @@ package com.plexadasi.common;
 
 
 import com.plexadasi.Helper.HelperAP;
-import com.plexadasi.connect.siebel.SiebelConnect;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.object.QCustomer;
 import com.plexadasi.SiebelApplication.object.QExpenses;
@@ -157,36 +156,36 @@ public class QuoteExcelGenerator implements Generator{
         catch (FileNotFoundException ex) 
         {
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
+            outputs.setProperty("error_message", error_txt.toString());
             MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + error_txt.toString());
         } 
         catch (IOException ex) 
         {
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
+            outputs.setProperty("error_message", error_txt.toString());
             MyLogging.log(Level.SEVERE, "Caught IO Exception: " + error_txt.toString());
         } 
         catch (InvalidFormatException ex) 
         {
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
+            outputs.setProperty("error_message", error_txt.toString());
             MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + error_txt.toString());
         } 
         catch (EncryptedDocumentException ex) 
         {
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
+            outputs.setProperty("error_message", error_txt.toString());
             MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + error_txt.toString());
         } 
         catch (Exception ex) 
         {
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
+            outputs.setProperty("error_message", error_txt.toString());
             MyLogging.log(Level.SEVERE, "Caught Exception: " + error_txt.toString());
         }
     }

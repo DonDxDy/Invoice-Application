@@ -10,13 +10,35 @@ package com.plexadasi.invoiceapplication;
  * @author Adeyemi
  */
 public class StringInt {
-    public boolean isStringInt(String s)
+    public static boolean isStringInt(String s)
     {
         try
         {
             Integer.parseInt(s);
             return true;
-        } catch (NumberFormatException ex)
+        } 
+        catch (NumberFormatException ex)
+        {
+            return false;
+        } 
+        catch(NullPointerException ex)
+        {
+            return false;
+        }
+    }
+    
+    public static boolean isStringFloat(String s)
+    {
+        try
+        {
+            Float.parseFloat(s);
+            return true;
+        } 
+        catch(NumberFormatException ex)
+        {
+            return false;
+        } 
+        catch(NullPointerException ex)
         {
             return false;
         }

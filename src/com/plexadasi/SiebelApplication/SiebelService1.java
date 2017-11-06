@@ -25,19 +25,17 @@ import com.siebel.eai.SiebelBusinessServiceException;
  *
  * @author Adeyemi
  */
-public class SiebelService {  
+public class SiebelService1 {  
 
     /**
      *
      */
-    protected static SiebelDataBean sdb = new SiebelDataBean();
-    protected SiebelBusObject sbBO = new SiebelBusObject();
-    protected SiebelBusComp sbBC = new SiebelBusComp();
+    protected static SiebelDataBean sdb;
     private StringWriter errors;
     protected static SiebelPropertySet properties, values;
     protected Integer beginCount = 1;
     
-    public SiebelService(SiebelDataBean conn)
+    public SiebelService1(SiebelDataBean conn)
     {
         sdb = conn;
     }
@@ -59,8 +57,9 @@ public class SiebelService {
     
     public List<Map<String, String>> getSField(String bO, String bC, Impl qM) throws SiebelException, SiebelBusinessServiceException
     {
-        sbBO = sdb.getBusObject(bO); 
-        sbBC = sbBO.getBusComp(bC);
+
+        SiebelBusObject sbBO = sdb.getBusObject(bO); 
+        SiebelBusComp sbBC = sbBO.getBusComp(bC);
         List<Map<String, String>> List;
         values = sdb.newPropertySet();
         sbBC.setViewMode(3);
@@ -78,7 +77,7 @@ public class SiebelService {
         return List;
     }
     
-    protected List<Map<String, String>> doTrigger(SiebelBusComp sbBC) throws SiebelException
+    protected List doTrigger(SiebelBusComp sbBC) throws SiebelException
     {
         
         List<Map<String, String>> list = new ArrayList();
@@ -86,33 +85,30 @@ public class SiebelService {
         while (isRecord)
         {
             sbBC.getMultipleFieldValues(properties, values);
-            list.add(Service_PreInvokeMethod(properties, values));
+            list = Service_PreInvokeMethod(properties, values);
             isRecord = sbBC.nextRecord();
         }
         return list;
     }
     
-    private Map<String, String> Service_PreInvokeMethod (SiebelPropertySet Inputs, SiebelPropertySet Outputs)
+    private List<Map<String, String>> Service_PreInvokeMethod (SiebelPropertySet Inputs, SiebelPropertySet Outputs)
     {
        String propName = Inputs.getFirstProperty(), propVal;
-       Map<String, String> mapProperty = new HashMap();
+       List list = new ArrayList();
        // stay in loop if the property name is not an empty string
         while (!"".equals(propName)) 
         {
+            Map<String, String> mapProperty = new HashMap();
             propVal = Outputs.getProperty(propName);
             // if a property with the same name does not exist
             // add the name value pair to the output
             if (Inputs.propertyExists(propName)) 
             {
-               if("Outline Number".equals(propName) || "Operation Line No".equals(propName))
-               {
-                   propVal = String.valueOf(beginCount++);
-               }
-               mapProperty.put(Inputs.getProperty(propName), propVal);
+                mapProperty.put(Inputs.getProperty(propName), propVal);
+                list.add(mapProperty);
             }
             propName = Inputs.getNextProperty();
-
         }
-        return mapProperty;
+        return list;
     }
 }

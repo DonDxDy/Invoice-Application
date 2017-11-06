@@ -22,6 +22,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -136,37 +138,37 @@ public class OrderExcelGenerator implements Generator
         catch (FileNotFoundException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + ex.getMessage() + error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + error_txt.toString());
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", ex.getMessage());
+            outputs.setProperty("error_message", error_txt.toString());
         } 
         catch (IOException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught IO Exception: " + ex.getMessage() + error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught IO Exception: " + error_txt.toString());
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", ex.getMessage());
+            outputs.setProperty("error_message", error_txt.toString());
         } 
         catch (InvalidFormatException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + ex.getMessage() + error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + error_txt.toString());
             outputs.setProperty("status", "failed");
             outputs.setProperty("error_message", error_txt.toString());
         } 
         catch (EncryptedDocumentException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + ex.getMessage() + error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + error_txt.toString());
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", ex.getMessage());
+            outputs.setProperty("error_message", error_txt.toString());
         } 
         catch (Exception ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Exception: " + ex.getMessage() + error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught Exception: " + error_txt.toString());
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", ex.getMessage());
+            outputs.setProperty("error_message", error_txt.toString());
         }
     }
 }

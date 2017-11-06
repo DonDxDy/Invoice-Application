@@ -8,7 +8,7 @@ import com.plexadasi.common.JobCardGenerator;
 import com.siebel.data.SiebelPropertySet;
 import com.siebel.eai.SiebelBusinessService;
 import com.siebel.eai.SiebelBusinessServiceException;
-import com.plexadasi.common.OrderExcelGenerator;
+import com.plexadasi.common.OrderExcelGenerator; 
 import com.plexadasi.common.QuoteExcelGenerator;
 import com.plexadasi.common.QuoteExcelGenerator2;
 import com.plexadasi.connect.siebel.SiebelConnect;
@@ -16,7 +16,6 @@ import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
 import java.io.Writer;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

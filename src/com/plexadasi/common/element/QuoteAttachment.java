@@ -5,8 +5,12 @@
  */
 package com.plexadasi.common.element;
 
+import com.plexadasi.SiebelApplication.MyLogging;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
+import com.siebel.eai.SiebelBusinessServiceException;
+import java.io.PrintWriter;
+import java.util.logging.Level;
 
 /**
  *
@@ -14,6 +18,7 @@ import com.siebel.data.SiebelException;
  */
 public class QuoteAttachment extends Attachment
 {
+
     //protected String BO       = "Quote";
     //protected String BC       = "Quote Attachment";
     
@@ -21,7 +26,7 @@ public class QuoteAttachment extends Attachment
      *
      * @param conn
      * @param id
-     * @throws SiebelException
+     * @throws com.siebel.data.SiebelException
      */
     public QuoteAttachment(SiebelDataBean conn, String id) throws SiebelException
     {
@@ -30,17 +35,24 @@ public class QuoteAttachment extends Attachment
     }
 
     @Override
-    protected void activateFields(String sAttachmentName) throws SiebelException
+    protected void activateFields(String sAttachmentName) throws SiebelBusinessServiceException
     {
-        //create a new attachment record
-        sbBC.newRecord(false); 
-        sbBC.setFieldValue(fieldName, sAttachmentName);
-        sbBC.setFieldValue("QuoteFileSrcType", "FILE");
-        sbBC.setFieldValue("Quote Id", Id);
-        sbBC.setFieldValue("QuoteFileDeferFlg", "R");
-        sbBC.setFieldValue("QuoteFileDockStatFlg", "E");
-        sbBC.setFieldValue("QuoteFileAutoUpdFlg", YES);
-        sbBC.setFieldValue("QuoteFileDockReqFlg", NO);
-        sbBC.setFieldValue("PLXQuoteAttFileType", "ESTIMATE");
+        try 
+        {
+            //create a new attachment record
+            sbBC.newRecord(false);
+            sbBC.setFieldValue(fieldName, sAttachmentName);
+            sbBC.setFieldValue("QuoteFileSrcType", "FILE");
+            sbBC.setFieldValue("Quote Id", Id);
+            sbBC.setFieldValue("QuoteFileDeferFlg", "R");
+            sbBC.setFieldValue("QuoteFileDockStatFlg", "E");
+            sbBC.setFieldValue("QuoteFileAutoUpdFlg", YES);
+            sbBC.setFieldValue("QuoteFileDockReqFlg", NO);
+            sbBC.setFieldValue("PLXQuoteAttFileType", "ESTIMATE");
+        } catch (SiebelException ex) {
+            ex.printStackTrace(new PrintWriter(ERROR));
+            MyLogging.log(Level.SEVERE, "Caught IOException: " + ERROR.toString());
+            throw new SiebelBusinessServiceException("SiebelException", ex.getMessage());
+        }
     }
 }

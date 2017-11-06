@@ -5,8 +5,8 @@
  */
 package com.plexadasi.Helper;
 
-import com.plexadasi.SiebelApplication.ApplicationProperties;
 import com.plexadasi.SiebelApplication.IProperties;
+import com.plexadasi.connect.ApplicationProperties;
 import com.siebel.eai.SiebelBusinessServiceException;
 
 /**
@@ -43,6 +43,16 @@ public class HelperAP
 
     public static String getInvoiceTemplate2() throws SiebelBusinessServiceException {
         AP.setProperties(IProperties.NIX_INVOICE_INPUT_KEY2, IProperties.WIN_INVOICE_INPUT_KEY2);
+        return AP.getProperty();
+    }
+
+    public static String getLagosWarehouseId() throws SiebelBusinessServiceException {
+        AP.setProperties(IProperties.LAGOS_WAREHOUSE_CODE);
+        return AP.getProperty();
+    }
+
+    public static String getAbujaWarehouseId() throws SiebelBusinessServiceException {
+        AP.setProperties(IProperties.ABUJA_WAREHOUSE_CODE);
         return AP.getProperty();
     }
 }

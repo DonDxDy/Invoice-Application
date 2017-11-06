@@ -4,7 +4,6 @@ package com.plexadasi.common;
 import com.plexadasi.Helper.HelperAP;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
-import com.plexadasi.SiebelApplication.object.JOrganizationAccount;
 import com.plexadasi.SiebelApplication.object.JCard;
 import com.plexadasi.SiebelApplication.object.Job;
 import com.plexadasi.common.element.Attachment;
@@ -14,7 +13,6 @@ import com.plexadasi.common.element.InvoiceExcel;
 import com.plexadasi.common.element.JobCardAttachment;
 import com.plexadasi.common.element.XGenerator;
 import com.plexadasi.common.impl.Generator;
-import com.plexadasi.connect.siebel.SiebelConnect;
 import com.plexadasi.invoiceapplication.ContactKey;
 import com.plexadasi.invoiceapplication.ProductKey;
 import com.siebel.eai.SiebelBusinessServiceException;
@@ -25,7 +23,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -86,11 +83,11 @@ public class JobCardGenerator implements Generator{
             this.job_number = inputs.getProperty("JobNum");
             
             InvoiceExcel jobCardInfo = new InvoiceExcel(my_xlsx_workbook, my_worksheet, 4);
-            jobCardInfo.setJobId(this.job_id);
-            jobCardInfo.createCellFromList(new JOrganizationAccount(conn), new ContactKey());
+            //jobCardInfo.setJobId(this.job_id);
+            //jobCardInfo.createCellFromList(new JOrganizationAccount(conn), new ContactKey());
             JCard jCard = new JCard(conn);
             jobCardInfo.setJobId(this.job_id);
-            jobCardInfo.setStartRow(8);
+            //jobCardInfo.setStartRow(8);
             jobCardInfo.createCellFromList(jCard, new ContactKey());
             jobCardInfo.setJobId(jCard.findJobProperty(job_id, "Id"));
             jobCardInfo.setStartRow(jobCardInfo.next(4));
@@ -105,6 +102,7 @@ public class JobCardGenerator implements Generator{
             MyLogging.log(Level.INFO, "Asset Number: " + asset_id);
             Attachment a = new JobCardAttachment(conn, asset_id);
             //Attach the file to siebel
+            
             a.Attach
             (
                 filepath,
@@ -119,35 +117,35 @@ public class JobCardGenerator implements Generator{
         catch (FileNotFoundException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + ex.getMessage() + error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + error_txt.toString());
             outputs.setProperty("status", "failed");
             outputs.setProperty("error_message", error_txt.toString());
         } 
         catch (IOException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught IO Exception: " + ex.getMessage() + error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught IO Exception: " + error_txt.toString());
             outputs.setProperty("status", "failed");
             outputs.setProperty("error_message", error_txt.toString());
         } 
         catch (InvalidFormatException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + ex.getMessage() + error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + error_txt.toString());
             outputs.setProperty("status", "failed");
             outputs.setProperty("error_message", error_txt.toString());
         } 
         catch (EncryptedDocumentException ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + ex.getMessage() + error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + error_txt.toString());
             outputs.setProperty("status", "failed");
             outputs.setProperty("error_message", error_txt.toString());
         } 
         catch (Exception ex) 
         {
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Exception: " + ex.getMessage() + error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught Exception: " + error_txt.toString());
             outputs.setProperty("status", "failed");
             outputs.setProperty("error_message", error_txt.toString());
         } 

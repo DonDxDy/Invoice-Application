@@ -22,28 +22,54 @@ import java.util.logging.Level;
  * @author SAP Training
  */
 public class PriceListService {
+    private String inventoryId;
+    
+    private String firstLocationId;
+    
+    private String secondLocationId;
+    
     private Connection ebsConn = null;
+    
+    private final String[] groupClause = new String[]{
+        "organization_id", 
+        "inventory_item_id"
+    };
+    
     static StringWriter errors = new StringWriter();
     
     public PriceListService(Connection ebsConn){
         this.ebsConn = ebsConn;
     }
+    
+    public void setInventoryId(String inventoryId)
+    {
+        this.inventoryId = inventoryId;
+    }
+    
+    public void setFirstLocationId(String locationId)
+    {
+        this.firstLocationId = locationId;
+    }
+    
+    public void setSecondLocationId(String locationId)
+    {
+        this.secondLocationId = locationId;
+    }
    
-    public List<String> findOnHand(String inventoryId, String orgId1, String orgId2) throws SiebelBusinessServiceException{
+    public List<String> findOnHand() throws SiebelBusinessServiceException{
         List<String> list = new ArrayList();
-        try {
+        try 
+        {
             SqlPreparedStatement jdbcConnect = new SqlPreparedStatement(ebsConn);
+            
             jdbcConnect.select("SUM(primary_transaction_quantity) on_hand")
             .from("mtl_onhand_quantities_detail")
             .where("inventory_item_id")
             .andWhere("(organization_id = ? OR organization_id ", " ?)")
-            .groupBy(new String[]{
-                "organization_id", 
-                "inventory_item_id"
-            }).preparedStatement();
-            jdbcConnect.setString(1, inventoryId);
-            jdbcConnect.setString(2, orgId1);
-            jdbcConnect.setString(3, orgId2);
+            .groupBy(this.groupClause).preparedStatement();
+            jdbcConnect.setString(1, this.inventoryId);
+            jdbcConnect.setString(2, this.firstLocationId);
+            jdbcConnect.setString(3, this.secondLocationId);
             ResultSet rs = jdbcConnect.get();
             while (rs.next()) {
                 list.add(rs.getString("on_hand"));

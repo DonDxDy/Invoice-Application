@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -33,6 +34,8 @@ public class XGenerator {
     private static CellRangeAddress range;
     
     private static Map<String, String> propertySet = new HashMap();
+    
+    private static Map<String, String> regex = new HashMap();
     
     public static void doMerge(Sheet worksheet,int rowIndex, int columnIndex, int rowSpan, int columnSpan, boolean border)
     {
@@ -54,8 +57,10 @@ public class XGenerator {
     public static void doCreateBook(Workbook my_workbook, String filename) throws IOException, Exception
     {
         dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss").format(new Date());
+        regex.put("\\s", "-");
+        regex.put("[\\\\\\/]", "");
         filename = filename + "_" + dateFormat;
-        String filepath = dirpath() + filename + EXCEL_EXT;
+        String filepath = dirpath() + preg_replace(filename) + EXCEL_EXT;
         FileOutputStream outputStream = new FileOutputStream(filepath);
         my_workbook.write(outputStream);
         if(!dirExists(filepath))
@@ -70,6 +75,15 @@ public class XGenerator {
         
         propertySet.put("filepath", filepath);
         propertySet.put("filename", filename);
+    }
+    
+    private static String preg_replace(String filename)
+    {
+        for(Entry<String, String> preg : regex.entrySet())
+        {
+            filename = filename.replaceAll(preg.getKey(), preg.getValue());
+        }
+        return filename;
     }
     
     public static boolean dirExists(String outputFile)

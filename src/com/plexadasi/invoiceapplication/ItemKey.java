@@ -9,7 +9,7 @@ package com.plexadasi.invoiceapplication;
  *
  * @author Adeyemi
  */
-public class ProductKey implements IKey{
+public class ItemKey implements IKey{
     @Override
     public Integer productKeyToInt(String value) throws Exception{
         int index = 0;

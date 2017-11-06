@@ -36,6 +36,8 @@ public interface IProperties {
     
     public static final String NIX_JOBCARD_INPUT_KEY = "nix_jobcard_template";
     public static final String WIN_JOBCARD_INPUT_KEY = "win_jobcard_template";
+    public static final String LAGOS_WAREHOUSE_CODE = "lagos_warehouse_code";
+    public static final String ABUJA_WAREHOUSE_CODE = "abuja_warehouse_code";
     
     /**
      *

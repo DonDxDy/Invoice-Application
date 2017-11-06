@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+        *** GENERATED FROM jax-ws.xml - DO NOT EDIT !                             ***
+        *** TO MODIFY wsimport options USE Web Service node -> Edit WS Attributes ***
+        *** TO CHANGE TARGETS GENERATED TO jaxws-build.xml COPY THOSE             ***
+        *** TARGETS TO ../build.xml AND MODIFY THAT FILE INSTEAD                  ***
+
+        --><project xmlns:xalan="http://xml.apache.org/xslt" xmlns:j2seproject3="http://www.netbeans.org/ns/j2se-project/3" xmlns:jaxws="http://www.netbeans.org/ns/jax-ws/1">
+    <!--
+                ===================
+                JAX-WS WSIMPORT SECTION
+                ===================
+            -->
+    <target name="wsimport-init" depends="init">
+        <mkdir dir="${build.generated.sources.dir}/jax-ws"/>
+        <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
+            <classpath path="${libs.jaxws21.classpath}"/>
+        </taskdef>
+    </target>
+    <target name="wsimport-client-http---siebel.com-CustomUI_NSITF_20Employer_20Insert_Update_20WF" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/http---siebel.com-CustomUI_NSITF_20Employer_20Insert_Update_20WF"/>
+        <property name="wsdl-http---siebel.com-CustomUI_NSITF_20Employer_20Insert_Update_20WF" location="xml-resources/web-service-references/http---siebel.com-CustomUI_NSITF_20Employer_20Insert_Update_20WF/wsdl/http---siebel.com-CustomUI_NSITF Employer Insert_Update WF.WSDL.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/http---siebel.com-CustomUI_NSITF_20Employer_20Insert_Update_20WF" destdir="${build.generated.dir}/jax-wsCache/http---siebel.com-CustomUI_NSITF_20Employer_20Insert_Update_20WF" wsdl="${wsdl-http---siebel.com-CustomUI_NSITF_20Employer_20Insert_Update_20WF}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="file:/Z:/tools/http---siebel.com-CustomUI_NSITF%20Employer%20Insert_Update%20WF.WSDL" xnocompile="true" xendorsed="true">
+            <depends file="${wsdl-http---siebel.com-CustomUI_NSITF_20Employer_20Insert_Update_20WF}"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/http---siebel.com-CustomUI_NSITF_20Employer_20Insert_Update_20WF"/>
+        </wsimport>
+        <copy todir="${build.generated.sources.dir}/jax-ws">
+            <fileset dir="${build.generated.dir}/jax-wsCache/http---siebel.com-CustomUI_NSITF_20Employer_20Insert_Update_20WF">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-http---siebel.com-CustomUI_NSITF_20Employer_20Insert_Update_20WF" depends="-init-project">
+        <delete dir="${build.generated.dir}/jax-wsCache/http---siebel.com-CustomUI_NSITF_20Employer_20Insert_Update_20WF"/>
+        <delete dir="${build.generated.sources.dir}/jax-ws/com/siebel/customui"/>
+    </target>
+    <target name="wsimport-client-generate" depends="wsimport-client-http---siebel.com-CustomUI_NSITF_20Employer_20Insert_Update_20WF"/>
+</project>

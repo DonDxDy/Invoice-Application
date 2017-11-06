@@ -4,20 +4,21 @@ package com.plexadasi.common;
 import com.plexadasi.Helper.HelperAP;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.object.QOrderBillToAccount;
+import com.plexadasi.SiebelApplication.object.QOrderSequence;
 import com.plexadasi.SiebelApplication.object.QParts2;
 import com.plexadasi.SiebelApplication.object.Quote;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelPropertySet;
 import com.plexadasi.common.element.Attachment;
 import com.plexadasi.common.element.InvoiceExcel;
-import com.plexadasi.common.element.InvoiceExcelTotal2;
 import com.plexadasi.common.element.QuoteAttachment;
 import com.plexadasi.common.element.XGenerator;
 import com.plexadasi.common.impl.Generator;
 import com.plexadasi.connect.ebs.EbsConnect;
-import com.plexadasi.connect.siebel.SiebelConnect;
 import com.plexadasi.invoiceapplication.ContactKey;
+import com.plexadasi.invoiceapplication.NewClass;
 import com.plexadasi.invoiceapplication.ProductKey;
+import com.plexadasi.invoiceapplication.QuoteKey;
 import com.siebel.eai.SiebelBusinessServiceException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +27,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,6 +67,8 @@ public class QuoteExcelGenerator2 implements Generator
     private Connection ebsConn = null;
     
     private List list = new ArrayList();
+    
+    private Map<String, String> map = new HashMap();
 
     public QuoteExcelGenerator2(SiebelDataBean conn) {
         this.conn = conn;
@@ -106,105 +108,134 @@ public class QuoteExcelGenerator2 implements Generator
             this.quote_number = inputs.getProperty("QuoteNum");
             this.type = inputs.getProperty("Type");
             InvoiceExcel contact, parts;
-            InvoiceExcel qParts;
             contact = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
+            NewClass sequence = new NewClass(conn, "1-2G23X"); 
             
             int startRowAt = 3;
             contact.setJobId(this.quote_id);
             contact.setStartRow(startRowAt);
-            contact.createCellFromList(new QOrderBillToAccount(conn), new ContactKey());
+            QOrderBillToAccount billToAccount = new QOrderBillToAccount(conn, sequence);
+            contact.createCellFromList(billToAccount, new ContactKey());
             
             //
             startRowAt = 16;
-            qParts = parts = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
+            parts = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
             parts.setJobId(this.quote_id);
             parts.setStartRow(startRowAt);
             parts.createCellFromList(new QParts2(conn, ebsConn), new ProductKey());
             
-            SiebelPropertySet set = new SiebelPropertySet();
+            SiebelPropertySet set = this.conn.newPropertySet();
             set.setProperty("PLX Quote Total", "PLX Quote Total");
+            set.setProperty("Current Quote Total Base Price", "Current Quote Total Base Price");
+            set.setProperty("PLX Vat", "PLX Vat");
+            set.setProperty("PLX Local Delivery Charges", "PLX Local Delivery Charges");
+            set.setProperty("Freight", "Freight");
             set.setProperty("Current Quote Total Net Price", "Current Quote Total Net Price");
+            set.setProperty("Current Quote Total Net Price NRC", "Current Quote Total Net Price NRC");
+            set.setProperty("Product Total", "Product Total");
+            set.setProperty("PC Total Savings", "PC Total Savings");            
+            set.setProperty("Grand Total", "Grand Total");         
+            set.setProperty("Quote Total", "Quote Total");
             set.setProperty("Sales Team", "Sales Team");
+            set.setProperty("PLX Quote Sub Total", "PLX Quote Sub Total");
+            set.setProperty("PLX Calculate VAT", "PLX Calculate VAT");
+            //set.setProperty("PLX Quote Total NRC", "PLX Quote Total NRC");
             
             parts.setStartRow(parts.next(0));
             Quote quote = new Quote(conn);
-            SiebelPropertySet get = quote.find(quote_id, set);
-            Map<String, String> map = new HashMap();
-            map.put("8", get.getProperty("Current Quote Total Net Price"));
+            SiebelPropertySet quoteItem = quote.find(quote_id, set);
+            //System.out.println(quoteItem);
+            map = new HashMap();
+            map.put("8", quoteItem.getProperty("Current Quote Total Base Price"));
             list.add(map);
-            parts.createCellFromList(list, new ProductKey());
+            map = new HashMap();
+            //map.put("8", quoteItem.getProperty("PC Total Savings"));
+            list.add(map);
+            map = new HashMap();
+            map.put("8", quoteItem.getProperty("Current Quote Total Net Price NRC"));
+            list.add(map);
+            map = new HashMap();
+            map.put("8", quoteItem.getProperty("Freight"));
+            list.add(map);
+            map = new HashMap();
+            map.put("8", quoteItem.getProperty("PLX Local Delivery Charges"));
+            list.add(map);
+            map = new HashMap();
+            map.put("8", quoteItem.getProperty("PLX Quote Sub Total"));
+            list.add(map);
+            map = new HashMap();
+            map.put("8", quoteItem.getProperty("PLX Calculate VAT"));
+            list.add(map);
+            map = new HashMap();
+            map.put("8", quoteItem.getProperty("Quote Total"));
+            list.add(map);
+            parts.createCellFromList(list, new QuoteKey());
             
-            parts.setStartRow(qParts.next(1));
-            quote = new Quote(conn);
-            get = quote.find(quote_id, set);
+            
+            parts.setStartRow(parts.next(38));
             list = new ArrayList();
             map = new HashMap();
-            map.put("8", get.getProperty("PLX Quote Total"));
-            list.add(map);
-            parts.createCellFromList(list, new ProductKey());
-            
-            parts.setStartRow(parts.next(19));
-            quote = new Quote(conn);
-            get = quote.find(quote_id, set);
-            list = new ArrayList();
-            map = new HashMap();
-            map.put("8", get.getProperty("Sales Team"));
+            map.put("8", quoteItem.getProperty("Sales Team"));
             list.add(map);
             parts.createCellFromList(list, new ProductKey());
             my_xlsx_workbook.setForceFormulaRecalculation(true);
             input_document.close();
-            XGenerator.doCreateBook(my_xlsx_workbook, "WST-" + this.type.replace(" ", "-") + "_" + this.quote_number.replace(" ", "_"));
+            String path = this.type +"_"+ this.quote_number;
+            XGenerator.doCreateBook(my_xlsx_workbook, "WST-" + path);
             String filepath = XGenerator.getProperty("filepath");
             String filename = XGenerator.getProperty("filename");
             //String filepath = "/usr/app/siebel/intg/excel/weststar_TEST_02052017153845.xls";
-            parts = null;
-            Attachment a = new QuoteAttachment(conn, quote_id);
+            QuoteAttachment a = new QuoteAttachment(conn, quote_id);
             //Attach the file to siebel
-            /*
             a.Attach(
                 filepath,
                 filename,
                 Boolean.FALSE
-            );*/
-            a = null;
+            );
             my_xlsx_workbook.close();
+            MyLogging.log(Level.INFO, billToAccount.getInvoiceNumber());
+            if(billToAccount.getInvoiceNumber().equals(""))
+            {
+                sequence.sequence();
+                sequence.writeSequence();
+            }
             System.out.println("Done");
             outputs.setProperty("status", "success");
         } 
         catch (FileNotFoundException ex) 
         {
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + ex.getMessage() + error_txt.toString());
+            outputs.setProperty("error_message", error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught File Not Found Exception: " + error_txt.toString());
         } 
         catch (IOException ex) 
         {
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught IO Exception: " + ex.getMessage() + error_txt.toString());
+            outputs.setProperty("error_message", error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught IO Exception: " + error_txt.toString());
         } 
         catch (InvalidFormatException ex) 
         {
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", error_txt.toString());
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + ex.getMessage() + error_txt.toString());
+            outputs.setProperty("error_message", error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught Invalid Format Exception: " + error_txt.toString());
         } 
         catch (EncryptedDocumentException ex) 
         {
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + ex.getMessage() + error_txt.toString());
+            outputs.setProperty("error_message", error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught Encrypted Document Exception: " + error_txt.toString());
         } 
         catch (Exception ex) 
         {
             outputs.setProperty("status", "failed");
-            outputs.setProperty("error_message", ex.getMessage());
             ex.printStackTrace(new PrintWriter(error_txt));
-            MyLogging.log(Level.SEVERE, "Caught Exception: " + ex.getMessage() + error_txt.toString());
+            outputs.setProperty("error_message", error_txt.toString());
+            MyLogging.log(Level.SEVERE, "Caught Exception: " + error_txt.toString());
         }
     }
 }

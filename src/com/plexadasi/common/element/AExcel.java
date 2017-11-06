@@ -111,7 +111,6 @@ public abstract class AExcel {
             for (Map.Entry<String, String> entry : temp.entrySet()) {
                 int key = iKey.productKeyToInt(entry.getKey());
                 value = entry.getValue();
-                
                 sheetcell = sheetrow.getCell(key, MissingCellPolicy.CREATE_NULL_AS_BLANK);
                 //sheetcell.setCellStyle(style);
                 
@@ -119,8 +118,7 @@ public abstract class AExcel {
                 // Check if the value returned is an integer.
                 // If true, set the cell to integer.
                 // Else set the cell to string
-                StringInt stringInt = new StringInt();
-                if(stringInt.isStringInt(value)){
+                if(StringInt.isStringInt(value) || StringInt.isStringFloat(value)){
                     sheetcell.setCellValue(new BigDecimal(value).doubleValue());
                 }else{
                     sheetcell.setCellValue(value);

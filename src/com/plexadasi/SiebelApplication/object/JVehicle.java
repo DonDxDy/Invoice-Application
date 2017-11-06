@@ -7,6 +7,7 @@ package com.plexadasi.SiebelApplication.object;
 
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.SiebelSearch;
+import com.plexadasi.SiebelApplication.SiebelService;
 import com.siebel.data.SiebelBusComp;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
@@ -16,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
+import static com.plexadasi.SiebelApplication.object.Impl.Impl.BLANK;
+import static com.plexadasi.SiebelApplication.object.Impl.Impl.V_ENGINE_NO;
+import com.siebel.eai.SiebelBusinessServiceException;
 import java.util.logging.Level;
 
 /**
@@ -26,16 +30,28 @@ public class JVehicle extends SiebelSearch implements Impl
 {
     
     private static SiebelPropertySet set;
-    private static String Id = "";
+    private String Id = "";
     private String searchSpec;
     private String searchKey = "";
     List<Map<String, String>> quoteItem = new ArrayList();
     private static final String BO = "Auto Vehicle";
     private static final String BC = "Auto Vehicle";
+    private SiebelDataBean conn = new SiebelDataBean();
     
     public JVehicle(SiebelDataBean conn)
     {
         super(conn);
+        this.conn = conn;
+    }
+    
+    public void setVehicleId(String Id)
+    {
+        this.Id = Id;
+    }
+    
+    public void setSearchSpec(String searchSpec)
+    {
+        this.searchSpec = searchSpec;
     }
     
     /**
@@ -58,6 +74,13 @@ public class JVehicle extends SiebelSearch implements Impl
         return quoteItem;
     }
     
+    public List<Map<String, String>> vehicleContact(SiebelPropertySet prop) throws SiebelException, SiebelBusinessServiceException
+    {
+        SiebelService service = new SiebelService(this.conn);
+        service.setSField(prop);
+        return service.getSField(BO, BC, this);
+    }
+    
     public SiebelPropertySet activateFields(String vehicle_id) throws SiebelException
     {
         Id = vehicle_id;
@@ -67,9 +90,13 @@ public class JVehicle extends SiebelSearch implements Impl
         set.setProperty(V_LICENSE_NO, BLANK);
         set.setProperty(V_REG_DATE, BLANK);
         set.setProperty(V_NUMBER, BLANK);
-        set.setProperty(V_FIRST_NAME, BLANK);
+        set.setProperty(V_OWNER_NAME, BLANK);
         set.setProperty(V_LAST_NAME, BLANK);
+        set.setProperty(V_OWNER_EMAIL, BLANK);
+        set.setProperty(V_OWNER_PHONE_NUMBER, BLANK);
+        set.setProperty(V_OWNER_ADDRESS, BLANK);
         set.setProperty(V_ACCOUNT_NAME, BLANK);
+        set.setProperty("Engine", BLANK);
         set.setProperty(ACCOUNT_TYPE, BLANK);
         searchKey = V_ASSET_ID;
         this.setSField(set);

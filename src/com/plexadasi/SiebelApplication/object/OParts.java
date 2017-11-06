@@ -57,6 +57,7 @@ public class OParts extends SiebelService implements Impl
         set.setProperty("Quantity Requested", "5");
         set.setProperty("Account", "6");
         set.setProperty("Order Number", "7");
+        set.setProperty("PLX Delivery Note", "8");
         this.setSField(set);
         orderItem = this.getSField(BO, BC, this);
         MyLogging.log(Level.INFO, "Creating siebel objects Parts: " + orderItem);

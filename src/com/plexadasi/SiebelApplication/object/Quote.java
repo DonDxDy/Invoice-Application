@@ -48,8 +48,9 @@ public class Quote extends SiebelSearch implements Impl{
      * @param quote_id
      * @return
      * @throws SiebelException
+     * @throws com.siebel.eai.SiebelBusinessServiceException
      */
-    public SiebelPropertySet find(String quote_id, SiebelPropertySet set) throws SiebelException
+    public SiebelPropertySet find(String quote_id, SiebelPropertySet set) throws SiebelException, SiebelBusinessServiceException
     {
         this.quoteId = quote_id;
         this.search = "Id";

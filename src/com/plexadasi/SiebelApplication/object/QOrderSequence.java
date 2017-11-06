@@ -20,7 +20,9 @@ import java.util.ArrayList;
  * @author Adeyemi
  */
 public class QOrderSequence extends SiebelSearch implements Impl{
-    
+    public static final String FIELD_SEQUENCE = "Proforma";
+    public static final String FIELD_TRANS = "Trans 1";
+    public static final String FIELD_NAME = "Name";
     private static SiebelPropertySet set;
     private String searchSpec;
     private String id;
@@ -42,7 +44,9 @@ public class QOrderSequence extends SiebelSearch implements Impl{
         this.searchSpec = "Id";
         this.id = quote_id;
         set = new SiebelPropertySet();
-        set.setProperty("Proforma", "Proforma");
+        set.setProperty(FIELD_SEQUENCE, FIELD_SEQUENCE);
+        set.setProperty(FIELD_TRANS, FIELD_TRANS);
+        set.setProperty(FIELD_NAME, FIELD_NAME);
         this.setSField(set);
         return this.getSField(BO, BC, this);
     }
@@ -52,7 +56,9 @@ public class QOrderSequence extends SiebelSearch implements Impl{
         this.id = quote_id;
         set = new SiebelPropertySet();
         set.setProperty("Id", quote_id);
-        set.setProperty("Proforma", "Proforma");
+        set.setProperty(FIELD_SEQUENCE, FIELD_SEQUENCE);
+        set.setProperty(FIELD_TRANS, FIELD_TRANS);
+        set.setProperty(FIELD_NAME, FIELD_NAME);
         this.setSField(set);
         this.writeRecord(BO, BC, this, setField);
     }
@@ -70,7 +76,9 @@ public class QOrderSequence extends SiebelSearch implements Impl{
         this.id = id;
         set = new SiebelPropertySet();
         set.setProperty(this.searchSpec, this.id);
-        set.setProperty("Proforma", "Proforma");
+        set.setProperty(FIELD_SEQUENCE, FIELD_SEQUENCE);
+        set.setProperty(FIELD_TRANS, FIELD_TRANS);
+        set.setProperty(FIELD_NAME, FIELD_NAME);
         this.setSField(set);
         set = this.getSField(BO, BC, this);
         return quoteItem;

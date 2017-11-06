@@ -26,7 +26,7 @@ import java.util.logging.Level;
  *
  * @author Adeyemi
  */
-public class QParts2 extends SiebelService implements Impl {
+public class QParts21 extends SiebelService implements Impl {
 
     private static SiebelPropertySet set;
     private String quoteId;
@@ -34,8 +34,8 @@ public class QParts2 extends SiebelService implements Impl {
     private static final String BO = "Quote";
     private static final String BC = "Quote Item";
     private final Connection ebsConn;
-    private String firstLocation = "0";
-    private String secondLocation = "0";
+    private String firstLocation;
+    private String secondLocation;
     private Integer length = 0;
 
     /**
@@ -43,7 +43,7 @@ public class QParts2 extends SiebelService implements Impl {
      * @param conn
      * @param ebsConn
      */
-    public QParts2(SiebelDataBean conn, Connection ebsConn) {
+    public QParts21(SiebelDataBean conn, Connection ebsConn) {
         super(conn);
         this.ebsConn = ebsConn;
     }
@@ -68,46 +68,54 @@ public class QParts2 extends SiebelService implements Impl {
         set.setProperty("Extended Line Total - Display", "Total");
         set.setProperty("Net Discount Percent - Display", "Discount");
         set.setProperty("Net Price", "Unit Price");
-        set.setProperty("Product Inventory Item Id", "Stock Location");
+        set.setProperty("Product Inventory Item Id", "Product Inventory Item Id");
         this.setSField(set);
         quoteItems = this.getSField(BO, BC, this);
+        //MyLogging.log(Level.INFO, "Creating siebel objects Parts: " + quoteItems);
         List<Map<String, String>> temp = new ArrayList();
         this.length = quoteItems.size();
         for (int i = 0; i < this.length; i++) {
             Map<String, String> products = quoteItems.get(i);
+            Map<String, String> tempMap = new HashMap();
             for(Map.Entry<String, String> product : products.entrySet())
             {
                 String key = product.getKey();
                 String value = product.getValue();
-                if("Stock Location".equals(key))
+                String item;
+                if("Product Inventory Item Id".equals(key))
                 {
+                    //tempMap.put(key, value);
+                //}else{
+                    String inventoryId = value;
                     PriceListService onHandQuantities = new PriceListService(ebsConn);
-                    onHandQuantities.setInventoryId(value);
+                    onHandQuantities.setInventoryId(inventoryId);
                     onHandQuantities.setFirstLocationId(HelperAP.getLagosWarehouseId());
                     onHandQuantities.setSecondLocationId(HelperAP.getAbujaWarehouseId()); 
-                    onHandQuantities(onHandQuantities);
-                    String item = this.firstLocation + " Lag, " + this.secondLocation + " Abj";
-                    product.setValue(item);
+                    this.onHandQuantities(onHandQuantities);
+                    item = this.firstLocation + " Lag, " + this.secondLocation + " Abj";
+                    tempMap.put("Stock Location", item);
                 }
+                    System.out.print(key + " " + value);
+                System.out.print(" ");
             }
-            temp.add(i, products);
+            temp.add(i, tempMap);
         }
         quoteItems = temp;
-        MyLogging.log(Level.INFO, "Creating siebel objects Parts: " + quoteItems);
+        MyLogging.log(Level.INFO, "Creating siebel objects Parts: " + temp);
         return quoteItems;
     }
     
     private void onHandQuantities(PriceListService priceList) throws SiebelBusinessServiceException
     {
         List<String> onHandQuantity = priceList.findOnHand();
-        int count = onHandQuantity.size();
-        switch(count)
+        this.length = onHandQuantity.size();
+        switch(this.length)
         {
             case 1:
-                this.firstLocation = onHandQuantity.get(count -1);
+                this.firstLocation = onHandQuantity.get(this.length -1);
             break;
             case 2:
-                this.secondLocation = onHandQuantity.get(count -1);
+                this.secondLocation = onHandQuantity.get(this.length -1);
             break;
         }
     }

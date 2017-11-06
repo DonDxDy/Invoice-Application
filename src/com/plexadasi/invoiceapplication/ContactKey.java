@@ -14,8 +14,7 @@ public class ContactKey implements IKey{
     public Integer productKeyToInt(String value) throws Exception{
         int index = 0;
         value = value.toLowerCase();
-        StringInt i = new StringInt();
-        if(i.isStringInt(value)){
+        if(StringInt.isStringInt(value)){
             index = Integer.valueOf(value);
         }else{
             if("name".equals(value))

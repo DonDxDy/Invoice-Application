@@ -68,11 +68,9 @@ public class JOrganizationAccount extends SiebelSearch implements Impl
     {
         Id = account_id;
         set = new SiebelPropertySet();
-        set.setProperty("First Name", "1");
-        set.setProperty("Last Name", "");
-        set.setProperty("Street Address", "1");
-        set.setProperty("Email Address", "1");
-        set.setProperty("Main Phone Number", "1");
+        set.setProperty(STREET_ADDRESS, STREET_ADDRESS);
+        set.setProperty(EMAIL, EMAIL);
+        set.setProperty(PHONE_NUMBER, PHONE_NUMBER);
         searchKey = "Name";
         this.setSField(set);
         SiebelPropertySet getProp = this.getSField(BO, BC, this);
@@ -80,13 +78,14 @@ public class JOrganizationAccount extends SiebelSearch implements Impl
         map.put("1", getProp.getChild(0).getProperty(V_FIRST_NAME) + " " + getProp.getChild(0).getProperty(V_LAST_NAME));
         quoteItem.add(map);
         map = new HashMap();
-        map.put("1", getProp.getProperty("Street Address"));
+        map.put("1", getProp.getProperty(STREET_ADDRESS));
         quoteItem.add(map);
         map = new HashMap();
-        map.put("1", getProp.getProperty("Email Address"));
+        map = new HashMap();
+        map.put("1", getProp.getProperty(EMAIL));
         quoteItem.add(map);
         map = new HashMap();
-        map.put("1", getProp.getProperty("Main Phone Number"));
+        map.put("1", getProp.getProperty(PHONE_NUMBER));
         quoteItem.add(map);
         return quoteItem;
     }
