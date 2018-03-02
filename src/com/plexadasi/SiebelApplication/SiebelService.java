@@ -30,7 +30,7 @@ public class SiebelService {
     /**
      *
      */
-    protected static SiebelDataBean sdb = new SiebelDataBean();
+    protected SiebelDataBean sdb = new SiebelDataBean();
     protected SiebelBusObject sbBO = new SiebelBusObject();
     protected SiebelBusComp sbBC = new SiebelBusComp();
     private StringWriter errors;
@@ -39,17 +39,17 @@ public class SiebelService {
     
     public SiebelService(SiebelDataBean conn)
     {
-        sdb = conn;
+        this.sdb = conn;
     }
     
-    public static SiebelDataBean getService() throws IOException
+    public SiebelDataBean getService() throws IOException
     {
-        return sdb;
+        return this.sdb;
     }
     
     public void serviceLogOff() throws SiebelException
     {
-        sdb.logoff();
+        this.sdb.logoff();
     }
     
     public void setSField(SiebelPropertySet property)
@@ -59,21 +59,21 @@ public class SiebelService {
     
     public List<Map<String, String>> getSField(String bO, String bC, Impl qM) throws SiebelException, SiebelBusinessServiceException
     {
-        sbBO = sdb.getBusObject(bO); 
-        sbBC = sbBO.getBusComp(bC);
+        this.sbBO = this.sdb.getBusObject(bO); 
+        this.sbBC = this.sbBO.getBusComp(bC);
         List<Map<String, String>> List;
-        values = sdb.newPropertySet();
-        sbBC.setViewMode(3);
-        sbBC.clearToQuery();
+        values = this.sdb.newPropertySet();
+        this.sbBC.setViewMode(3);
+        this.sbBC.clearToQuery();
         // Activate all the fields
-        sbBC.activateMultipleFields(properties);
+        this.sbBC.activateMultipleFields(properties);
         //Get search specification
-        qM.searchSpec(sbBC);
-        sbBC.executeQuery2(true, true);
-        List = doTrigger(sbBC);
-        qM.getExtraParam(sbBC);
-        sbBC.release();
-        sbBC.release();
+        qM.searchSpec(this.sbBC);
+        this.sbBC.executeQuery2(true, true);
+        List = doTrigger(this.sbBC);
+        qM.getExtraParam(this.sbBC);
+        this.sbBC.release();
+        this.sbBC.release();
 
         return List;
     }

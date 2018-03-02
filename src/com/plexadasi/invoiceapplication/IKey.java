@@ -5,10 +5,12 @@
  */
 package com.plexadasi.invoiceapplication;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+
 /**
  *
  * @author Adeyemi
  */
 public interface IKey {
-    Integer productKeyToInt(String value) throws Exception;
+    Integer productKeyToInt(String value) throws InvalidFormatException, Exception;
 }

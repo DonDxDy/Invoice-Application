@@ -113,7 +113,6 @@ public abstract class AExcel {
                 value = entry.getValue();
                 sheetcell = sheetrow.getCell(key, MissingCellPolicy.CREATE_NULL_AS_BLANK);
                 //sheetcell.setCellStyle(style);
-                
                 //  
                 // Check if the value returned is an integer.
                 // If true, set the cell to integer.

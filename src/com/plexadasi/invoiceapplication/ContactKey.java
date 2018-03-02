@@ -5,13 +5,15 @@
  */
 package com.plexadasi.invoiceapplication;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+
 /**
  *
  * @author Adeyemi
  */
 public class ContactKey implements IKey{
     @Override
-    public Integer productKeyToInt(String value) throws Exception{
+    public Integer productKeyToInt(String value) throws InvalidFormatException{
         int index = 0;
         value = value.toLowerCase();
         if(StringInt.isStringInt(value)){
@@ -28,7 +30,7 @@ public class ContactKey implements IKey{
             else if("item price".equals(value))
                 index = 9;
             else
-                throw new Exception("Invalid index value.");
+                throw new InvalidFormatException("Invalid index value.");
         }
         return index;
     }

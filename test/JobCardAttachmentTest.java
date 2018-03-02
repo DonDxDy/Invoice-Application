@@ -1,11 +1,13 @@
 
-import com.plexadasi.connect.ApplicationsConnection;
 import com.plexadasi.common.element.JobCardAttachment;
+import com.plexadasi.connect.siebel.SiebelConnect;
 import com.siebel.data.SiebelException;
 import com.siebel.eai.SiebelBusinessServiceException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -20,7 +22,8 @@ import java.util.Map;
 public class JobCardAttachmentTest {
     public static void main(String[] args) throws SiebelBusinessServiceException, IOException, SiebelException 
     {
-        //JobCardAttachment j = new JobCardAttachment(ApplicationsConnection.connectSiebelServer(), "");
+        JobCardAttachment j = new JobCardAttachment(SiebelConnect.connectSiebelServer(), "");
+        
         Map<String, String> regex = new HashMap();
         String replaceAll = "";
         regex.put("[\\\\\\/]", "");

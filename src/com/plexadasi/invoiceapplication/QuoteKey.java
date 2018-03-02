@@ -11,7 +11,7 @@ package com.plexadasi.invoiceapplication;
  */
 public class QuoteKey implements IKey{
     @Override
-    public Integer productKeyToInt(String value) throws Exception{
+    public Integer productKeyToInt(String value){
         int index = 0;
         value = value.toLowerCase();
         if(StringInt.isStringInt(value)){

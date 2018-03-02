@@ -1,7 +1,7 @@
 package com.plexadasi.common;
 
 
-import com.plexadasi.Helper.HelperAP;
+import com.plexadasi.Helper.HelperExcelAP;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.object.Impl.Impl;
 import com.plexadasi.SiebelApplication.object.JCard;
@@ -70,7 +70,7 @@ public class JobCardGenerator implements Generator{
         {
             //
             //Get excel path
-            inputFile = HelperAP.getJobCardTemplate();
+            inputFile = HelperExcelAP.getJobCardTemplate();
             //Read Excel document first
             MyLogging.log(Level.INFO, inputFile);
             input_document = new FileInputStream(new File(inputFile));

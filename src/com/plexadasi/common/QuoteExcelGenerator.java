@@ -1,7 +1,7 @@
 package com.plexadasi.common;
 
 
-import com.plexadasi.Helper.HelperAP;
+import com.plexadasi.Helper.HelperExcelAP;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.object.QCustomer;
 import com.plexadasi.SiebelApplication.object.QExpenses;
@@ -76,10 +76,7 @@ public class QuoteExcelGenerator implements Generator{
     public void generateExcelDoc(SiebelPropertySet inputs, SiebelPropertySet outputs) throws SiebelBusinessServiceException
     {
         try {
-            //
-            //IProperties AP = new ApplicationProperties2();
-            //Get excel path
-            inputFile = HelperAP.getInvoiceTemplate();
+            inputFile = HelperExcelAP.getInvoiceTemplate();
             //Read Excel document first
             input_document = new FileInputStream(new File(inputFile));
             // Convert it into a POI object

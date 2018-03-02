@@ -1,15 +1,13 @@
 package com.plexadasi.common;
 
 
-import com.plexadasi.Helper.HelperAP;
+import com.plexadasi.Helper.HelperExcelAP;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.object.QOrderBillToAccount;
-import com.plexadasi.SiebelApplication.object.QOrderSequence;
-import com.plexadasi.SiebelApplication.object.QParts2;
 import com.plexadasi.SiebelApplication.object.Quote;
+import com.plexadasi.SiebelApplication.object.QuotePartItem;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelPropertySet;
-import com.plexadasi.common.element.Attachment;
 import com.plexadasi.common.element.InvoiceExcel;
 import com.plexadasi.common.element.QuoteAttachment;
 import com.plexadasi.common.element.XGenerator;
@@ -96,7 +94,7 @@ public class QuoteExcelGenerator2 implements Generator
         try {
             //
             //Get excel path
-            inputFile = HelperAP.getInvoiceTemplate2();
+            inputFile = HelperExcelAP.getInvoiceTemplate2();
             //Read Excel document first
             input_document = new FileInputStream(new File(inputFile));
             // Convert it into a POI object
@@ -122,7 +120,7 @@ public class QuoteExcelGenerator2 implements Generator
             parts = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
             parts.setJobId(this.quote_id);
             parts.setStartRow(startRowAt);
-            parts.createCellFromList(new QParts2(conn, ebsConn), new ProductKey());
+            parts.createCellFromList(new QuotePartItem(conn, ebsConn), new ProductKey());
             
             SiebelPropertySet set = this.conn.newPropertySet();
             set.setProperty("PLX Quote Total", "PLX Quote Total");
@@ -172,7 +170,7 @@ public class QuoteExcelGenerator2 implements Generator
             parts.createCellFromList(list, new QuoteKey());
             
             
-            parts.setStartRow(parts.next(38));
+            parts.setStartRow(parts.next(27));
             list = new ArrayList();
             map = new HashMap();
             map.put("8", quoteItem.getProperty("Sales Team"));

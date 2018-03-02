@@ -1,21 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.common.JobCardGenerator;
-import com.siebel.data.SiebelPropertySet;
-import com.siebel.eai.SiebelBusinessService;
-import com.siebel.eai.SiebelBusinessServiceException;
-import com.plexadasi.common.OrderExcelGenerator; 
+import com.plexadasi.common.OrderExcelGenerator;
 import com.plexadasi.common.QuoteExcelGenerator;
 import com.plexadasi.common.QuoteExcelGenerator2;
 import com.plexadasi.connect.siebel.SiebelConnect;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelException;
+import com.siebel.data.SiebelPropertySet;
+import com.siebel.eai.SiebelBusinessService;
+import com.siebel.eai.SiebelBusinessServiceException;
 import java.io.Writer;
 import java.util.logging.Level;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
 /**
  *

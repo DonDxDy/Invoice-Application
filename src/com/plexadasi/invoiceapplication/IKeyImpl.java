@@ -5,11 +5,13 @@
  */
 package com.plexadasi.invoiceapplication;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+
 
 public class IKeyImpl implements IKey {
 
     @Override
-    public Integer productKeyToInt(String value) throws Exception {
+    public Integer productKeyToInt(String value) throws InvalidFormatException,Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

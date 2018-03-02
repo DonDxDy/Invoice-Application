@@ -1,7 +1,7 @@
 package com.plexadasi.common;
 
 
-import com.plexadasi.Helper.HelperAP;
+import com.plexadasi.Helper.HelperExcelAP;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.object.OAddress;
 import com.plexadasi.SiebelApplication.object.OParts;
@@ -13,7 +13,6 @@ import com.plexadasi.common.element.InvoiceExcel;
 import com.plexadasi.common.element.WaybillAttachment;
 import com.plexadasi.common.element.XGenerator;
 import com.plexadasi.common.impl.Generator;
-import com.plexadasi.connect.siebel.SiebelConnect;
 import com.plexadasi.invoiceapplication.ContactKey;
 import com.plexadasi.invoiceapplication.ProductKey;
 import java.io.File;
@@ -22,8 +21,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -76,7 +73,7 @@ public class OrderExcelGenerator implements Generator
         try {
             //
             //Get excel path
-            inputFile = HelperAP.getWaybillTemplate();
+            inputFile = HelperExcelAP.getWaybillTemplate();
             //Read Excel document first
             input_document = new FileInputStream(new File(inputFile));
             // Convert it into a POI object

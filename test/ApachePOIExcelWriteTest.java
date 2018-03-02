@@ -1,18 +1,8 @@
 
-import com.google.common.base.CharMatcher;
-import com.plexadasi.invoiceapplication.NewClass;
-import com.siebel.common.common.CSSPropertySetEx;
 import com.siebel.data.SiebelException;
 import com.siebel.data.SiebelPropertySet;
 import com.siebel.eai.SiebelBusinessServiceException;
-import static com.siebel.eai.outbound.util.SiebelSupportData.ENUM;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -40,12 +30,12 @@ public class ApachePOIExcelWriteTest
         SiebelPropertySet outputs = new SiebelPropertySet();
         inputs.setProperty("JobId", "1-677881");//1-1028K//1-1026S//1-1025Q//1-3247471//
         inputs.setProperty("JobNum", "Job Card");
-        eia.doInvokeMethod("JobCardGenerator", inputs, outputs);
+        //eia.doInvokeMethod("JobCardGenerator", inputs, outputs);
         
-        inputs.setProperty("QuoteId", "1-1WMU1");
+        inputs.setProperty("QuoteId", "1-123AY");
         inputs.setProperty("QuoteNum", "Quotes 1-2CUL4");
         inputs.setProperty("Type", "Proforma Invoice");
-        //eia.doInvokeMethod("QuoteExcelGenerator", inputs, outputs);
+        eia.doInvokeMethod("QuoteExcelGenerator", inputs, outputs);
         
         inputs.setProperty("OrderId", "1-4ASNE");
         inputs.setProperty("OrderNum", "1-7222154");

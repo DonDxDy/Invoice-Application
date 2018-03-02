@@ -5,8 +5,9 @@
  */
 package com.plexadasi.common.element;
 
-import com.plexadasi.Helper.HelperAP;
+import com.plexadasi.Helper.HelperExcelAP;
 import com.plexadasi.SiebelApplication.MyLogging;
+import com.siebel.eai.SiebelBusinessServiceException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -54,7 +55,7 @@ public class XGenerator {
         }
     }
     
-    public static void doCreateBook(Workbook my_workbook, String filename) throws IOException, Exception
+    public static void doCreateBook(Workbook my_workbook, String filename) throws IOException, SiebelBusinessServiceException
     {
         dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss").format(new Date());
         regex.put("\\s", "-");
@@ -112,13 +113,14 @@ public class XGenerator {
     /**
      *
      * @return
-     * @throws Exception
+     * @throws java.io.IOException
+     * @throws com.siebel.eai.SiebelBusinessServiceException
      */
-    public static String dirpath() throws Exception
+    public static String dirpath() throws IOException, SiebelBusinessServiceException
     {
-        String dirpath = HelperAP.getGeneratedPath();
+        String dirpath = HelperExcelAP.getGeneratedPath();
         if(!createDir(dirpath)){
-            throw new Exception("Directory " + dirpath + " not found or could not be created");
+            throw new SiebelBusinessServiceException("INPUT_OUTPUT", "Directory " + dirpath + " not found or could not be created");
         }
         return dirpath;
     }
