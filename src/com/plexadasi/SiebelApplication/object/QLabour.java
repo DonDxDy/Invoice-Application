@@ -55,7 +55,7 @@ public class QLabour extends SiebelService implements Impl{
         set.setProperty("Product", "2");
         set.setProperty("Quantity Requested", "7");
         set.setProperty("Adjusted List Price - Display", "8");
-        set.setProperty("Item Price", "9");
+        set.setProperty("Extended Line Total - Display", "9");
         this.setSField(set);
         quoteItem = this.getSField(BO, BC, this);
         MyLogging.log(Level.INFO, "Creating siebel objects Labour Quote: " + quoteItem);
@@ -71,7 +71,7 @@ public class QLabour extends SiebelService implements Impl{
     public void searchSpec(SiebelBusComp sbBC) throws SiebelException 
     {
         sbBC.setSearchSpec("Quote Id", quoteId); 
-        sbBC.setSearchSpec("Product Type Code", "Service");  
+        sbBC.setSearchSpec("Product Type", "Service");  
     }
     
     /**

@@ -53,7 +53,7 @@ public class QExpenses extends SiebelService implements Impl{
         set.setProperty("Product", "2");
         set.setProperty("Quantity Requested", "7");
         set.setProperty("Unit Price - Display", "8");
-        set.setProperty("Item Price", "9");
+        set.setProperty("Extended Line Total - Display", "9");
         this.setSField(set);
         quoteItem = this.getSField(BO, BC, this);
         MyLogging.log(Level.INFO, "Creating siebel objects Expenses: " + quoteItem);

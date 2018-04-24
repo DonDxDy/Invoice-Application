@@ -170,7 +170,7 @@ public class QuoteExcelGenerator2 implements Generator
             parts.createCellFromList(list, new QuoteKey());
             
             
-            parts.setStartRow(parts.next(27));
+            parts.setStartRow(parts.next(15));
             list = new ArrayList();
             map = new HashMap();
             map.put("8", quoteItem.getProperty("Sales Team"));

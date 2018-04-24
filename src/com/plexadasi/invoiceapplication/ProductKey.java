@@ -27,7 +27,7 @@ public class ProductKey implements IKey{
                 index = 2;
             else if("Quantity".equalsIgnoreCase(value))
                 index = 3;
-            else if("Product".equalsIgnoreCase(value))
+            else if("Product".equalsIgnoreCase(value) || "Product Description".equalsIgnoreCase(value))
                 index = 4;
             else if("Discount".equalsIgnoreCase(value))
                 index = 5;
@@ -38,7 +38,7 @@ public class ProductKey implements IKey{
             else if("Total".equalsIgnoreCase(value))
                 index = 8;
             else
-                throw new InvalidFormatException("Invalid index value.");
+                throw new InvalidFormatException("Invalid index value "+value);
         }
         return index;
     }

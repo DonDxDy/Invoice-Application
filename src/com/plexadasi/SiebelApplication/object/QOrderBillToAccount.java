@@ -5,6 +5,7 @@
  */
 package com.plexadasi.SiebelApplication.object;
 
+import com.plexadasi.Helper.DataConverter;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.SiebelSearch;
 import com.plexadasi.SiebelApplication.SiebelServiceClone;
@@ -61,6 +62,8 @@ public class QOrderBillToAccount extends SiebelServiceClone implements Impl{
         set.setProperty("Created", "Created");
         set.setProperty("Account", "Account");
         set.setProperty("Billing Account", "Billing Account");
+        set.setProperty("PLX Proforma Invoice Sequence", "PLX Proforma Invoice Sequence");
+        set.setProperty("PLX Proforma Invoice", "PLX Proforma Invoice");
         set.setProperty("PLX Proforma Invoice Number", "PLX Proforma Invoice Number");
         set.setProperty("Contact Home Phone #", "Contact Home Phone #");
         set.setProperty("Creator EBS Id", "Creator EBS Id");
@@ -81,14 +84,31 @@ public class QOrderBillToAccount extends SiebelServiceClone implements Impl{
         Map<String, String> map = new HashMap();
         while(isRecord)
         {
+            
             invoiceNumber = sdBC.getFieldValue("PLX Proforma Invoice Number");
             if("".equals(invoiceNumber))
             {
-                sdBC.setFieldValue("PLX Proforma Invoice Number", this.sequence.invoiceNumber());
+                sdBC.setFieldValue("PLX Proforma Invoice", this.sequence.invoiceNumber());
                 map.put("8", this.sequence.invoiceNumber());
             }else{
                 map.put("8", invoiceNumber);
             }
+            /*
+            invoiceNumber = sdBC.getFieldValue("PLX Proforma Invoice Sequence");
+            String seq = sdBC.getFieldValue("PLX Proforma Invoice");
+            if(!this.invoiceNumber.equals("") || !seq.equals(""))
+            {
+                map.put("8", sdBC.getFieldValue("PLX Proforma Invoice Number"));
+            }
+            else {
+                if(!this.invoiceNumber.equals("")){
+                    this.sequence.setSequence(DataConverter.toInt(this.invoiceNumber));
+                }else{
+                    this.sequence.retainer();
+                }
+                map.put("8", this.sequence.invoiceNumber());
+            }*/
+           // map.put("8", sdBC.getFieldValue("PLX Proforma Invoice Number"));
             quoteItem.add(map);
             map = new HashMap();
             map.put("8", sdBC.getFieldValue("Created"));

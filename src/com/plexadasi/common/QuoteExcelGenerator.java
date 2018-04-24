@@ -8,6 +8,7 @@ import com.plexadasi.SiebelApplication.object.QExpenses;
 import com.plexadasi.SiebelApplication.object.QLabour;
 import com.plexadasi.SiebelApplication.object.QLubricant;
 import com.plexadasi.SiebelApplication.object.QParts;
+import com.plexadasi.SiebelApplication.object.Quote;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelPropertySet;
 import com.siebel.eai.SiebelBusinessServiceException;
@@ -25,6 +26,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -95,26 +100,40 @@ public class QuoteExcelGenerator implements Generator{
             InvoiceExcelTotal parts, lubricant, expenses;
             int startRowAt = 17, nextRowAt;
             labour = parts = lubricant = expenses = new InvoiceExcelTotal(my_xlsx_workbook, my_worksheet);
+            
             //
             labour.setJobId(this.quote_id);
             labour.setStartRow(startRowAt);
             labour.createCellFromList(new QLabour(conn), new ProductKey());
             XGenerator.doMerge(my_worksheet, labour.next(6) - 2, 0, 1, 10, false);
             XGenerator.doMerge(my_worksheet, labour.next(6) - 1, 2, 1, 5, false);
-            //
+            
+            Quote q = new Quote(conn);
+            SiebelPropertySet s = conn.newPropertySet();
+            s.setProperty("PLX Comp. Program", "PLX Comp. Program");
+            List<Map<String, String>> list = new ArrayList();
+            Map<String, String> map = new HashMap();
+            map.put("9", q.find(quote_id, s).getProperty("PLX Comp. Program"));
+            list.add(map);
+            InvoiceExcel comp = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
+            comp.setJobId(quote_id);
+            comp.setStartRow(labour.next(2));
+            comp.createCellFromList(list, new ProductKey());
+            
+//
             parts.setJobId(this.quote_id);
             parts.setStartRow(labour.next(6));
-            //System.out.println(labour.next(6));
             parts.createCellFromList(new QParts(conn), new ProductKey());
             XGenerator.doMerge(my_worksheet, parts.next(4) - 2, 0, 1, 10, false);
             XGenerator.doMerge(my_worksheet, parts.next(4) - 1, 2, 1, 5, false);
+            
             // Creates the lubricant row in excel sheet
             lubricant.setJobId(this.quote_id);
             lubricant.setStartRow(parts.next(4));
             lubricant.createCellFromList(new QLubricant(conn), new ProductKey());
-            //System.out.println(parts.next(5));
             XGenerator.doMerge(my_worksheet, lubricant.next(4) - 2, 0, 1, 10, false);
             XGenerator.doMerge(my_worksheet, lubricant.next(4) - 1, 2, 1, 5, false);
+            //XGenerator.doMerge(my_worksheet, lubricant.next(4), 2, 1, 5, false);
             //
             expenses.setJobId(this.quote_id);
             expenses.setStartRow(lubricant.next(4));

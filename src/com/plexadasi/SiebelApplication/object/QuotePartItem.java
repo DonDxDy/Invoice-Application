@@ -69,7 +69,7 @@ public class QuotePartItem implements Impl {
         set.setProperty("Outline Number", "sn");
         set.setProperty("Part Number", "Part Number");
         set.setProperty("Quantity Requested", "Quantity");
-        set.setProperty("Product", "Product");
+        set.setProperty("Product Description", "Product Description");
         set.setProperty("Base Price - Display", "Gross Price");
         set.setProperty("Extended Line Total - Display", "Total");
         set.setProperty("Net Discount Percent - Display", "Discount");

@@ -38,14 +38,22 @@ public class NewClass {
     {
         this.quoteSequence = new QOrderSequence(conn);
         this.id = id;
-        this.retainer(this.id);
+        this.retainer();
     }
     
-    private void retainer(String Id) throws SiebelException
+    public void retainer() throws SiebelException
     {
-        SiebelPropertySet properties = quoteSequence.find(BUS_OBJECT, Id);
+        SiebelPropertySet properties = quoteSequence.find(BUS_OBJECT, this.id);
         this.sequence = Integer.parseInt(CharMatcher.DIGIT.retainFrom(properties.getProperty(QOrderSequence.FIELD_SEQUENCE)));
         try{this.append = properties.getProperty(QOrderSequence.FIELD_TRANS).charAt(0);}catch(StringIndexOutOfBoundsException e){}catch(NullPointerException e){}
+    }
+    
+    public void setSequence(Integer sequence){
+        this.sequence = sequence;
+    }
+    
+    public Integer getSequence(){
+        return this.sequence;
     }
     
     public void sequence()

@@ -35,7 +35,7 @@ public class QCustomer extends SiebelSearch implements Impl{
     private final QVehicle vehicleObj;
     private final QAccount accountObj;
     private final Date date;
-    private final SimpleDateFormat dateFormat;
+    private SimpleDateFormat dateFormat;
     private String accountName;
     private String address;
     private String city;
@@ -86,6 +86,7 @@ public class QCustomer extends SiebelSearch implements Impl{
         engineNo    = getProperty(getVehicle, V_ENGINE_NUM);
         model       = getProperty(getVehicle, V_MODEL);
         km          = getProperty(getVehicle, V_ODOMETER);
+        String sequence = getProperty(getQuote, "WSH Sequence");
         
         Map<String, String> mapObj = new HashMap();
         mapObj.put("2", accountName);
@@ -103,6 +104,8 @@ public class QCustomer extends SiebelSearch implements Impl{
         quoteItem.add(mapObj);
         mapObj = new HashMap();
         mapObj.put("2", phoneNumber);
+        dateFormat = new SimpleDateFormat("yyyy");
+        mapObj.put("9", sequence+"/"+dateFormat.format(date));
         quoteItem.add(mapObj);
         mapObj = new HashMap();
         mapObj.put("2", firstName + " " + lastName);
@@ -133,6 +136,7 @@ public class QCustomer extends SiebelSearch implements Impl{
         set.setProperty(Q_CONTACT_LN, BLANK);
         set.setProperty("Account Id", "");
         set.setProperty("PLX Vehicle VIN", BLANK);
+        set.setProperty("WSH Sequence", BLANK);
         this.setSField(set);
         quoteSet = this.getSField("Quote", "Quote", this);
         MyLogging.log(Level.INFO, "Customer: " + quoteSet);

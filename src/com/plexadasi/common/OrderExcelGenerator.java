@@ -5,7 +5,9 @@ import com.plexadasi.Helper.HelperExcelAP;
 import com.plexadasi.SiebelApplication.MyLogging;
 import com.plexadasi.SiebelApplication.object.OAddress;
 import com.plexadasi.SiebelApplication.object.OParts;
-import com.plexadasi.SiebelApplication.object.OShippment;
+import com.plexadasi.SiebelApplication.object.Shippment;
+import com.plexadasi.SiebelApplication.object.Order;
+import com.plexadasi.SiebelApplication.object.Quote;
 import com.siebel.data.SiebelDataBean;
 import com.siebel.data.SiebelPropertySet;
 import com.plexadasi.common.element.Attachment;
@@ -87,21 +89,26 @@ public class OrderExcelGenerator implements Generator
             this.orderType = inputs.getProperty("OrderType");
             
             InvoiceExcel customerInfo = new InvoiceExcel(my_xlsx_workbook, my_worksheet, 2);
-            customerInfo.setJobId(this.ship_id);
-            customerInfo.createCellFromList(new OShippment(conn), new ContactKey());
-            customerInfo.setStartRow(6);
-            customerInfo.createCellFromList(new OAddress(conn, this.order_number), new ContactKey());
+            //customerInfo.setJobId(this.ship_id);
+            Order order = new Order(conn);
+            customerInfo.createCellFromList(order.getOrderShipment(order_id, ship_id), new ContactKey());
+            //customerInfo.setStartRow(6);
+            //Order order = new Order(conn);
+            //customerInfo.createCellFromList(order.find(order_id, outputs), new ContactKey());
             customerInfo = null;
             
             InvoiceExcel parts;
             
-            int startRowAt = 14;
+            int startRowAt = 13;
             parts = new InvoiceExcel(my_xlsx_workbook, my_worksheet);
             
             //
             parts.setStartRow(startRowAt);
             parts.setJobId(order_number);
-            parts.createCellFromList(new OParts(conn), new ProductKey());
+            parts.createCellFromList(
+                    new OParts(conn), 
+                    new ProductKey()
+            );
             my_xlsx_workbook.setForceFormulaRecalculation(true);
             input_document.close();
             XGenerator.doCreateBook(my_xlsx_workbook, "weststar_" + this.order_number.replace(" ", "_"));

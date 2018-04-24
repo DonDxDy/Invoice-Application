@@ -32,16 +32,23 @@ public class ApachePOIExcelWriteTest
         inputs.setProperty("JobNum", "Job Card");
         //eia.doInvokeMethod("JobCardGenerator", inputs, outputs);
         
-        inputs.setProperty("QuoteId", "1-123AY");
+        //Proforma document test
+        inputs.setProperty("QuoteId", "1-QCHID");
         inputs.setProperty("QuoteNum", "Quotes 1-2CUL4");
         inputs.setProperty("Type", "Proforma Invoice");
-        eia.doInvokeMethod("QuoteExcelGenerator", inputs, outputs);
+        //eia.doInvokeMethod("QuoteExcelGenerator", inputs, outputs);
+        
+        //Workshop document test
+        inputs.setProperty("QuoteId", "1-QCHID");
+        inputs.setProperty("QuoteNum", "Quotes 1-2CUL4");
+        inputs.setProperty("Type", "Workshop Template");
+        //eia.doInvokeMethod("QuoteExcelGenerator", inputs, outputs);
         
         inputs.setProperty("OrderId", "1-4ASNE");
         inputs.setProperty("OrderNum", "1-7222154");
         inputs.setProperty("OrderType", "Sales Order");
         inputs.setProperty("ShipId", "1-7222196");
-        //eia.doInvokeMethod("OrderExcelGenerator", inputs, outputs);
+        eia.doInvokeMethod("OrderExcelGenerator", inputs, outputs);
         
         SiebelPropertySet vset = new SiebelPropertySet();
         SiebelPropertySet set = new SiebelPropertySet();
